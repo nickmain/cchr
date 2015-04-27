@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "logical.h"
+
+logical_code(int,log_int_t,logical_nodestr)
+
+cchr {
+  constraint leq(log_int_t,log_int_t) init({log_int_t_copy($1);log_int_t_copy($2);}) destr({log_int_t_destruct($1);log_int_t_destruct($2);}) fmt("leq(%p,%p)");
+  extern log_int_t_testeq;
+  
+  reflexivity @ leq(X,Y) <=> log_int_t_testeq(X,Y) | true;
+  antisymmetry @ leq(X1,Y1), leq(Y2,X2) <=> log_int_t_testeq(X1,X2),log_int_t_testeq(Y1,Y2) | {log_int_t_seteq(X1,Y1);cchr_reactivate_all(NULL);};
+  idempotence @ leq(X1,Y1) \ leq(X2,Y2) <=> log_int_t_testeq(X1,X2),log_int_t_testeq(Y1,Y2) | true;
+  transitivity @ leq(X,Y1), leq(Y2,Z) ==> log_int_t_testeq(Y1,Y2) | leq(X,Z);
+}
+
+void test(int size) {
+  cchr_runtime_init();
+  log_int_t *vars=malloc(sizeof(log_int_t)*size);
+  for (int j=0; j<size; j++) vars[j]=log_int_t_create();
+  for (int j=0; j<size; j++) cchr_add_leq_2(vars[j],vars[(j+1)%size]);
+  fprintf(stderr,"done!\n");
+  int aj=0;
+  cchr_consloop(j,leq_2,{fprintf(stderr,"outch %i (%p,%p)!\n",aj++,cchr_consarg(j,leq_2,1),cchr_consarg(j,leq_2,2));});
+  for (int j=0; j<size; j++) {
+    if (!log_int_t_testeq(vars[j],vars[(j+1)%size])) fprintf(stderr,"noteq %i %i\n",j,j+1);
+  }
+  cchr_runtime_free();
+  for (int j=0; j<size; j++) log_int_t_destruct(vars[j]);
+  free(vars);
+}
+
+int main(void) {
+  test(100);
+  return 0;
+}

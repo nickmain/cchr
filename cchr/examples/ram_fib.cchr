@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "ram_fib_cchr.h"
+
+typedef enum { ADD,SUB,MULT,DIV,MOVE,I_MOVE,MOVE_I,CONST,JUMP,CJUMP,HALT,INIT } instr_t;
+
+cchr {
+	constraint mem(int, int) option(fmt,"mem(%i,%i)",$1,$2), 
+	prog(int,instr_t,int,int) option(fmt,"prog(%i,%i,%i,%i)",$1,$2,$3,$4,$5),
+	prog_counter(int) option(fmt,"prog_counter(%i)",$1);
+	
+	extern ADD,SUB,MULT,DIV,MOVE,I_MOVE,MOVE_I,CONST,JUMP,CJUMP,HALT,INIT;
+		
+	constraint initmem(int) option(fmt,"initmem(%i)",$1);
+	
+	// add value of register B to register A
+	iAdd @ prog(L,ADD,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X+Y), prog_counter(L+1);
+	// subtract value of register B from register A
+	iSub @ prog(L,SUB,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X-Y), prog_counter(L+1);
+	// multiply register A with value of register B
+	iMul @ prog(L,MULT,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X*Y), prog_counter(L+1);
+	// divide register A by value of register B
+	iDiv @ prog(L,DIV,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X/Y), prog_counter(L+1);
+
+	// put the value in register B in register A
+	iMove @ prog(L,MOVE,B,A), mem(B,X) \ mem(A,_), prog_counter(L) <=> mem(A,X), prog_counter(L+1);
+	// put the value in register <value in register B> in register A
+	iIMove @ prog(L,I_MOVE,B,A), mem(B,C), mem(C,X) \ mem(A,_), prog_counter(L) <=> mem(A,X), prog_counter(L+1);
+	// put the value in register B in register <value in register A>
+	iMoveI @ prog(L,MOVE_I,B,A), mem(B,X), mem(A,C) \ mem(C,_), prog_counter(L) <=> mem(C,X), prog_counter(L+1);
+
+	// put the value B in register A        -> redundant if consts are in init mem
+	iConst @ prog(L,CONST,B,A) \ mem(A,_), prog_counter(L) <=> mem(A,B), prog_counter(L+1);
+
+	// initialize
+	iInit @ prog(L,INIT,B,_), mem(B,A) \ prog_counter(L) <=> mem(A,0), prog_counter(L+1);
+
+	// unconditional jump to label A
+	iJump @ prog(L,JUMP,_,A) \ prog_counter(L) <=> prog_counter(A);
+
+	// jump to label A if register R is zero, otherwise continue
+	iCjump1 @ prog(L,CJUMP,R,A), mem(R,0) \ prog_counter(L) <=> prog_counter(A);
+	iCjump2 @ prog(L,CJUMP,R,_A), mem(R,_) \ prog_counter(L) <=> prog_counter(L+1);
+
+	// halt
+	iHalt @ prog(L,HALT,_,_) \ prog_counter(L) <=> true;
+
+	// invalid instruction
+	error @ prog_counter(_L) <=> {printf("eeeeik! error!!!\n");};
+		
+	init1 @ initmem(N) <=> N < 0  | true;
+	init2 @ initmem(N) <=> N >= 0 | mem(N,0), initmem(N-1);
+}
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int N=(argc>1 ? (int)strtol(argv[1],NULL,0) : 100);
+  int mem[]={0,8,9,10,N,1,0,0,-1,1};
+  for (int i=1; i<sizeof(mem)/sizeof(mem[0]); i++) {
+    cchr_add_mem_2(i,mem[i]);
+  }
+  int prog[][4]={
+    {1,INIT,3,0},
+    {2,I_MOVE,1,6},
+    {3,I_MOVE,2,7},
+    {4,ADD,6,7},
+    {5,MOVE_I,7,3},
+    {6,ADD,5,1},
+    {7,ADD,5,2},
+    {8,ADD,5,3},
+    {9,SUB,5,4},
+    {10,CJUMP,4,12},
+    {11,JUMP,0,1},
+    {12,HALT,0,0}};
+  for (int i=0; i<sizeof(prog)/sizeof(prog[0]); i++) {
+    cchr_add_prog_4(prog[i][0],prog[i][1],prog[i][2],prog[i][3]);
+  }
+  cchr_add_prog_counter_1(1);
+//  cchr_consloop(j,mem_2,{printf("mem(%i)=%i\n",cchr_consarg(j,mem_2,1),cchr_consarg(j,mem_2,2));});
+  cchr_runtime_free();
+  return 0;
+}

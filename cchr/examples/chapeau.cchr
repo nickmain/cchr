@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+#include "chapeau_cchr.h"
+
+static const char *dice[] = {"nine","ten","jack", "queen", "king", "ace"};
+
+/* do something sprintf-like, but put the output in a malloc'ed block */
+char *make_msg(const char *fmt, ...) {
+  int n, size = 100;
+  char *p, *np;
+  va_list ap;
+  if ((p = malloc (size)) == NULL) return NULL;
+  while (1) {
+    va_start(ap, fmt);
+    n = vsnprintf (p, size, fmt, ap);
+    va_end(ap);
+    if (n > -1 && n < size) return p;
+    if (n > -1) {
+      size = n+1;
+    } else {
+      size *= 2;
+    }
+    if ((np = realloc (p, size)) == NULL) {
+      free(p);
+      return NULL;
+    } else {
+      p = np;
+    }
+  }
+}
+
+cchr {
+  constraint comb(int,double,char *) option(destr,{free($3);});
+  constraint die(int,int);
+  constraint gen(int);
+
+  extern make_msg,dice;
+
+  absorb @ comb(A,S1,_) \ comb(A,S2,_) <=> S1>=S2 | true;
+
+  single @ die(I,S), die(I,E1), die(I,E2), die(I,E3), die(I,E4) ==> S>=E1, E1>=E2, E2>=E3, E3>=E4 |
+    comb(I,1.0 + S/6.0 + E1/36.0 + E2/216.0 + E3/1296.0 + E4/46656,
+      make_msg("singleton of %s, with %s, %s, %s and %s",dice[S],dice[E1],dice[E2],dice[E3],dice[E4]));
+  
+  pair @ die(I,P), die(I,P), die(I,E1), die(I,E2), die(I,E3) ==> E1>=E2, E2>=E3 |
+    comb(I,2.0 + P/6.0 + E1/36.0 + E2/216.0 + E3/1296.0,
+      make_msg("pair of %ss, with %s, %s and %s",dice[P],dice[E1],dice[E2],dice[E3]));
+
+  dpair @ die(I,P1), die(I,P1), die(I,P2), die(I,P2), die(I,E) ==> P1>=P2 |
+    comb(I,3.0 + P1/6.0 + P2/36.0 + E/216.0,
+      make_msg("double pair of %ss and %ss, with %s",dice[P1],dice[P2],dice[E]));
+  
+  trice @ die(I,T), die(I,T), die(I,T), die(I,E1), die(I,E2) ==> E1>=E2 |
+    comb(I,4.0 + T/6.0 + E1/36.0 + E2/216.0,
+      make_msg("trice of %ss, with %s and %s",dice[T],dice[E1],dice[E2]));
+
+  ss @ die(I,0), die(I,1), die(I,2), die(I,3), die(I,4) ==>
+    comb(I,5.0,make_msg("small straight"));
+
+  fh @ die(I,F1), die(I,F1), die(I,F1), die(I,F2), die(I,F2) ==>
+    comb(I,6.0 + F1/6.0 + F2/36.0,
+      make_msg("full house of %ss over %ss",dice[F1],dice[F2]));
+  
+  ls @ die(I,1), die(I,2), die(I,3), die(I,4), die(I,5) ==>
+    comb(I,7.0,make_msg("large straight"));
+
+  carre @ die(I,C), die(I,C), die(I,C), die(I,C), die(I,E) ==>
+    comb(I,8.0 + C/6.0 + E/36.0,make_msg("carre of %ss, with %s",dice[C],dice[E]));
+
+  poker @ die(I,P), die(I,P), die(I,P), die(I,P), die(I,P) ==>
+    comb(I,9.0 + P/6.0,make_msg("poker of %ss",dice[P]));
+ 
+
+  gen @ gen(I) <=> I<7776 | die(I,(I/(6*6*6*6))%6), die(I,(I/(6*6*6))%6), die(I,(I/(6*6))%6), die(I,(I/6)%6), die(I,I%6),
+    gen(I+1);
+}
+
+int main(void) {
+  cchr_runtime_init();
+  cchr_add_gen_1(0);
+  cchr_consloop(j,comb_3,{
+    printf("%0.4f %i %s \n",cchr_consarg(j,comb_3,2), cchr_consarg(j,comb_3,1), cchr_consarg(j,comb_3,3));
+  });
+  cchr_runtime_free();
+  return 0;
+}

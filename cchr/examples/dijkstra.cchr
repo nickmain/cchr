@@ -1,0 +1,136 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#include "logical.h"
+#include "dijkstra_cchr.h"
+
+#define FALSE 0
+#define TRUE 1
+
+int nRandom=0;
+long long randomLeft=0;
+long long randomMax=0;
+
+/* cat /dev/urandom | hexdump -e '5 "0x%08X%08X," "\n"' | less */
+long long const rndNum[]={
+  0x7ECBD55DA6AB797CLL,0x194ABA8B728D2437LL,0xCB6A41A11BDC5B12LL,0x4A9A6218916C2BBCLL,0x2DBD30C2A3CB7205LL,
+  0xED887CED9C63F377LL,0xC73FA1ED5156E20ELL,0xC6445EB223FA6C19LL,0xF3FF697C37FBBA84LL,0x3FF9D6A60A8035ECLL,
+  0x87E2F15F3CEAB75DLL,0x8BC3FCEBD1D75F5ELL,0x87B553D14C72611BLL,0x20E7BC546DC30F4CLL,0x1472C8B5DDB1CE7CLL,
+  0xBA0FC83375BDA079LL,0xC8810F05E6FA550DLL,0x1B5CB9C951B21734LL,0x14A57685714F5EABLL,0xFBA9A40BFE7A9DB5LL,
+  0xEF5CCE7A0F3B3CF2LL,0x31889813032E8426LL,0x23690CEEDB90BF24LL,0x5ED63B074814AA6BLL,0x93D66D5FC208FE53LL,
+  0x8A873205E938D9EBLL,0x51EC19C3751DD8F8LL,0xECACA5E11C33C4CCLL,0xD6FD43D15735E00BLL,0x818FE43B5F57B9B8LL,
+  0x217B39EFEF9AC0CFLL,0x75B2EF6245C9483CLL,0xC0EE4513B2903B99LL,0x698D89D1894894CDLL,0x4A7B3B43D7BBA650LL,
+  0x0E728305D365FC93LL,0xE4CF9EC117AD1EF1LL,0x0D42399793F1BF05LL,0x6FA60163DF5E89EFLL,0xAE62EEC55081ABFALL,
+  0x523F5AE330A8B060LL,0xCF6D028CF6055D87LL,0x73E9283AB9B841C3LL,0x10F3154AC2D03904LL,0x16CC7444624F8370LL,
+  0xDD934AE66EDC7660LL,0xE428F2E386842E01LL,0x5906A1B4988F5E8ELL,0xE492611FF57D989FLL,0xEE3C6A3C3D5167FBLL,
+  0xEA1B12FF66477D56LL,0x6407D5B206FB7861LL,0x7653C4F106D762DCLL,0x29315227AA104126LL,0x19D43B3AB3EEB451LL,
+  0x8CBB89FDE1B959FDLL,0x2AAB3B3277254D6BLL,0xF772440E907100D5LL,0x24CFC181B3C0F668LL,0xF5950B549378660CLL,
+  0x6AB21865DBC965B9LL,0x0122FFB19CEBB2E5LL,0xE54611DA11C61B6FLL,0xBD1C8192EE4068D6LL,0xB4FD1220701CA34CLL,
+  0x6F0D2F377BEB7573LL,0x0D5F64775A666663LL,0x67FF0FA7B918EBD8LL,0xBD7DDF55E343F1A1LL,0x3C4F2BF6CA4C489ALL,
+  0x10C24A675959093CLL,0xF883A50D9EEC33EFLL,0xEFC08639A26FEB68LL,0xE8876117BB917260LL,0x6CEB1E2AED0C5B59LL,
+  0xB2FABCE643EC3538LL,0xBD9C5236C836C7B6LL,0x62A10376CDEC9391LL,0x09AB80FF79CC34F6LL,0xFB8A12D51ED22DC3LL
+};
+
+long long getRnd(long long max) {
+  if (randomMax<max) {
+    int t=(sizeof(rndNum)/sizeof(rndNum[0]));
+    int n1=nRandom % t;
+    int n2=(nRandom / t) % t;
+    int n3=nRandom / t / t;
+    randomLeft=rndNum[n2]*0x6456CF90E0316849LL+rndNum[n1]+n3;
+    if (randomLeft<0) randomLeft+=0x8000000000000000LL;
+    randomMax=0x7FFFFFFFFFFFFFFF;
+    nRandom++;
+  }
+  long long r=randomLeft%max;
+  randomLeft/=max;
+  randomMax/=max;
+  return r;
+}
+
+/* the cchr block */
+cchr {
+  
+  extern alt,eq,FALSE,TRUE;
+
+  /* the fib_heap part */
+  
+  constraint extract_min(int* , int*) option(fmt,"extract_min(%p(%i),%p(%i))",$1,*($1),$2,*($2));
+  constraint insert(int,int), decr_or_ins(int,int);
+  constraint mark(int) option(fmt,"mark(%i)",$1), decr(int,int), ch2rt(int), decr5(int, int, int, int, int);
+  constraint item(int, int, int, int, int) option(fmt,"item(%i,%i,%i,%i,%i)",$1,$2,$3,$4,$5);
+  constraint min(int,int) option(fmt,"min(%i,%i)",$1,$2), findmin(int) option(fmt,"findmin");
+  
+  insert        @ insert(I,K) <=> item(I,K,0,0,FALSE), min(I,K);
+
+  keep_min      @ min(_,A) \ min(_,B) <=> A <= B | true;
+
+  extr          @ extract_min(X,Y), min(I,K), item(I,_,_,_,_) <=> ch2rt(I), findmin(0), {*(X)=I; *(Y)=K;};
+  extr_empty    @ extract_min(X,Y) <=> {*(X)=0; *(Y)=0;};
+
+  c2r           @ ch2rt(I) \ item(C,K,R,I,_)#passive <=> item(C,K,R,0,FALSE);
+  c2r_done      @ ch2rt(_I) <=> true;
+
+  find_min      @ findmin(_), item(I,K,_,0,_) ==> min(I,K);
+  found_min     @ findmin(_) <=> true;
+
+  same_rank     @ item(I1,K1,R,0,_), item(I2,K2,R,0,_) <=> K1 <= K2 | item(I2,K2,R,I1,FALSE), item(I1,K1,R+1,0,FALSE);
+
+  decr          @ decr(I,K), item(I,O,R,P,M) <=> K < O | decr5(I,K,R,P,M);
+  decr_no       @ decr(_I,_K) <=> true;
+
+  doi_decrease  @ item(I, O, R, P, M),  decr_or_ins(I,K) <=> K < O  | decr5(I,K,R,P,M);
+  doi_nop       @ item(I, O, _, _, _) \ decr_or_ins(I,K) <=> K >=O  | true;
+  doi_insert    @ decr_or_ins(I,K) <=> insert(I,K);
+
+  d_min         @ decr5(I, K,_,_,_) ==> min(I,K);
+  d_root        @ decr5(I, K, R, 0,_) <=> item(I,K,R,0,FALSE);
+  d_ok          @ item(P, PK,_,_,_) \ decr5(I,K,R,P,M) <=> K >= PK | item(I,K,R,P,M);
+  d_prob        @ decr5(I,K,R,P,_M) <=> item(I,K,R,0,FALSE), mark(P);
+
+  mark_root     @ mark(I), item(I,K,R,0,_)  <=> item(I,K,R-1,0,FALSE);
+  mark_marked   @ mark(I), item(I,K,R,P,TRUE) <=> item(I,K,R-1,0,FALSE), mark(P);
+  mark_unmarked @ mark(I), item(I,K,R,P,FALSE) <=> item(I,K,R-1,P,TRUE);
+  error_mark    @ mark(I) <=> {fprintf(stderr,"error_mark(%i)",I);};
+
+  /* dijkstra part */
+  
+  constraint edge(int,int,int) option(fmt,"edge(%i,%i,%i)",$1,$2,$3), dijkstra(int) option(fmt,"dijkstra(%i)",$1);
+  constraint scan(int,int) option(fmt,"scan(%i,%i)",$1,$2), relabel(int,int) option(fmt,"relabel(%i,%i)",$1,$2);
+  constraint distance(int,int) option(fmt,"distance(%i,%i)",$1,$2);
+  
+  start_scanning @ dijkstra(A) <=> scan(A,0);
+  stop_scanning  @ scan(0,_A) <=> true;
+  label_neighb   @ scan(N,L), edge(N,N2,W) ==> relabel(N2, L+W);
+  scan_next      @ scan(N,L) <=> distance(N,L), int* NW=malloc(2*sizeof(int)), 
+                                 extract_min(NW,NW+1), scan(*(NW),*(NW+1)), {free(NW);};
+  scanned        @ distance(N,_) \ relabel(N,_) <=> true;
+  not_scanned    @ relabel(N,L) <=> decr_or_ins(N,L);
+}
+
+void init(int n,int degree) {
+  for (int i=1; i<n; i++) {
+    cchr_add_edge_3(i,i+1,1);
+    for (int j=0; j<degree; j++) {
+      int dest=getRnd(n-1);
+      if (dest+1 >= i) dest++;
+      int w=getRnd(335);
+      cchr_add_edge_3(i,dest+1,w);
+    }
+  }
+  cchr_add_edge_3(n,1,1);
+}
+
+int main(int argc, char **argv) {
+  int n=argc>1 ? strtol(argv[1],NULL,0) : 16;
+  cchr_runtime_init();
+  init(n,3);
+  cchr_add_dijkstra_1(1); 
+/*  cchr_consloop(j,distance_2,{
+    printf("distance(%i,%i)\n",cchr_consarg(j,distance_2,1),cchr_consarg(j,distance_2,2));
+  }); */
+  printf("n=%i\n",nRandom);
+  return 0;
+}

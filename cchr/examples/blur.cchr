@@ -1,0 +1,143 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "blur_cchr.h"
+
+#include "lena512.h"
+
+double static matrix[5][5]={
+  {1.0/273,4.0/273,7.0/273,4.0/273,1.0/273},
+  {4.0/273,16.0/273,26.0/273,16.0/273,4.0/273},
+  {7.0/273,26.0/273,41.0/273,26.0/273,7.0/273},
+  {4.0/273,16.0/273,26.0/273,16.0/273,4.0/273},
+  {1.0/273,4.0/273,7.0/273,4.0/273,1.0/273}
+};
+
+#define calc(c00,c01,c02,c03,c04,c10,c11,c12,c13,c14,c20,c21,c22,c23,c24,c30,c31,c32,c33,c34,c40,c41,c42,c43,c44) ( \
+  matrix[0][0]*c00 + matrix[0][1]*c01 + matrix[0][2]*c02 + matrix[0][3]*c03 + matrix[0][4]*c04 + \
+  matrix[1][0]*c10 + matrix[1][1]*c11 + matrix[1][2]*c12 + matrix[1][3]*c13 + matrix[1][4]*c14 + \
+  matrix[2][0]*c20 + matrix[2][1]*c21 + matrix[2][2]*c22 + matrix[2][3]*c23 + matrix[2][4]*c24 + \
+  matrix[3][0]*c30 + matrix[3][1]*c31 + matrix[3][2]*c32 + matrix[3][3]*c33 + matrix[3][4]*c34 + \
+  matrix[4][0]*c40 + matrix[4][1]*c41 + matrix[4][2]*c42 + matrix[4][3]*c43 + matrix[4][4]*c44 )
+
+cchr {
+    constraint purge(int) option(fmt,"purge(%i)",$1),
+               clear(int) option(fmt,"clear(%i)",$1),
+               endat(int) option(fmt,"endat(%i)",$1),
+               dim(int,int) option(fmt,"dim(%i,%i)",$1,$2),
+               c(int,int,int,double) option(fmt,"c(%i:%i,%i %.3f)",$1,$2,$3,$4);
+
+    extern calc;
+
+    dup @ endat(X) \ endat(Y) <=> X>=Y | true;
+
+    step @ endat(Te), dim(Xs,Ys)#passive, 
+      c(T,X, Y      ,C00)#passive, c(T,(X+1)%Xs, Y      ,C01)#passive, c(T,(X+2)%Xs, Y      ,C02)#passive, c(T,(X+3)%Xs, Y      ,C03)#passive, c(T,(X+4)%Xs, Y,      C04)#passive,
+      c(T,X,(Y+1)%Ys,C10)#passive, c(T,(X+1)%Xs,(Y+1)%Ys,C11)#passive, c(T,(X+2)%Xs,(Y+1)%Ys,C12)#passive, c(T,(X+3)%Xs,(Y+1)%Ys,C13)#passive, c(T,(X+4)%Xs,(Y+1)%Ys,C14)#passive,
+      c(T,X,(Y+2)%Ys,C20)#passive, c(T,(X+1)%Xs,(Y+2)%Ys,C21)#passive, c(T,(X+2)%Xs,(Y+2)%Ys,C22)#passive, c(T,(X+3)%Xs,(Y+2)%Ys,C23)#passive, c(T,(X+4)%Xs,(Y+2)%Ys,C24)#passive,
+      c(T,X,(Y+3)%Ys,C30)#passive, c(T,(X+1)%Xs,(Y+3)%Ys,C31)#passive, c(T,(X+2)%Xs,(Y+3)%Ys,C32)#passive, c(T,(X+3)%Xs,(Y+3)%Ys,C33)#passive, c(T,(X+4)%Xs,(Y+3)%Ys,C34)#passive,
+      c(T,X,(Y+4)%Ys,C40)#passive, c(T,(X+1)%Xs,(Y+4)%Ys,C41)#passive, c(T,(X+2)%Xs,(Y+4)%Ys,C42)#passive, c(T,(X+3)%Xs,(Y+4)%Ys,C43)#passive, c(T,(X+4)%Xs,(Y+4)%Ys,C44)#passive
+    ==> T<Te | 
+    c(T+1,(X+2)%Xs,(Y+2)%Ys,
+      calc(C00,C01,C02,C03,C04,C10,C11,C12,C13,C14,C20,C21,C22,C23,C24,C30,C31,C32,C33,C34,C40,C41,C42,C43,C44)
+    );
+
+
+    clean @ clear(T) \ c(T,_,_,_) <=> true;
+    cleanend @ clear(_) <=> true;
+    
+    purge1 @ purge(_) \ c(_,_,_,_) <=> true;
+    purge2 @ purge(_) \ endat(_) <=> true;
+    purge3 @ purge(_) \ dim(_,_) <=> true;
+    purgeend @ purge(_) <=> true;
+}
+
+typedef struct {
+  int width;
+  int height;
+  double *i;
+} graph_t;
+
+void graph_to_chr(graph_t *graph,int t) {
+  cchr_add_purge_1(t);
+  cchr_add_dim_2(graph->width,graph->height);
+  for (int y=0; y<graph->height; y++) {
+    for (int x=0; x<graph->width; x++) {
+      cchr_add_c_4(t,x,y,graph->i[x+y*graph->width]);
+    }
+  }
+}
+
+void chr_to_graph(graph_t *graph,int t) {
+  cchr_consloop(j,dim_2,{
+    graph->width=cchr_consarg(j,dim_2,1);
+    graph->height=cchr_consarg(j,dim_2,1);
+  });
+  graph->i=malloc(sizeof(double)*(graph->width*graph->height));
+  cchr_consloop(j,c_4,{
+    if (cchr_consarg(j,c_4,1) == t) {
+      graph->i[cchr_consarg(j,c_4,2)+graph->width*cchr_consarg(j,c_4,3)]=cchr_consarg(j,c_4,4);
+    }
+  });
+}
+
+void graph_to_file(graph_t *graph, FILE *file) {
+//  fprintf(file,"P5\n# by CHRblur\n%i %i\n65535\n",graph->width,graph->height);
+  fprintf(file,"P5\n# by CHRblur\n%i %i\n255\n",graph->width,graph->height);
+  for (int y=0; y<graph->height; y++) {
+    for (int x=0; x<graph->width; x++) {
+      double i=graph->i[x+y*graph->width];
+/*      int v=(int)(i*65535.999);
+      fputc(v >> 8,file);
+      fputc(v & 0xFF,file);*/
+      int v=(int)(i*255.999);
+      fputc(v & 0xFF,file);
+    }
+  }
+  fclose(file);
+}
+
+void header_to_graph(graph_t *graph) {
+  graph->width=width;
+  graph->height=height;
+  char *data=header_data;
+  graph->i=malloc(sizeof(double)*(graph->width*graph->height));
+  for (int y=0; y<graph->height; y++) {
+    for (int x=0; x<graph->width; x++) {
+      int pixel[3];
+      HEADER_PIXEL(data,pixel);
+      double gs=pixel[0]*30+pixel[1]*59+pixel[2]*11; /* 0 till 25500 */
+      graph->i[x+y*graph->width]=gs/25500;
+    }
+  }
+}
+
+void graph_free(graph_t *graph) {
+  free(graph->i);
+  graph->i=NULL;
+  graph->width=0;
+  graph->height=0;
+}
+
+int main(void) {
+  setbuf(stdout,NULL);
+  cchr_runtime_init();
+  graph_t graph;
+  header_to_graph(&graph);
+  graph_to_chr(&graph,0);
+  graph_free(&graph);
+  for (int j=1; j<=999; j++) {
+    char fn[256];
+    snprintf(fn,256,"blur-%03i.pgm",j-1);
+    FILE *file=fopen(fn,"w");
+    chr_to_graph(&graph,j-1);
+    graph_to_file(&graph,file);
+    graph_free(&graph);
+    printf("calc till %i...\n",j);
+    cchr_add_endat_1(j);
+    cchr_add_clear_1(j-1);
+  }
+  cchr_runtime_free();
+  return 0;
+}

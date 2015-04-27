@@ -1,0 +1,22 @@
+import runtime.primitive.LogicalInt;
+import util.arithmetics.primitives.intUtil;
+
+public handler fib_td {
+    solver runtime.primitive.IntEqualitySolver;
+
+    public constraint fib(int N, LogicalInt M);
+
+    rules {
+        fib(N,M1) \ fib(N,M2) <=> M1 = M2;
+
+        fib(0,M) ==> M = 1;
+        fib(1,M) ==> M = 1;
+        
+        local LogicalInt M1, M2;
+
+        fib(N,M) ==> N > 1 | 
+            fib(intUtil.dec(N), M1),
+            fib(intUtil.sub(N, 2), M2),
+            M = intUtil.add(M1,M2);
+    }
+}

@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef enum { LEFT, RIGHT } dir_t;
+
+cchr {
+  constraint delta(void*, char, void*, char, dir_t);
+  constraint current_state(void *);
+  constraint head(void *);
+  constraint cell(void *, char, void *, void *);
+  constraint move(dir_t, void *, void *, void *);
+  
+  extern LEFT, RIGHT, NULL;
+  
+  trans @ delta(S,G,Sp,Gp,Dir) 
+        \ current_state(S), head(Cell), cell(Cell,G,Left,Right)
+        <=> current_state(Sp), cell(Cell,Gp,Left,Right), move(Dir,Cell,Left,Right);
+  
+  move(LEFT,Cell,NULL,R), cell(Cell,G,NULL,R)
+        <=> void *L=malloc(1), cell(Cell,G,L,R), cell(L,'#',NULL,Cell), head(L);
+  
+  move(LEFT,_,L,_)
+        <=> L != NULL | head(L);
+
+  move(RIGHT,Cell,L,NULL), cell(Cell,G,_,_)
+        <=> void *R=malloc(1), cell(Cell,G,L,R), cell(R,'#',Cell,NULL), head(R);
+  
+  move(RIGHT,_,_,R)
+        <=> R != NULL | head(R);
+}
+
+int main(void) {
+  return 0;
+}

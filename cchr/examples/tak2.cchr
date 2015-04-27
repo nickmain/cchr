@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#include "logical.h"
+#include "tak2_cchr.h"
+
+#define log_int_cb_created(tag)
+#define log_int_cb_merged(tag1,tag2)
+#define log_int_cb_changed(tag)
+#define log_int_cb_destrval(val)
+#define log_int_cb_destrtag(tag)
+
+typedef struct {
+  int a[0];
+} nothing_t;
+
+/* define a log_int_t to be a logical uint64_t, with no destructor */
+logical_header(int64_t,nothing_t,log_int_t)
+logical_code(int64_t,nothing_t,log_int_t,log_int_cb)
+
+/* the cchr block */
+cchr {
+  /* some macro's (overloaded!) to simplify usage of logical variables */
+  chr_macro set(log_int_t,log_int_t) log_int_t_seteq($1,$2);
+  chr_macro set(log_int_t,_) log_int_t_setval($1,$2);
+  chr_macro set(log_int_t) log_int_t_hasval($1);
+  chr_macro get(log_int_t) log_int_t_getval($1);
+  chr_macro copy(log_int_t) log_int_t_copy($1);
+  chr_macro new(log_int_t) log_int_t_create();
+  chr_macro del(log_int_t) log_int_t_destruct($1);
+  chr_macro cb(log_int_t,_,_) log_int_t_setcb($1,$2,$3);
+  
+  extern alt,eq;
+
+  constraint tak(int,int,int,log_int_t) option(destr,{del($4);}) option(init,{copy($4);}) option(fmt,"tak(%i,%i,%i,%p)",$1,$2,$3,$4);
+
+  takid @ tak(X,Y,Z,A1) \ tak(X,Y,Z,A2) <=> { set(A1,A2); };
+  
+  taklow @ tak(X,Y,Z,A) ==> X <= Y | { set(A,Z); };
+  takhi  @ tak(X,Y,Z,A) ==> X > Y | 
+    log_int_t A1=new(A1),
+    log_int_t A2=new(A2),
+    log_int_t A3=new(A3),
+    tak(X-1,Y,Z,A1),
+    tak(Y-1,Z,X,A2),
+    tak(Z-1,X,Y,A3),
+    tak(get(A1),get(A2),get(A3),A),
+    { del(A1); del(A2); del(A3); }
+  ;
+}
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int x=(argc>1 ? (int)strtol(argv[1],NULL,0) : 18);
+  int y=(argc>2 ? (int)strtol(argv[2],NULL,0) : 12);
+  int z=(argc>3 ? (int)strtol(argv[3],NULL,0) : 6);
+  log_int_t answer=log_int_t_create();
+  cchr_add_tak_4(x,y,z,answer);
+  printf("answer=%llu\n",log_int_t_hasval(answer) ? (unsigned long long)log_int_t_getval(answer) : -1);
+  cchr_runtime_free();
+  log_int_t_destruct(answer); 
+  return 0;
+}

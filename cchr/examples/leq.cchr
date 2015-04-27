@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "leq_cchr.h"
+
+#ifdef USE_EFENCE
+#include <efence.h>
+#endif
+
+cchr {
+  constraint leq(log_int_t,log_int_t) option(fmt,"leq""(#%i,#%i)""[%p,%p]" ,log_int_t_normalize($1)->_id,log_int_t_normalize($2)->_id ,$1,$2);
+  
+  extern eq;
+  
+  logical log_int_t int;
+
+  /*
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+  */
+
+  reflexivity @ leq(X,X) <=> true;
+  antisymmetry @ leq(X,Y), leq(Y,X) <=> {telleq(X,Y);};
+  idempotence @ leq(X,Y) \ leq(X,Y) <=> true;
+  transitivity @ leq(X,Y), leq(Y,Z) ==> leq(X,Z);
+}
+
+void test3(void) {
+  cchr_runtime_init();
+  log_int_t a=log_int_t_create(), b=log_int_t_create(), c=log_int_t_create();
+  cchr_add_leq_2(a,b); cchr_add_leq_2(b,c);
+  cchr_add_leq_2(c,a);
+  int nLeqs=0;
+  cchr_consloop(j,leq_2,{
+    nLeqs++;
+  });
+  assert(nLeqs==0);
+  assert(log_int_t_testeq(a,b));
+  assert(log_int_t_testeq(b,c));
+  assert(log_int_t_testeq(c,a));
+  /*** */
+  cchr_runtime_free();
+  log_int_t_destruct(a);
+  log_int_t_destruct(b);
+  log_int_t_destruct(c);
+}
+
+void test(int size) {
+  cchr_runtime_init();
+  log_int_t *vars=malloc(sizeof(log_int_t)*size);
+  for (int j=0; j<size; j++) {vars[j]=log_int_t_create(); log_int_t_setval(vars[j],j+1);}
+  for (int j=0; j<size; j++) cchr_add_leq_2(vars[j],vars[(j+1)%size]);
+  fprintf(stderr,"done!\n");
+/*  int aj=0;
+  cchr_consloop(j,leq_2,{fprintf(stderr,"outch %i (%i,%i)!\n",aj++,log_int_t_getval(cchr_consarg(j,leq_2,1)),log_int_t_getval(cchr_consarg(j,leq_2,2)));}); 
+  for (int j=0; j<size; j++) {
+    if (!log_int_t_testeq(vars[j],vars[(j+1)%size])) fprintf(stderr,"noteq %i %i\n",j,j+1);
+  }  */
+  cchr_runtime_free();
+  for (int j=0; j<size; j++) log_int_t_destruct(vars[j]);
+  free(vars);
+}
+
+
+int main(int argc, char** argv) {
+//  test3();
+  int n=argc>1 ? strtol(argv[1],NULL,0) : 100;
+  test(n);
+  return 0;
+}

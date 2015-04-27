@@ -1,0 +1,24 @@
+import static java.math.BigInteger.ONE;
+import static java.math.BigInteger.ZERO;
+import java.math.BigInteger;
+import runtime.Logical;
+
+public handler acker {
+    solver runtime.EqualitySolver<BigInteger>;
+
+    public constraint acker(BigInteger X, BigInteger Y, Logical<BigInteger> A);
+
+    rules {
+        acker(X, Y, A1) \ acker(X, Y, A2) <=> A1 = A2;
+
+        acker(0, Y, A) ==>  A = Y.add(ONE);
+    
+        acker(X, 0, A) ==> acker(X.subtract(ONE), 1, A);
+
+        local Logical<BigInteger> A1;
+
+        acker(X, Y, A) ==> X > ZERO, Y > ZERO | 
+            acker(X, Y.subtract(ONE), A1),
+            acker(X.subtract(ONE), A1, A);
+    }
+}

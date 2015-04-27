@@ -1,0 +1,13 @@
+import java.math.BigInteger; 
+import util.arithmetics.primitives.intUtil; 
+          
+public handler fib_bo_all { 
+    public constraint init(int Max);
+    local constraint fib(int N, BigInteger M);
+          
+    rules { 
+        begin @ init(_) ==> fib(0, 1), fib(1, 1);
+ 
+        calc @ init(Max), fib(N1, M1), fib(N2, M2) ==> N2 = intUtil.inc(N1), N2 < Max | fib(intUtil.inc(N2), M1.add(M2));
+    }
+}

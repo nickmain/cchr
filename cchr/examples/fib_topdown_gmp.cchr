@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#include "logical.h"
+
+/* define a log_int_t to be a logical uint64_t, with no destructor */
+logical_code(uint64_t,log_int_t,logical_nodestr)
+
+/* the cchr block */
+cchr {
+  /* some macro's (overloaded!) to simplify usage of logical variables */
+  macro set(log_int_t,log_int_t) log_int_t_seteq($1,$2);
+  macro set(log_int_t,_) log_int_t_setval($1,$2);
+  macro set(log_int_t) log_int_t_hasval($1);
+  macro get(log_int_t) log_int_t_getval($1);
+  macro copy(log_int_t) log_int_t_copy($1);
+  macro new(log_int_t) log_int_t_create();
+  macro del(log_int_t) log_int_t_destruct($1);
+  macro cb(log_int_t,_,_) log_int_t_setcb($1,$2,$3);
+
+  /* declare the constraint fib(A,B), with a destructor and a debug-output-format */
+  constraint fib(int,log_int_t) destr( {del($2);} ) fmt("fib(%i,%p)");
+
+  /* the 3 chr rules */
+  dup @ fib(N,M1) \ fib(N,M2) <=> { set(M1,M2); };
+    
+  f01 @ fib(N,M) ==> (N==0 || N==1) | { set(M,1); };
+  
+  fn @ fib(N,M) ==> N>=2 | 
+    log_int_t M1=new(M1), log_int_t M2=new(M2), /* create 2 logical variables */
+    {cb(M1,cchr_reactivate_all,NULL); cb(M2,cchr_reactivate_all,NULL);}, /* initialize reactivation callbacks */
+    fib(N-2,copy(M1)), fib(N-1,copy(M2)), /* add two constraints (to solve lower-valued fib's) */
+    { if (set(M1) && set(M2)) { set(M,get(M1)+get(M2));}}, /* if M1 and M2 get a value, set M's value */
+    { del(M1); del(M2); }; /* destroy M1 and M2 */
+}
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int a=(argc>1 ? (int)strtol(argv[1],NULL,0) : 92);
+  log_int_t answer=log_int_t_create();
+  cchr_add_fib_2(a,log_int_t_copy(answer));
+  printf("answer=%llu\n",log_int_t_hasval(answer) ? (unsigned long long)log_int_t_getval(answer) : -1);
+  cchr_runtime_free();
+  log_int_t_destruct(answer); 
+  return 0;
+}

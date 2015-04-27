@@ -1,0 +1,544 @@
+%    ***************************************************
+%    * COVERPAGES FOR THESES DEPT. OF COMPUTER SCIENCE *
+%    ***************************************************
+%
+% USE OF THIS STYLE, UNMODIFIED, IS MANDATORY !!
+% Students experiencing problems must contact the TeX support team,
+% preferably through their counsellor or supervisor.
+%
+% The simplest is to copy the file THcover.tex.skel from the standard
+% TeX inputs directory and adapt for your own needs.
+%
+% Written by A. Bultheel <ade@cs.kuleuven.ac.be> April 23, 1991.
+% Adapted by E. Van Gestel May 2, 1991.
+% Revised by E. Van Gestel June 3, 1991.
+% Revised by R. Cools <ronald@cs.kuleuven.ac.be> April 24, 1995.
+% Revised by R. Cools <ronald@cs.kuleuven.ac.be> May 4, 1995.
+% Revised by R. Cools <ronald@cs.kuleuven.ac.be> April 19, 1996.  (cwoption added)
+% Revised by B. De Decker <bart@cs.kuleuven.ac.be> January 14, 2002.  (acm,ams added)
+% Revised by R. Cools <ronald@cs.kuleuven.ac.be> April 30, 2002. (tt instruction)
+% Revised by R. Cools <ronald@cs.kuleuven.ac.be> May 15, 2002. (MS toegevoegd)
+% Revised by R. Cools <ronald@cs.kuleuven.be> May 15, 2006. (TW -> FirW)
+%
+
+\typeout{Document Style `THcover' <May 2006>.}
+\typeout{****************************************************************************}
+\typeout{Het logo bovenaan de frontpagina is NIET te zien op scherm met xdvi,}
+\typeout{enkel op papier en in het Postscript bestand.}
+\typeout{NIET verwerken met pdflatex, wel met latex + dvips.}
+\typeout{U dient het resultaat af te drukken op printer wit.}
+\typeout{Binnen tt geeft u eerst het commando "wit" en dan "p".}
+\typeout{Werd uw nederlandse titel en engelse vertaling door uw promotor goedgekeurd?}
+\typeout{****************************************************************************}
+
+\setlength{\textheight}{25cm}
+\setlength{\textwidth}{17cm}
+\hoffset=-2.1cm
+\voffset=-3cm
+\gdef\thanks#1{}		% no thanks on cover page
+
+% dutch/english [auxiliary function]
+\gdef\@d@e{}
+\def\set@d@e#1{%
+	\ifcase\@degree{#1}%
+		% ??
+		\gdef\@d@e{E}%
+	\or	% CW
+	\or	% ACW
+	\or	% LI
+	\or	% AOTI
+        \or     % MS
+		\gdef\@d@e{E}%
+        \or     % MAI
+		\gdef\@d@e{E}%
+        \or     % MEAI
+		\gdef\@d@e{E}%
+        \or     % MECS
+		\gdef\@d@e{E}%
+        \or     % MAIC
+		\gdef\@d@e{E}%
+%	\else	% M...                  % Dit werkt niet goed !
+%		\gdef\@d@e{E}%
+	\fi
+}
+\def\d@e#1#2{%
+	\ifx\@d@e\@empty	#1%	% dutch
+	\else			#2%	% english
+	\fi
+}
+
+% available degrees
+\def\@CW{CW}	 % burgerlijk ingenieur in de computerwetenschappen
+\def\@ACW{ACW}	 % aanv. graad burgerlijk ingenieur in de computerwetenschappen
+\def\@LI{LI}	 % licentie in de informatica
+\def\@AOTI{AOTI} % aanvullende opl. toeg. informatica
+\def\@MS{MS}     % master of science
+\def\@MECS{MECS} % master of engineering in computer science
+\def\@MEAI{MEAI} % master of engineering in artificial intelligence
+\def\@MAI{MAI}	 % master of artificial intelligence
+\def\@MAIC{MAIC} % master of artificial intelligence and cognitive science
+
+% available options
+\def\@TW{TW}     % toegepaste wiskunde
+\def\@ME{ME}     % mechatronica
+\def\@PR{PR}     % programmatuur
+
+\gdef\@deg{}
+\def\degree#1{%
+	\gdef\@deg{#1}%
+	\set@d@e{\@deg}%
+}
+\gdef\other@deg{}
+\def\otherdegree#1{
+	\gdef\other@deg{#1}%
+	\ifx\@deg\other@deg
+		\typeout{THcover warning: same degree declared as other}
+	\fi
+	\set@d@e{\other@deg}%
+}
+%% Must be preceded by \degree
+%% Currently at most two distinct degrees are supported,
+%% though for each any number of students may be named.
+
+\gdef\@degree#1{%
+	     \ifx#1\@CW		1	% CW   = 1
+	\else\ifx#1\@ACW	2	% ACW  = 2
+	\else\ifx#1\@LI		3	% LI   = 3
+        \else\ifx#1\@AOTI       4       % AOTI = 4
+	\else\ifx#1\@MS		5	% MS = 5
+	\else\ifx#1\@MAI	6	% MAI = 6
+	\else\ifx#1\@MEAI	7	% MEAI = 7
+	\else\ifx#1\@MECS	8	% MECS  = 8
+	\else\ifx#1\@MAIC	9	% MAIC = 9
+	\else 0				% ??   = 0
+	\fi\fi\fi\fi\fi\fi\fi\fi\fi
+}
+
+\gdef\cw@option#1{%
+             \ifx#1\@TW	1	% TW = 1
+	\else\ifx#1\@ME	2	% ME = 2
+	\else\ifx#1\@PR	3	% PR = 3
+	\else 0			% ?? = 0
+	\fi\fi\fi
+}
+
+\gdef\option@cw{}
+\def\cwoption#1{%
+      \ifx\@deg\@CW%
+           \gdef\option@cw{#1}
+      \else \typeout{** ! ** cwoption wordt enkel bekeken voor CW-studenten}
+      \fi}
+
+\gdef\@@fac#1{%
+	\ifcase\@degree{#1}%
+		0	% ??	-> CW	  = 0
+	\or	0	% CW	-> CW	  = 0
+	\or	0	% ACW	-> CW	  = 0
+	\or	2	% LI	-> WET&TW = 2
+	\or	1	% AOTI	-> WET	  = 1
+	\or	1	% MS	-> WET    = 1
+	\or	0	% MAI	-> CW	  = 0
+	\or	0	% MEAI  -> CW     = 0
+	\or	0	% MECS	-> CW	  = 0
+	\or	0	% MAIC	-> CW	  = 0
+	else	0	% M...	-> CW	  = 0
+	\fi
+}
+\gdef\@fac{%
+	\ifx\other@deg\@empty
+		\@@fac{\@deg}%
+	\else
+		\ifcase\@@fac{\@deg}%
+		 			% CW +
+			\ifcase\@@fac{\other@deg}
+				0	% + CW		-> CW
+			\or	2	% + WET		-> WET&TW
+			\or	2	% + WET&TW	-> WET&TW
+			\fi
+		\or			% WET +
+			\ifcase\@@fac{\other@deg}
+				0	% + CW		-> WET&TW
+			\or	1	% + WET		-> WET
+			\or	2	% + WET&TW	-> WET&TW
+			\fi
+		\or			% WET&TW + 
+			\ifcase\@@fac{\other@deg}
+				2	% + CW		-> WET&TW
+			\or	2	% + WET		-> WET&TW
+			\or	2	% + WET&TW	-> WET&TW
+			\fi
+		\fi
+	\fi
+}
+
+% degree as formulated on the 1st page
+\gdef\degree@i#1{%
+	\ifcase\@degree{#1}%
+		% ??
+	Thesis submitted for the\\
+	degree of ???
+	\or	% CW
+	Eindwerk aangeboden tot het behalen\\
+	van de graad van burgerlijk ingenieur\\
+	in de computerwetenschappen
+	\or	% ACW
+	Eindwerk aangeboden tot het behalen\\
+	van de aanvullende graad van burgerlijk\\
+	ingenieur in de computerwetenschappen
+	\or	% LI
+	Eindverhandeling aangeboden tot het\\
+	behalen van de graad van licentiaat\\
+	in de informatica
+        \or     % AOTI
+        Eindverhandeling aangeboden tot het behalen\\
+        van de graad van gediplomeerde in de\\
+        aanvullende studies in de toegepaste informatica
+	\or	% MS
+	Thesis submitted for the degree of\\
+	Master of Science\\
+	\or	% MAI
+	Thesis submitted for the degree of\\
+	Master of Artificial Intelligence
+	in Computer Science
+	\or	% MEAI
+	Thesis submitted for the\\
+	degree of Master of Engineering\\
+	in Artificial Intelligence
+	\or	% MECS
+	Thesis submitted for the\\
+	degree of Master of Engineering\\
+	\or	% MAIC
+	Thesis submitted for the degree of\\
+	Master of Artificial Intelligence\\
+	and Cognitive Science
+	\fi
+}
+
+% degree as formulated on the 2nd page
+\gdef\degree@ii#1{%
+	\ifcase\@degree{#1}%
+		% ??
+	Thesis submitted for the degree of ???
+	\or	% CW
+	Eindwerk aangeboden tot het behalen van de\\
+	graad van burgerlijk ingenieur in de computerwetenschappen
+	\or	% ACW
+	Eindwerk aangeboden tot het behalen van de\\
+	aanvullende graad van burgerlijk ingenieur in de computerwetenschappen
+	\or	% LI
+	Eindverhandeling aangeboden tot het behalen\\
+	van de graad van licentiaat in de informatica
+        \or     % AOTI
+        Eindverhandeling aangeboden tot het behalen van de\\
+        graad van gediplomeerde in de aanvullende studies\\
+        in de toegepaste informatica
+	\or	% MS
+	Thesis submitted for the degree of\\
+	Master of Science (in Informatics)
+	\or	% MAI
+	Thesis submitted for the degree of\\
+	Master of Artificial Intelligence
+	\or	% MEAI
+	Thesis submitted for the degree of\\
+	Master of Engineering in Artificial Intelligence
+	\or	% MECS
+	Thesis submitted for the degree of\\
+	Master of Engineering in Computer Science
+	\or	% MAIC
+	Thesis submitted for the degree of\\
+	Master of Artificial Intelligence and Cognitive Science
+	\fi
+}
+\gdef\option@ii#1{%
+	\ifcase\cw@option{#1}%
+	 	% ??
+	\or	%  TW
+	, richting toegepaste wiskunde
+        \or     %  ME
+	, richting mechatronica
+        \or     % PR
+	, richting programmatuur
+        \fi
+}
+
+% caption (postscript) as formulated on the 1st page
+\gdef\addr@i{%
+	\ifcase\@fac
+		% CW
+	\special{psfile="cover/THcwres.ps"}
+	\or	% WET
+	\special{psfile="cover/THwetres.ps"}
+	\or	% WET&TW
+	\special{psfile="cover/THwettwres.ps"}
+	\fi
+}
+
+% caption as formulated on the 2nd page
+\gdef\addr@ii{%
+	%% FIRST LINE %%
+	\ifcase\@fac
+		% CW
+	{\it Faculteit Ingenieurswetenschappen}
+	\or	% WET
+	{\it Faculteit Wetenschappen}
+	\or	% WET&TW
+	{\it Faculteiten Wetenschappen}
+	\fi
+	\hfill{K.U.\,Leuven}\\
+	%% SECOND LINE %%
+	\ifcase\@fac
+		% CW
+	{\it Departement Computerwetenschappen}
+	\or	% WET
+	\mbox{}
+	\or	% WET&TW
+	{\it en Ingenieurswetenschappen}
+	\fi
+	\hfill{\d@e{Academiejaar}{Academic year} \@acyear}
+	%% REMAINDER %%
+	\ifcase\@fac
+		% CW
+	\\Celestijnenlaan 200A\\\d@e{}{B-}3001 Leuven\\(016) 32\,77\,00
+	\or	% WET
+	\or	% WET&TW
+	\fi
+}
+
+% academic year: {20??--20??};
+\def\acyear#1{\gdef\@acyear{#1}}
+% default: current academic year (assuming Jan. <= \month <= Sept.)
+\newcount\lastyear
+\lastyear=\year
+\advance\lastyear by -1
+\gdef\@acyear{\the\lastyear--\the\year}
+
+
+% non-anomalous uppercase [auxiliary function]
+%% explicitly uppercases special symbols, such as the dotless i
+%% (other such symbols may need to be added)
+\def\n@uppercase#1{%
+	{\let\i=I\let\o=\O\let\oe=\OE\let\ae=\AE
+	 \uppercase{#1}}%
+}
+%% explicit aliases for letters that must remain lower case
+\let\lca=a \let\lcb=b \let\lcc=c \let\lcd=d \let\lce=e \let\lcf=f \let\lcg=g
+\let\lch=h \let\lci=i \let\lcj=j \let\lck=k \let\lcl=l \let\lcm=m \let\lcn=n
+\let\lco=o \let\lcp=p \let\lcq=q \let\lcr=r \let\lcs=s \let\lct=t \let\lcu=u
+\let\lcv=v \let\lcw=w \let\lcx=x \let\lcy=y \let\lcz=z 
+
+% title; ordinary capitalization
+\def\title#1{\gdef\@title{#1}\gdef\@TITLE{\n@uppercase{#1}}}
+
+% english translation of title
+\def\transtitle#1{\gdef\@transtitle{#1}}
+
+%% DIRTY TRICK: deactivating control sequences used in \xdef below
+%% Needed in order to be able to define a macro in terms of itself
+%% (i.e., expanded) without expanding to many embedded macros.
+\let\sv@bf=\bf		\let\bf=0
+\let\sv@rm=\rm		\let\rm=0
+\let\sv@nl=\\		\let\\=0
+\let\sv@d@e=\d@e	\let\d@e=0
+
+% student(s): {first name}{last name}; ordinary capitalization
+\gdef\stud@{}
+\def\student#1#2{%
+	\ifx\stud@\@empty
+		\gdef\stud@{student}
+		\xdef\stud@i{{\bf #1 \n@uppercase{#2}}}
+		\xdef\stud@ii{{\rm #2 #1}}
+	\else	\gdef\stud@{\d@e{studenten}{students}}
+		\xdef\stud@i{\stud@i\\{\bf #1 \n@uppercase{#2}}}
+		\xdef\stud@ii{\stud@ii\d@e{ en }{ and }{\rm #2 #1}}
+			%% all but the last "and" should be comma's
+	\fi
+}
+\gdef\otherstud@i{}
+\def\otherstudent#1#2{%
+	%% must be preceded by at least one \student
+	\gdef\stud@{\d@e{studenten}{students}}
+	\ifx\otherstud@i\@empty
+		\xdef\otherstud@i{{\bf #1 \n@uppercase{#2}}}
+		\xdef\otherstud@ii{{\rm #2 #1}}
+	\else	
+		\xdef\otherstud@i{\otherstud@i\\{\bf #1 \n@uppercase{#2}}}
+		\xdef\otherstud@ii{\otherstud@ii\d@e{ en }{ and }{\rm #2 #1}}
+			%% all but the last "and" should be comma's
+	\fi
+}
+
+\gdef\acm@{}
+\def\acm#1{%
+	\ifx\acm@\@empty
+		\gdef\acm@{\rm #1}
+	\else	\xdef\acm@{\acm@, #1}
+	\fi
+}
+
+\gdef\ams@{}
+\def\ams#1{%
+	\ifx\ams@\@empty
+		\gdef\ams@{\rm #1}
+	\else	\xdef\ams@{\ams@, #1}
+	\fi
+}
+
+% if nonempty, copy and add a blanc [auxiliary function]
+%% note that logically the "\gdef\@ne@bl{#2}"s below belong inside \ne@bl,
+%% but it just won't work
+\def\ne@bl#1{\ifx\@ne@bl\@empty\else{#1\ }\fi}
+
+% supervisor(s): [affiliation]{titles}{name}; ordinary capitalization
+\gdef\suprv@{}
+\def\supervisor{\@ifnextchar[{\@supervisor}{\@supervisor[]}}
+\def\@supervisor[#1]#2#3{%
+	\gdef\@ne@bl{#2}
+	\ifx\suprv@\@empty
+		\gdef\suprv@{\d@e{Promotor}{Supervisor}\,:}
+		\xdef\suprv@i{{\ne@bl{#2}\n@uppercase{#3}}}
+		\xdef\suprv@ii{{\ne@bl{#2}#3}&{#1}}
+	\else	\gdef\suprv@{\d@e{Promotoren}{Supervisors}\,:}
+		\xdef\suprv@i{\suprv@i\\&{\ne@bl{#2}\n@uppercase{#3}}}
+		\xdef\suprv@ii{\suprv@ii\\&{\ne@bl{#2}#3}&{#1}}
+	\fi
+}
+
+% reader(s): [affiliation]{titles}{name}; ordinary capitalization
+\gdef\readr@{}
+\def\reader{\@ifnextchar[{\@reader}{\@reader[]}}
+\def\@reader[#1]#2#3{%
+	\gdef\@ne@bl{#2}
+	\ifx\readr@\@empty
+		\gdef\readr@{\d@e{Assessor}{Reader}\,:}
+		\xdef\readr@ii{{\ne@bl{#2}#3}&{#1}}
+	\else	\gdef\readr@{\d@e{Assessoren}{Readers}\,:}
+		\xdef\readr@ii{\readr@ii\\&{\ne@bl{#2}#3}&{#1}}
+	\fi
+}
+
+% "counsellor(s)": [affiliation]{titles}{name}; ordinary capitalization
+\gdef\couns@{}
+\def\counsellor{\@ifnextchar[{\@counsellor}{\@counsellor[]}}
+\def\@counsellor[#1]#2#3{%
+	\gdef\@ne@bl{#2}
+	\ifx\couns@\@empty
+		\gdef\couns@{\d@e{Begeleider}{Counsellor}\,:}
+		\xdef\couns@ii{{\ne@bl{#2}#3}&{#1}}
+	\else	\gdef\couns@{\d@e{Begeleiders}{Counsellors}\,:}
+		\xdef\couns@ii{\couns@ii\\&{\ne@bl{#2}#3}&{#1}}
+	\fi
+}
+
+%% [auxiliary] call macros, embedding the "&"s
+%% (needed for the "ifx"s in coverpage)
+\def\Suprv@ii{{\it\suprv@}&\suprv@ii}
+\def\Readr@ii{{\it\readr@}&\readr@ii}
+\def\Couns@ii{{\it\couns@}&\couns@ii}
+
+%% reactivating saved control sequences
+\def\setupforcoverpage{%
+	\let\bf=\sv@bf
+	\let\rm=\sv@rm
+	\let\\=\sv@nl
+	\let\d@e=\sv@d@e
+}
+
+\newenvironment{coverpage}{%
+	%% FIRST PAGE %%
+	\newpage\thispagestyle{empty}
+	\frenchspacing
+	\ifcase\@degree{\@deg}
+		\typeout{THcover warning: unrecognized degree \@deg}
+	\fi
+	% caption (postscript); upper right corner
+	\addr@i
+	% title; vertically centered
+	% (the \vspace* compensates for the \vbox below)
+	\vspace*{7cm}\vfill
+	\begin{center}
+		\begin{minipage}[t]{17cm}	% takes care of linebreaking
+			\begin{center}
+				{\Large\bf\@TITLE\par\noindent}
+			\end{center}
+		\end{minipage}
+	\end{center}
+	\vfill
+	% student(s), degree(s) and supervisor(s); lower right corner
+	\hfill\makebox[8cm][l]{%
+		\vbox to 7cm{\vfill\noindent
+			\stud@i\\[2mm]
+			\degree@i{\@deg}\\[2mm]
+			\ifx\other@deg\@empty \else	% only if specified
+				\otherstud@i\\[2mm]
+				\degree@i{\other@deg}\\[2mm]
+			\fi
+			\@acyear\\[2mm]
+			\begin{tabular}{@{}ll}
+				\suprv@&\suprv@i
+			\end{tabular}
+		}%
+	}
+	%% SECOND PAGE %%
+	\newpage\thispagestyle{empty}
+	% caption
+	\vbox to 5cm{\noindent\addr@ii\vfill}
+	% student(s), title and optionally abstract
+	\noindent{\it\d@e{Naam en voornaam}{Name and first name} \stud@\,:
+			\stud@ii
+			\ifx\other@deg\@empty \else	% only if specified
+				\d@e{ en }{ and }\otherstud@ii
+				%% all but the last "and" should be comma's
+			\fi}\\[5mm]
+	{\it\d@e{Titel}{Title}\,:}
+	\begin{center}
+		{\bf\@title}
+	\end{center}
+	{\it\d@e{Engelse vertaling}{Dutch translation}\,:}
+	\begin{center}
+		{\bf\@transtitle}
+	\end{center}
+	\ifx\acm@\@empty \else	% only if specified
+	\noindent{\it\d@e{ACM Classificatie}{ACM Classification}: \acm@}\\
+   \fi
+	\ifx\ams@\@empty \else	% only if specified
+	\noindent{\it\d@e{AMS Classificatie}{AMS Classification}: \ams@}\\
+   \fi
+	\ifx\acm@\@empty
+		\ifx\ams@\@empty
+			\typeout{THcover warning: at least one ACM- or AMS-classification should be given}
+			\noindent{\large\bf\d@e{ACM/AMS Classificatie}{ACM/AMS Classification}: ???\\
+			\d@e{Consulteer (in overleg met je begeleider)}{Consult}:
+				\begin{itemize}
+					\item {\tt http://www.acm.org/class/}
+					\item {\tt http://www.ams.org/msc/}
+				\end{itemize}}
+		\fi
+	\fi
+}{%        
+	\vfill
+	% degree(s), supervisor(s), reader(s) and counsellor(s)
+	\noindent
+        \ifx\option@cw\@empty{\it\degree@ii{\@deg}}\else
+            {\it\degree@ii{\@deg}\hspace{-0.15cm}\option@ii{\option@cw}}
+        \fi
+	\ifx\other@deg\@empty \else			% only if specified
+		\\(\stud@ii)\\[2mm]
+		{\it\degree@ii{\other@deg}}
+		\\(\otherstud@ii)
+	\fi\\[2mm]
+	\begin{tabular}{@{}ll@{\hspace{8mm}}l}
+		\Suprv@ii
+		\ifx\readr@\@empty \else\\[2mm]\Readr@ii\fi
+		\ifx\couns@\@empty \else\\[2mm]\Couns@ii\fi
+	\end{tabular}
+}
+
+\renewenvironment{abstract}{%
+	\noindent{\it\d@e{Korte inhoud}{Abstract}\,:}\vspace{2mm}
+	\nonfrenchspacing
+	\begin{small}	% looks better when using 12pt
+	\par
+}{%
+	\end{small}
+	\frenchspacing
+}

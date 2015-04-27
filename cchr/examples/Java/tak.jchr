@@ -1,0 +1,21 @@
+import runtime.primitive.LogicalInt;
+import static util.ArithmeticsUtils.dec;
+
+public handler tak_tab {
+    solver runtime.primitive.IntEqualitySolver;
+
+    public constraint tak(int X, int Y, int Z, LogicalInt A);
+
+    rules {
+        tak(X,Y,Z,A1) \ tak(X,Y,Z,A2) <=> A2 = A1.
+    
+        tak(X,Y,Z,A) ==> X =< Y | Z = A.
+
+        local LogicalInt A1,A2,A3;
+        tak(X,Y,Z,A) ==> X > Y |
+             tak(dec(X),Y,Z,A1),
+             tak(dec(Y),Z,X,A2),
+             tak(dec(Z),X,Y,A3),
+             tak(A1,A2,A3,A).
+    }
+}

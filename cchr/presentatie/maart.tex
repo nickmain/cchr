@@ -1,0 +1,377 @@
+\documentclass{beamer}
+
+\mode<article>
+{
+  \usepackage{fullpage}
+  \usepackage{hyperref}
+}
+
+\mode<presentation>
+{
+  \usepackage{hyperref}
+  \setbeamertemplate{background canvas}[vertical shading][bottom=white!10,top=blue!10]
+  \usetheme{Warsaw}
+%  \usefonttheme[onlysmall]{structurebold}
+}
+
+\usepackage{amsmath}
+\usepackage{pst-tree}
+\usepackage{pst-node}
+\usepackage{pst-eps}
+\usepackage{pstcol}
+\usepackage{pstricks}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[dutch]{babel}
+\usepackage{fancyvrb}
+\usepackage{ulem}
+
+\renewcommand{\emph}[1]{\textit{{#1}}}
+\newcommand{\bs}{$\backslash$}
+\newcommand{\cBlue}[1]{\textcolor{blue}{#1}}
+\newcommand{\cRed}[1]{\textcolor{red}{#1}}
+\newcommand{\cGreen}[1]{\textcolor{green}{#1}}
+
+\setbeamercolor{background canvas}{bg=white}
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{navigation symbols}{}
+
+\title{CCHR: De snelste CHR implementatie}
+\subtitle{Pieter Wuille}
+
+\author{Promotor: \\
+Prof. Dr. Bart Demoen \\
+Begeleider: \\
+Dr. ir. Tom Schrijvers}
+
+\date{29 maart 2007}
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+  \frametitle{Overzicht}
+  \tableofcontents
+\end{frame}
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Overzicht}
+    \tableofcontents[current,currentsubsection]
+  \end{frame}
+}
+
+\section{Algemeen}
+\subsection{Waarom CCHR}
+\frame{\frametitle{Waarom CHR in C?}
+  \begin{block}{Waarom CHR in C?}
+  \begin{itemize}
+  \item CHR kunnen gebruiken in pure C programma's
+  \item Een poging tot CHR heel snel maken: \begin{itemize}
+    \item Vrijheid datastructuren
+    \item Optimalisaties C compiler benutten
+    \end{itemize}
+  \end{itemize}
+  \end{block}
+}
+
+\subsection{Structuur}
+\frame{\frametitle{Opbouw CCHR}
+  De verschillende stappen bij het gebruik van CCHR zijn: \\
+  \vspace{2ex}
+  \begin{columns}[c]
+  \column{0.45\textwidth}
+  \begin{psmatrix}[rowsep=0.3,colsep=0.2]
+    \psshadowbox{CCHR code} \\
+                            & CCHR Compiler \\
+    \psshadowbox{C macro's} & \\
+                            & C Preprocessor \\
+    \psshadowbox{C code}    & \\
+                             & C Compiler \\
+    \psshadowbox{Executable} &
+    \ncline[linecolor=red]{->}{1,1}{3,1}
+    \ncline{->}{3,1}{5,1}
+    \ncline{->}{5,1}{7,1}
+  \end{psmatrix}
+  \column{0.55\textwidth}
+  \begin{block}{CCHR code}
+    \begin{itemize}
+      \item Gewone C broncode
+      \item Met ``cchr \{ \ldots \}'' blokken in
+      \item Deze blokken worden vervangen door C macro's
+    \end{itemize}
+  \end{block}
+  \end{columns}
+}
+
+\section{Implementatie}
+\subsection{Mogelijkheden}
+\frame[containsverbatim]{\frametitle{Mogelijkheden}
+  \begin{block}{CHR Constraints}
+  CHR Constraints zijn ge\"implementeerd:
+  \begin{itemize}
+    \item Willekeurige ariteit
+    \item Alle C datatypes (behalve arrays) als argumenten
+  \end{itemize}
+  \end{block}
+  
+  \begin{example}
+  \begin{Verbatim}[commandchars=\\\{\}]
+\cRed{constraint} init(int),fib(int,bignum_t)
+  \cRed{destr}(destruct_bignum(&$2))\cBlue{;}
+  \end{Verbatim}
+  \end{example}
+} %$
+
+\frame[containsverbatim]{\frametitle{Mogelijkheden}
+  \begin{block}{CHR Rules}
+  CHR Rules zijn ge\"implementeerd:
+  \begin{itemize}
+    \item Propagation ($ K,\ldots \cBlue{==>} \ldots $)
+    \item Simplification ($ R,\ldots \cBlue{<=>} \ldots $)
+    \item Simpagation ($ K,\ldots \cBlue{\backslash}\ R,\ldots \cBlue{<=>} \ldots $)
+  \end{itemize}
+  \end{block}
+  
+  \begin{example}
+  \begin{Verbatim}[commandchars=\\\{\}]
+\cBlue{begin @} init(_) \cBlue{==>} fib(0,1), fib(1,1)\cBlue{;}
+\cBlue{triv @} gcd(0) \cBlue{<=>} \cRed{true}\cBlue{;}
+\cBlue{dec @} gcd(N) \cBlue{\bs} gcd(M) \cBlue{<=>} M>=N \cBlue{|} gcd(M-N)\cBlue{;}
+  \end{Verbatim}
+  \end{example}
+}
+
+\frame[containsverbatim]{\frametitle{Mogelijkheden}
+  \begin{block}{Guards en Bodys}
+  De volgende zaken zijn mogelijk als guard en body:
+  \begin{itemize}
+   \item Voorwaardelijke expressies (enkel guard)
+   \item Variabele declaraties (en initialisaties)
+   \item Willekeurige C code (tussen accolades)
+   \item Toe te voegen CHR contraints (enkel body)
+  \end{itemize}
+  \end{block}
+}
+
+\newcommand{\implstruct}[6]{
+  \begin{psmatrix}[rowsep=#1,colsep=#2]
+     \psovalbox{Source} & \\
+     & \psovalbox{CCHR} \\
+     \psframebox[linecolor=#3]{main} & \psframebox[linecolor=#4]{lexer \& parser} \\
+     & \psframebox[linecolor=#5]{analyse} \\
+     & \psframebox[linecolor=#6]{code generatie} \\
+     \psovalbox{C code}
+     \ncline[linecolor=#3]{->}{1,1}{3,1}
+     \ncline[linecolor=#3]{->}{3,1}{2,2}
+     \ncline[linecolor=#4]{->}{2,2}{3,2}
+     \ncline[linecolor=#4]{->}{3,2}{4,2}
+     \ncline[linecolor=#5]{->}{4,2}{5,2}
+     \ncline[linecolor=#6]{->}{5,2}{3,1}
+     \ncline[linecolor=#3]{->}{3,1}{6,1}
+  \end{psmatrix}
+}
+
+\subsection{Structuur}
+\frame{\frametitle{Structuur}
+  \begin{columns}[c]
+  \column{0.6\textwidth}
+  \implstruct{3ex}{3em}{black}{black}{black}{black}
+  \end{columns}
+}
+
+\frame{\frametitle{Structuur - Main, Lexer, Parser}
+  \begin{columns}[c]
+   \column{.43\textwidth}
+    {\small \implstruct{1.5ex}{1.5em}{red}{red}{black}{black}}
+   \column{.57\textwidth}
+  \begin{block}{de main module}
+  \begin{itemize}
+    \item Bevat de main() C routine
+    \item Overloopt alle opgegeven sourcefiles
+    \item Roept andere modules aan voor cchr-blokken
+  \end{itemize}
+  \end{block}
+  \begin{block}{Lexer en Parser}
+  \begin{itemize}
+    \item Geschreven in Flex en Bison resp.
+    \item Herkennen CCHR tokens en grammatica
+    \item Enkel voor CCHR blokken
+  \end{itemize}
+  \end{block}
+  \end{columns}
+}
+\frame{\frametitle{Structuur - Analyse}
+  \begin{columns}[c]
+   \column{.43\textwidth}
+    {\small \implstruct{1.5ex}{1.5em}{black}{black}{red}{black}}
+   \column{.57\textwidth}
+  \begin{block}{de analyser}
+  \begin{itemize}
+    \item Analyseert output van de parser (abstract syntax tree)
+    \item Genereert nieuwe data structuur met expressions, variabelen, constraints, regels, \ldots
+    \item Doet conversie naar Head Normal Form
+    \item Optimaliseert (iteratie volgorde, propagation history, indexen, \ldots)
+  \end{itemize}
+  \end{block}
+  \end{columns}
+}
+\frame{\frametitle{Structuur - Code generatie}
+  \begin{columns}[c]
+  \column{.43\textwidth}
+    {\small \implstruct{1.5ex}{1.5em}{black}{black}{black}{red}}
+   \column{.57\textwidth}
+  \begin{block}{de code-generator}
+  \begin{itemize}
+    \item Gebruikt de gegevens gegenereerd door analyser
+    \item Genereert een aantal macro's voor elke constraint/regel
+    \item Voor elke constraint occurrence een macro met code
+  \end{itemize}
+  \end{block}
+  \end{columns}
+}
+\subsection{Logische variabelen}
+\frame{\frametitle{Logische variabelen}
+  \begin{block}{Wat?}
+  \begin{itemize}
+    \item Variabelen die niet noodzakelijk een waarde hebben
+    \item Eventueel 'equalities' tussen bekend
+    \item vgl. met Prolog
+  \end{itemize}
+  \end{block}
+  \begin{block}{Implementatie}
+  \begin{itemize}
+    \item Gebruikt 'Union-Find' algoritme voor efficientie
+    \item Aan te roepen met een C macro
+    \item Voorlopig los van CCHR zelf
+  \end{itemize}
+  \end{block}
+}
+\subsection{Hashtables}
+\frame{\frametitle{Hashtables}
+  \begin{block}{Waarom?}
+  Versnellen van opzoekingen:
+  \begin{itemize}
+    \item Propagation-history checks
+    \item Iteratie over constraints met bepaald argument
+    \item Iteratie over logische variabelen en reactivatie ervan
+  \end{itemize}
+  \end{block}
+  \begin{block}{Implementatie}
+  \begin{itemize}
+    \item Alweer gedefinieerd door C macros
+    \item Als hash-algoritme: lookup3
+    \item Als table-algoritme: cuckoo-hashing
+  \end{itemize}
+  \end{block}
+}
+\frame{\frametitle{Hashtables - Lookup3}
+  \begin{block}{Lookup3}
+  \begin{itemize}
+    \item Public-domain algoritme
+    \item Willekeurige bytesequenties als key
+    \item Heel uniform, gecontroleerd voor veel patronen
+    \item Waarschijnlijk overkill voor heel simpele keys
+  \end{itemize}
+  \end{block}
+}
+\frame{\frametitle{Hashtables - Cuckoo Hashing}
+  \begin{block}{Cuckoo Hashing}
+  \begin{itemize}
+    \item 2 aparte hashtables, met onafhankelijke hashfunctie
+    \item Indien een plaats bezet in table 1, overschrijven en oud element in table 2 plaatsen. Indien dat bezet is \ldots
+    \item Vrij simpel te implementeren
+    \item Geen aparte list per plaats nodig, en geen fragmentatie
+    \item Enkel lastig om over te itereren
+  \end{itemize}
+  \end{block}
+}
+\frame[containsverbatim]{\frametitle{Hashtables - Gebruik}
+  \begin{block}{Wanneer?}
+  \begin{itemize}
+    \item Propagation history wordt erin bijgehouden
+    \item Gelijkheden in guards worden hashtable indexen
+  \end{itemize}
+  \end{block}
+  \begin{example}
+  \begin{Verbatim}[commandchars=\\\{\}]
+\cBlue{dec @} fib(N2,F1) \cBlue{\bs} fib(N1,F2) \cBlue{<=>}
+  \cRed{alt}(N1+1==N2,N1==N2-1) \cBlue{|} fib(N2+1,F1+F2)\cBlue{;}
+  \end{Verbatim}
+  \end{example}
+}
+    
+\section{Resultaten}
+
+\subsection{Performantie}
+\frame{\frametitle{Resultaten}
+  \begin{block}{resultaten}
+  \begin{tabular}{c|ccccc}
+  {\bf test} & swi-prolog & jchr & cchr & cchr(noidx) & C \\
+  \hline
+  {\bf gcd}   & 37.1s & -     & 0.083s  & 0.082s  & 0.019s \\
+  {\bf fib}   &  708s & 5.0s  & 0.022s  & 1.2s    & 0.003s \\
+  {\bf primes}& 4.12s & 4.3s  & 0.089s  & 0.089s  & 0.010s \\
+  {\bf tak}   & 6.19s & 0.57s & 0.044s  & 20s     & 0.007s \\
+  {\bf ram}   & 0.63s & 0.62s & 0.015s  & 0.0055s & 0.0001s \\
+  {\bf merge} & 0.33s & 1.6s  & 0.034s  & 0.018s  & 0.0005s \\
+  {\bf leq}   & 947s  & 2.8s  & 0.29s   & 19s     & 0.001s \\
+  \hline
+  {\bf avg}   & 467   & 68    & 1       & 12      & 0.056 \\
+  \end{tabular}
+  \end{block}
+}
+
+\subsection{Voorbeelden}
+\frame[containsverbatim]{\frametitle{Voorbeeld - CCHR code}
+  \begin{example}
+  \begin{Verbatim}[commandchars=\\\{\}]
+\cRed{constraint} fib(int,uint64_t)\cBlue{;}
+  
+begin \cBlue{@} init(_) \cBlue{==>} fib(0,1ULL), fib(1,1ULL)\cBlue{;}
+calc \cBlue{@}  init(Max), fib(N2,M2) \cBlue{\bs} fib(N1,M1) \cBlue{<=>}
+  \cRed{alt}(N2==N1+1,N2-1==N1), N2<Max \cBlue{|} fib(N2+1, M1+M2)\cBlue{;}
+  \end{Verbatim}
+  \end{example}
+}
+\frame[containsverbatim]{\frametitle{Voorbeeld - C Macros}
+  \begin{example}[generated code]
+  {\scriptsize \begin{Verbatim}[commandchars=\\\{\}]
+#define CODELIST_fib_2_calc_R1 \cRed{\bs}
+  \cBlue{CSM_IMMLOCAL}(int,N1,\cBlue{CSM_ARG}(fib_2,arg1)) \cRed{\bs}
+  \cBlue{CSM_IMMLOCAL}(uint64_t,M1,\cBlue{CSM_ARG}(fib_2,arg2)) \cRed{\bs}
+  \cBlue{CSM_DEFIDXVAR}(fib_2,idx1,K2) \cRed{\bs}
+  \cBlue{CSM_SETIDXVAR}(fib_2,idx1,K2,arg1,\cBlue{CSM_LOCAL}(N1) + 1) \cRed{\bs}
+  \cBlue{CSM_IDXLOOP}(fib_2,idx1,K2, \cRed{\bs}
+    \cBlue{CSM_IF}(\cBlue{CSM_DIFFSELF}(K2), \cRed{\bs}
+      \cBlue{CSM_IMMLOCAL}(int,N2,\cBlue{CSM_LARG}(fib_2,K2,arg1)) \cRed{\bs}
+      \cBlue{CSM_IMMLOCAL}(uint64_t,M2,\cBlue{CSM_LARG}(fib_2,K2,arg2)) \cRed{\bs}
+      \cBlue{CSM_LOOP}(init_1,K1, \cRed{\bs}
+        \cBlue{CSM_IMMLOCAL}(int,Max,\cBlue{CSM_LARG}(init_1,K1,arg1)) \cRed{\bs}
+        \cBlue{CSM_IF}(\cBlue{CSM_LOCAL}(N2) < \cBlue{CSM_LOCAL}(Max), \cRed{\bs}
+          \cBlue{CSM_KILLSELF}(fib_2) \cRed{\bs}
+          \cBlue{CSM_ADD}(fib_2,\cBlue{CSM_LOCAL}(N2)+1,\cBlue{CSM_LOCAL}(M1)+\cBlue{CSM_LOCAL}(M2)) \cRed{\bs}
+          \cBlue{CSM_END} \cRed{\bs}
+        ) \cRed{\bs}
+      ) \cRed{\bs}
+    ) \cRed{\bs}
+  )
+\end{Verbatim}
+  }\end{example}
+}
+\subsection{Wat nog rest}
+\frame{\frametitle{Wat nog rest}
+  \begin{block}{Wat nog rest}
+  \begin{itemize}
+    \item Integratie logische variabelen met CCHR (en indexen erop)
+    \item Nog enkele foutjes oplossen
+    \item Documentatie schrijven
+    \item Thesistekst schrijven
+  \end{itemize}
+  \end{block}
+  \vspace{2ex}
+  Nog vragen?
+}
+\end{document}

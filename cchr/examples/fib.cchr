@@ -1,0 +1,28 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "fib_cchr.h"
+
+cchr {
+  constraint fib(int,long long) option(fmt,"fib(%i)=%lli;",$1,$2),init(int) ;
+
+  begin @ init(_) ==> fib(0,1LL), fib(1,1LL);
+  calc @  init(Max), fib(N2,M2) \ fib(N1,M1) <=>
+    alt(N2==N1+1,N2-1==N1), N2<Max |
+    fib(N2+1, M1+M2);
+}
+
+int main(int argc, char **argv) {
+  int n=argc>1 ? strtol(argv[1],NULL,0) : 90;
+/*  for (int i=0; i<1000; i++) {*/
+    cchr_runtime_init();
+    cchr_add_init_1(n);
+    cchr_consloop(j,fib_2,{
+      printf("fib(%i,%lli)\n", 
+        cchr_consarg(j,fib_2,1),
+       (long long)cchr_consarg(j,fib_2,2));
+    }); 
+    cchr_runtime_free();
+/*  }*/
+  return 0;
+}

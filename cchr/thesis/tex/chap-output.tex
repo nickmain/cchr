@@ -1,0 +1,408 @@
+\chapter{Programma-voorbeelden} \label{chap:output}
+
+Hier worden enkele voorbeelden van compiler invoer en uitvoer gegeven.
+
+\section{fib.cchr} \label{sec:out-fib}
+
+\subsection{De CCHR code}
+
+\begin{Verbatim}[frame=single,numbers=left]
+cchr {
+  constraint fib(int,long long),init(int);
+
+  begin @ init(_) ==> fib(0,1LL), fib(1,1LL);
+  calc @  init(Max), fib(N2,M2) \ fib(N1,M1) <=>
+    alt(N2==N1+1,N2-1==N1), N2<Max |
+    fib(N2+1, M1+M2);
+}
+\end{Verbatim}
+
+\subsection{De compiler output}
+
+{\scriptsize
+\begin{Verbatim}[frame=single,numbers=left]
+#define CONSLIST(CB) CB##_D(fib_2) CB##_S CB##_D(init_1)
+
+#define PROPHIST_begin(CB,Pid1,...) CB##_I(Pid1,__VA_ARGS__,)
+#define PROPHIST_HOOK_begin init_1
+#define RULE_KEPT_begin (1)
+#define RULE_REM_begin (0)
+#define ARGLIST_fib_2(CB,...) CB##_D(arg1,int,__VA_ARGS__) CB##_S CB##_D(arg2,long long,__VA_ARGS__)
+#define RULELIST_fib_2(CB) CB##_D(fib_2_calc_R1) CB##_S CB##_D(fib_2_calc_K2)
+#define RELATEDLIST_fib_2(CB) CS##_D(init_1) CB##_S CS##_D(fib_2)
+#define FORMAT_fib_2 "fib_2()"
+#define FORMATARGS_fib_2 
+
+#define DESTRUCT_fib_2(arg1,arg2) 
+#define CONSTRUCT_fib_2 
+#define ADD_fib_2(PID) 
+#define KILL_fib_2(PID) 
+#define RULEHOOKS_fib_2(CB,...) 
+
+#define CODELIST_fib_2_calc_R1  \
+  CSM_IMMLOCAL(int,N1,CSM_ARG(fib_2,arg1)) \
+  CSM_IMMLOCAL(long long,M1,CSM_ARG(fib_2,arg2)) \
+  CSM_DEFIDXVAR(fib_2,idx1,K2) \
+  CSM_SETIDXVAR(fib_2,idx1,K2,arg1,CSM_LOCAL(N1)+1) \
+  CSM_IDXLOOP(fib_2,idx1,K2, \
+    CSM_IF(CSM_DIFFSELF(K2), \
+      CSM_IMMLOCAL(int,N2,CSM_LARG(fib_2,K2,arg1)) \
+      CSM_IMMLOCAL(long long,M2,CSM_LARG(fib_2,K2,arg2)) \
+      CSM_LOOP(init_1,K1, \
+        CSM_IMMLOCAL(int,Max,CSM_LARG(init_1,K1,arg1)) \
+        CSM_IF(CSM_LOCAL(N2)<CSM_LOCAL(Max), \
+          CSM_KILLSELF(fib_2) \
+          CSM_ADD(fib_2,CSM_LOCAL(N2)+1,CSM_LOCAL(M1)+CSM_LOCAL(M2)) \
+          CSM_DESTRUCT(fib_2,CSM_LOCAL(N1),CSM_LOCAL(M1)) \
+          CSM_END \
+        ) \
+      ) \
+    ) \
+  ) \
+
+
+#define CODELIST_fib_2_calc_K2  \
+  CSM_MAKE(fib_2) \
+  CSM_IMMLOCAL(int,N2,CSM_ARG(fib_2,arg1)) \
+  CSM_IMMLOCAL(long long,M2,CSM_ARG(fib_2,arg2)) \
+  CSM_DEFIDXVAR(fib_2,idx1,R1) \
+  CSM_SETIDXVAR(fib_2,idx1,R1,arg1,CSM_LOCAL(N2) -1) \
+  CSM_IDXUNILOOP(fib_2,idx1,R1, \
+    CSM_IF(CSM_DIFFSELF(R1), \
+      CSM_IMMLOCAL(int,N1,CSM_LARG(fib_2,R1,arg1)) \
+      CSM_IMMLOCAL(long long,M1,CSM_LARG(fib_2,R1,arg2)) \
+      CSM_LOOP(init_1,K1, \
+        CSM_IMMLOCAL(int,Max,CSM_LARG(init_1,K1,arg1)) \
+        CSM_IF(CSM_LOCAL(N2)<CSM_LOCAL(Max), \
+          CSM_KILL(R1,fib_2) \
+          CSM_NEEDSELF(fib_2) \
+          CSM_ADD(fib_2,CSM_LOCAL(N2)+1,CSM_LOCAL(M1)+CSM_LOCAL(M2)) \
+          CSM_DESTRUCT(fib_2,CSM_LOCAL(N1),CSM_LOCAL(M1)) \
+          CSM_DEADSELF( \
+            CSM_UNIEND(fib_2,R1) \
+            CSM_END \
+          ) \
+          CSM_LOOPNEXT(R1) \
+        ) \
+      ) \
+    ) \
+  ) \
+
+#define ARGLIST_init_1(CB,...) CB##_D(arg1,int,__VA_ARGS__)
+#define RULELIST_init_1(CB) CB##_D(init_1_begin_K1) CB##_S CB##_D(init_1_calc_K1)
+#define RELATEDLIST_init_1(CB) CS##_D(fib_2)
+#define FORMAT_init_1 "init_1()"
+#define FORMATARGS_init_1 
+
+#define DESTRUCT_init_1(arg1) 
+#define CONSTRUCT_init_1 
+#define ADD_init_1(PID) 
+#define KILL_init_1(PID) 
+#define RULEHOOKS_init_1(CB,...) CB##_D(init_1,begin,__VA_ARGS__)
+
+#define CODELIST_init_1_begin_K1  \
+  CSM_MAKE(init_1) \
+  CSM_IMMLOCAL(int,_0,CSM_ARG(init_1,arg1)) \
+  CSM_HISTCHECK(begin, \
+    CSM_NEEDSELF(init_1) \
+    CSM_HISTADD(begin,self_) \
+    CSM_ADD(fib_2,0,1LL) \
+    CSM_ADD(fib_2,1,1LL) \
+    CSM_DEADSELF( \
+      CSM_END \
+    ) \
+  ,self_) \
+
+
+#define CODELIST_init_1_calc_K1  \
+  CSM_MAKE(init_1) \
+  CSM_IMMLOCAL(int,Max,CSM_ARG(init_1,arg1)) \
+  CSM_LOOP(fib_2,R1, \
+    CSM_IMMLOCAL(int,N1,CSM_LARG(fib_2,R1,arg1)) \
+    CSM_IMMLOCAL(long long,M1,CSM_LARG(fib_2,R1,arg2)) \
+    CSM_DEFIDXVAR(fib_2,idx1,K2) \
+    CSM_SETIDXVAR(fib_2,idx1,K2,arg1,CSM_LOCAL(N1)+1) \
+    CSM_IDXLOOP(fib_2,idx1,K2, \
+      CSM_IF(CSM_DIFF(R1,K2), \
+        CSM_IMMLOCAL(int,N2,CSM_LARG(fib_2,K2,arg1)) \
+        CSM_IMMLOCAL(long long,M2,CSM_LARG(fib_2,K2,arg2)) \
+        CSM_IF(CSM_LOCAL(N2)<CSM_LOCAL(Max), \
+          CSM_KILL(R1,fib_2) \
+          CSM_NEEDSELF(init_1) \
+          CSM_ADD(fib_2,CSM_LOCAL(N2)+1,CSM_LOCAL(M1)+CSM_LOCAL(M2)) \
+          CSM_DESTRUCT(fib_2,CSM_LOCAL(N1),CSM_LOCAL(M1)) \
+          CSM_DEADSELF( \
+            CSM_END \
+          ) \
+          CSM_LOOPNEXT(R1) \
+        ) \
+      ) \
+    ) \
+  ) \
+
+
+
+#define HASHLIST_fib_2(CB,...) CB##_D(idx1,__VA_ARGS__) 
+#define HASHDEF_fib_2_idx1(CB,...) CB##_D(arg1,int,__VA_ARGS__) 
+
+#define HASHLIST_init_1(CB,...) 
+
+CSM_START
+\end{Verbatim}
+}
+
+\section{Gebruik van logische variabelen}
+
+In deze sectie worden enkele voorbeelden gegeven van de code die nodig is om met logische variabelen te werken.
+
+\subsection{De Takeuchi functie} \label{sec:tak-cchr}
+
+{\scriptsize
+\begin{Verbatim}[frame=single,numbers=left]
+/* first some empty definitions for logical code: we don't need reactivation */
+#define log_int_cb_created(tag)
+#define log_int_cb_merged(tag1,tag2)
+#define log_int_cb_changed(tag)
+#define log_int_cb_destrval(val)
+#define log_int_cb_destrtag(tag)
+
+/* define a log_int_t to be a logical uint64_t */
+logical_header(int64_t,int,log_int_t)
+logical_code(int64_t,int,log_int_t,log_int_cb)
+
+/* the cchr block */
+cchr {
+  /* some macro's (overloaded!) to simplify usage of logical variables */
+  macro set(log_int_t,log_int_t) log_int_t_seteq($1,$2);
+  macro set(log_int_t,_) log_int_t_setval($1,$2);
+  macro get(log_int_t) log_int_t_getval($1);
+  macro copy(log_int_t) log_int_t_copy($1);
+  macro new(log_int_t) log_int_t_create();
+  macro del(log_int_t) log_int_t_destruct($1);
+
+  constraint tak(int,int,int,log_int_t) option(destr,{del($4);}) option(init,{copy($4);})
+  takid @ tak(X,Y,Z,A1) \ tak(X,Y,Z,A2) <=> { set(A1,A2); };
+  
+  taklow @ tak(X,Y,Z,A) ==> X <= Y | { set(A,Z); };
+  takhi  @ tak(X,Y,Z,A) ==> X > Y | 
+    log_int_t A1=new(A1), log_int_t A2=new(A2), log_int_t A3=new(A3), /* creation */
+    tak(X-1,Y,Z,A1), tak(Y-1,Z,X,A2), tak(Z-1,X,Y,A3), 
+    tak(get(A1),get(A2),get(A3),A),
+    { del(A1); del(A2); del(A3); } /* destruction */
+  ;
+}
+\end{Verbatim}
+}
+
+\subsection{Kleiner-dan of gelijk-aan} \label{sec:leq-cchr}
+
+In het volgende voorbeeld wordt gebruik gemaakt van indexen in de logische variabele hun metadata voor reactivatie en om snel te itereren over de verschillende logische variabelen die een bepaalde waarde hebben. Het is de bedoeling dat al de omslachtige code erbij om het te onderhouden, automatisch door middel van het ``logical'' sleutelwoord gegenereerd wordt.
+
+{\scriptsize
+\begin{Verbatim}[frame=single,numbers=left]
+typedef struct {
+  cchr_htdc_t leq_2_arg1;
+  cchr_htdc_t leq_2_arg2;
+  cchr_htdc_t leq_2_ra;
+} log_int_t_tag_t;
+
+logical_header(int,log_int_t_tag_t,log_int_t)
+
+#define log_int_t_reactivate(var) { \
+  CSM_LOGUNILOOP(leq_2,RA,leq_2_ra,log_int_t,var,{cchr_reactivate_leq_2(CSM_PID(RA));}) \
+}
+
+#define log_int_cb_created(val) { \
+  cchr_htdc_t_init(&(log_int_t_getextrap(val)->leq_2_arg1)); \
+  cchr_htdc_t_init(&(log_int_t_getextrap(val)->leq_2_arg2)); \
+  cchr_htdc_t_init(&(log_int_t_getextrap(val)->leq_2_ra)); \
+}
+#define log_int_cb_merged(val1,val2) { \
+  cchr_htdc_t_addall(&(log_int_t_getextrap(val1)->leq_2_arg1),&(log_int_t_getextrap(val2)->leq_2_arg1)); \
+  cchr_htdc_t_addall(&(log_int_t_getextrap(val1)->leq_2_arg2),&(log_int_t_getextrap(val2)->leq_2_arg2)); \
+  cchr_htdc_t_addall(&(log_int_t_getextrap(val1)->leq_2_ra),&(log_int_t_getextrap(val2)->leq_2_ra)); \
+}
+#define log_int_cb_changed(val) { \
+  log_int_t_reactivate(val); \
+}
+#define log_int_cb_destrval(val)
+#define log_int_cb_destrtag(val) { \
+  cchr_htdc_t_free(&(log_int_t_getextrap(val)->leq_2_arg1)); \
+  cchr_htdc_t_free(&(log_int_t_getextrap(val)->leq_2_arg2)); \
+  cchr_htdc_t_free(&(log_int_t_getextrap(val)->leq_2_ra)); \
+}
+
+
+cchr {
+  constraint leq(log_int_t,log_int_t) 
+    option(init,{log_int_t_copy($1);log_int_t_copy($2);})
+    option(destr,{log_int_t_destruct($1);log_int_t_destruct($2);}) 
+    option(fmt,"leq""(#%i,#%i)""[%p,%p]" ,log_int_t_normalize($1)->_id,log_int_t_normalize($2)->_id ,$1,$2)
+    option(add,{
+      cchr_idxlist_t nw;nw.pid=CSM_PID($0); 
+      nw.id=CSM_IDOFPID($0); 
+      cchr_htdc_t_set(&(log_int_t_getextrap($1)->leq_2_arg1),&nw);
+      nw.id=CSM_IDOFPID($0); 
+      cchr_htdc_t_set(&(log_int_t_getextrap($2)->leq_2_arg2),&nw);
+      nw.id=CSM_IDOFPID($0); 
+      cchr_htdc_t_set(&(log_int_t_getextrap($1)->leq_2_ra),&nw);
+      nw.id=CSM_IDOFPID($0); 
+      cchr_htdc_t_set(&(log_int_t_getextrap($2)->leq_2_ra),&nw);
+    })
+    option(kill,{
+      cchr_idxlist_t nw; 
+      nw.pid=CSM_PID($0); 
+      nw.id=CSM_IDOFPID($0); 
+      cchr_htdc_t_unset(&(log_int_t_getextrap($1)->leq_2_arg1),&nw);
+      cchr_htdc_t_unset(&(log_int_t_getextrap($2)->leq_2_arg2),&nw);
+      cchr_htdc_t_unset(&(log_int_t_getextrap($1)->leq_2_ra),&nw);
+      cchr_htdc_t_unset(&(log_int_t_getextrap($2)->leq_2_ra),&nw);
+    })
+    ;
+  
+  logical log_int_t log_int_cb;
+  macro eq(log_int_t,log_int_t) log_int_t_testeq($1,$2);
+  
+  reflexivity @ leq(X,Y) <=> eq(X,Y) | true;
+  antisymmetry @ leq(X1,Y1), leq(Y2,X2) <=> eq(X1,X2),eq(Y1,Y2) | {log_int_t_seteq(X1,Y1);};
+  idempotence @ leq(X1,Y1) \ leq(X2,Y2) <=> eq(X1,X2),eq(Y1,Y2) | true;
+  transitivity @ leq(X,Y1), leq(Y2,Z) ==> eq(Y1,Y2) | leq(X,Z);
+}
+
+logical_code(int,log_int_t_tag_t,log_int_t,log_int_cb)
+\end{Verbatim}
+}
+
+\label{code:leq-c}
+
+De C versie van het algoritme is als volgt:
+
+{\scriptsize
+\begin{Verbatim}[frame=single,numbers=left]
+#define log_int_cb_created(val)
+#define log_int_cb_merged(val1,val2)
+#define log_int_cb_destrval(val)
+#define log_int_cb_destrtag(tag)
+#define log_int_cb_changed(val)
+
+logical_header(int,int,log_int_t)
+logical_code(int,int,log_int_t,log_int_cb)
+
+/**
+ * State a "LEQ" relation between 2 variables X and Y
+ * size = number of variables
+ * a = id of var X, b = id of var Y
+ * vars = pointer to array of the variables. All variables
+ *  have as value a number referring to their representative.
+ *  When 2 variables are unified, one of them gets the
+ *  representative of the other.
+ * cmp = cmp[size*a+b] contains how often the implied
+ *  "LEQ(X,Y)" constraint suspension was activated
+ */
+void addleq(int size,int a,int b,log_int_t *vars,int *cmp) {
+  cmp[size*a+b]++; /* activate */
+  a=log_int_t_getval(vars[a]);
+  b=log_int_t_getval(vars[b]);
+  if (a==b) { /* quit if already equal */
+    return;
+  }
+  int ov=cmp[size*b+a]; /* remember "generation" of LEQ(Y,X) */
+  if (ov) { /* LEQ(Y,X) exists, X and Y must be equal */
+    log_int_t_seteq(vars[a],vars[b]); /* make them equal */
+    int low=log_int_t_getval(vars[a]); /* get the representative 
+      of the 2 (unified) variables */
+    for (int j=0; j<size; j++) { /* make sure representative's generation
+      is higher than both original's generation */
+      cmp[j*size+low] = cmp[j*size+a]+cmp[j*size+b];
+      cmp[low*size+j] = cmp[a*size+j]+cmp[b*size+a];
+    }
+    for (int j=0; j<size; j++) { /* re-activate existing LEQ's */
+      if (cmp[j*size+low]) addleq(size,j,low,vars,cmp);
+      if (cmp[low*size+j]) addleq(size,low,j,vars,cmp);
+    }
+    return;
+  }
+  for (int j=0; j<size; j++) {
+    if (cmp[size*b+j]) { /* transitivity */
+      addleq(size,a,j,vars,cmp);
+      if (cmp[size*b+a]>ov) return; /* generation optimalisation */
+    }
+  }
+}
+
+void test(int size) {
+  int *cmp=malloc(sizeof(int)*size*size);
+  log_int_t *vars=malloc(sizeof(log_int_t)*size);
+  for (int i=0; i<size; i++) {
+    vars[i]=log_int_t_create();
+    log_int_t_setval(vars[i],i);
+  }
+  memset(cmp,0,sizeof(int)*size*size);
+  for (int i=0; i<size; i++) {
+    addleq(size,i,(i+1)%size,vars,cmp);
+  }
+  for (int i=0; i<size; i++) {
+    if (!log_int_t_testeq(vars[i],vars[(i+1)%size]))
+      printf("outch %i != %i\n",i,(i+1)%size);
+  }
+  for (int i=0; i<size; i++) {
+    log_int_t_destruct(vars[i]);
+  }
+  free(vars);
+  free(cmp);
+}
+\end{Verbatim}
+}
+
+\section{De RAM simulator} \label{sec:ram-cchr}
+
+{\scriptsize
+\begin{Verbatim}[frame=single,numbers=left]
+typedef enum { ADD,SUB,MULT,DIV,MOVE,I_MOVE,MOVE_I,CONST,JUMP,CJUMP,HALT } instr_t;
+
+cchr {
+	constraint mem(int, int) option(fmt,"mem(%i,%i)",$1,$2), 
+	prog(int,int,instr_t,int,int) option(fmt,"prog(%i,%i,%i,%i,%i)",$1,$2,$3,$4,$5),
+	prog_counter(int) option(fmt,"prog_counter(%i)",$1);
+	
+	extern ADD,SUB,MULT,DIV,MOVE,I_MOVE,MOVE_I,CONST,JUMP,CJUMP,HALT;
+		
+	constraint initmem(int) option(fmt,"initmem(%i)",$1);
+	
+	// add value of register B to register A
+	iAdd @ prog(L,L1,ADD,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X+Y), prog_counter(L1);
+	// subtract value of register B from register A
+	iSub @ prog(L,L1,SUB,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X-Y), prog_counter(L1);
+	// multiply register A with value of register B
+	iMul @ prog(L,L1,MULT,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X*Y), prog_counter(L1);
+	// divide register A by value of register B
+	iDiv @ prog(L,L1,DIV,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> mem(A,X/Y), prog_counter(L1);
+
+	// put the value in register B in register A
+	iMove @ prog(L,L1,MOVE,B,A), mem(B,X) \ mem(A,_), prog_counter(L) <=> mem(A,X), prog_counter(L1);
+	// put the value in register <value in register B> in register A
+	iIMove @ prog(L,L1,I_MOVE,B,A), mem(B,C), mem(C,X) \ mem(A,_), prog_counter(L) <=> 
+          mem(A,X), prog_counter(L1);
+	// put the value in register B in register <value in register A>
+	iMoveI @ prog(L,L1,MOVE_I,B,A), mem(B,X), mem(A,C) \ mem(C,_), prog_counter(L) <=> 
+          mem(C,X), prog_counter(L1);
+
+	// put the value B in register A        -> redundant if consts are in init mem
+	iConst @ prog(L,L1,CONST,B,A) \ mem(A,_), prog_counter(L) <=> mem(A,B), prog_counter(L1);
+
+	// unconditional jump to label A
+	iJump @ prog(L,_L1,Instr,_,A) \ prog_counter(L) <=> Instr == JUMP | prog_counter(A);
+	// jump to label A if register R is zero, otherwise continue
+	iCjump1 @ prog(L,_L1,CJUMP,R,A), mem(R,X) \ prog_counter(L) <=> X == 0 | prog_counter(A);
+	iCjump2 @ prog(L,L1,CJUMP,R,_A), mem(R,X) \ prog_counter(L) <=> X != 0 | prog_counter(L1);
+	// halt
+	iHalt @ prog(L,_L1,Instr,_,_) \ prog_counter(L) <=> Instr == HALT | true;
+
+	// invalid instruction
+	error @ prog_counter(_L) <=> {printf("eeeeik! error!!!\n");};
+		
+	init1 @ initmem(N) <=> N < 0  | true;
+	init2 @ initmem(N) <=> N >= 0 | mem(N,0), initmem(N-1);
+}
+\end{Verbatim}
+}

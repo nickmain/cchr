@@ -1,0 +1,36 @@
+Benchmark 2006-12-09 - fib_gmp
+
+Done on upab (AMD Athlon64 3500+, 1Gb PC3200 DDR, amd64-optimized native 64-bit gentoo gnu/linux)
+
+test: init(7499), no printing.
+
+cchr: SVN revision 1528
+java: java version "1.5.0_10", Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_10-b03), Java HotSpot(TM) 64-Bit Server VM (build 1.5.0_10-b03, mixed mode)
+swi: 5.6.24 (with threads, gmp)
+
+fib_gmp (init(_) <=> true version):
+- cchr: 2.31s [profiled: 2.06]
+- java: 4.56s
+- swi: 740s
+
+fib_gmp (fib(Max,_) \ init(Max) <=> true version):
+- cchr: 1.37s [profiled: 1.22s]
+- cchr(no prop hist): 0.514s [profiled: 0.505s]
+- java: 0.149s
+- swi: 294s
+
+--------------------
+
+cchr {
+    constraint candidate(int),prime(int);
+    triv @ candidate(1) <=> true;
+    addcan @ candidate(N) <=> prime(N), candidate(N-1);
+    absorb @ prime(Y) \ prime(X) <=> (X%Y)==0 | true;
+}
+
+test: prime(10000).
+
+- swi: 330s
+- java15: 48.5s
+- cchr: 8.9s
+	

@@ -1,0 +1,135 @@
+% Example to generate the coverpages of a thesis with THcover.sty
+% USE OF THIS STYLE, UNMODIFIED, IS MANDATORY !!
+% Students experiencing problems must contact the TeX support team,
+% preferably through their counsellor or supervisor,
+% in particular for obtaining "special effects" (typically involving an other
+% departement or university, a non-standard degree, etc...).
+%
+% In the title, student and supervisor names only capitalize proper names as in
+% usual, written text; the style will convert things to (all) uppercase where
+% needed.
+% If some letter MUST remain lower case, use "{\lc[a-z]}".
+% (for an example see the supervisor below)
+%
+\documentclass[12pt]{article}
+\usepackage{THcover}
+%
+\usepackage[dutch]{babel}
+% For theses in english delete the above line.
+
+% Available degrees:
+% CW	= burgerlijk ingenieur in de computerwetenschappen
+% ACW	= aanvullende graad burgerlijk ingenieur in de computerwetenschappen
+% LI	= licentie in de informatica
+% AOTI  = aanvullende opleiding toegepaste informatica
+% MS    = master of science (in informatics)
+% MAI	= master of artificial intelligence
+% MAIC	= master of artificial intelligence and cognitive science
+% MECS	= master of engineering in computer science
+% MEAI	= master of engineering in artificial intelligence
+%
+\degree{CW}
+
+% Available options for CW students; this dates from the past
+% TW    = richting toegepaste wiskunde
+% PR    = richting programmatuur
+% ME    = richting mechatronica
+% For non-CW students this command is ignored.
+% \cwoption{??}
+
+% As it is not unusual for several students to cooperate on their thesis,
+% on rare occasions, these may be aspiring distinct degrees.
+% In this case, and only in this case, add the other degree
+% (which must be different from the first).
+%\otherdegree{??}
+
+% The style, by default, inserts the current academic year, which should be
+% correct if you're generating this anywhere from January to September.
+% If not, explicitly override the default (note the double dash!)
+%\acyear{20??--20??}
+
+% Before making this cover page, talk with your supervisor about the
+% DEFINITIVE title. What was given to you in the beginning of the year
+% was only a proposal!
+\title{CCHR: De Snelste CHR Implementatie}
+
+% If your title is in dutch, you need a translation into english.
+% If your title is in english, you need a translation into dutch.
+% You are not allowed to make this translation yourself.
+% YOUR SUPERVISOR HAS TO GIVE THIS TO YOU!
+\transtitle{CCHR: The Fastest CHR Implementation}
+
+% 
+% Titles will be split up automatically if necessary, or under your control by
+% putting "\\" anywhere between words.
+
+% Classify your thesis according to the ACM and/or AMS classification
+% acm: http://www.acm.org/class/   Use the most recent version (currently: 1998)
+% ams: http://www.ams.org/msc/
+% Give different numbers in separate commands
+\acm{D.3.2 [Programming Languages]: Language Classifications - Constraint and logic languages}
+\acm{D.3.3 [Programming Languages]: Language Constructs and Features - Constraints}
+\acm{D.3.4 [Programming Languages]: Processors - Code generation, Compilers}
+\acm{E.2 [Data]: Data storage representations - Hash-table representions, Linked representations}
+
+% Give your own name(s):
+\student{Pieter}{Wuille}
+% If there are two or more of you, simply specify several "\student"s.
+
+% In case their are two distinct degrees, use "\student" to name those
+% (one or more) aspiring the degree specified with "\degree", and use
+% "\otherstudent" to name those (again one or more) aspiring the degree
+% specified with "\otherdegree"; in this order. 
+%\otherstudent{First}{Last}
+
+% Give the titles, names and optionally affiliation
+% (if different from the dept. of computer science) 
+% of supervisor(s) [promotor(en)] (at least one),
+% reader(s) [assessor(en)] and counsellor(s) [begeleider(s)] (zero or more).
+% Examples are given below.
+% Note that if affiliation is not specified, you can leave out the [] portion;
+% however you must put both sets of {}, even if the person has no titles.
+% Note that most titles are always capitalized, but some never (see below).
+\supervisor{Prof. Dr.}{B. Demoen}
+\reader{Dr. ir.}{T. Schrijvers}
+\reader{Prof. Dr.}{M. Denecker}
+\counsellor{Dr. ir.}{T. Schrijvers}
+
+\setupforcoverpage	% Leave these three lines in !!
+\begin{document}
+\begin{coverpage} 
+
+% \begin{abstract}
+%  Now this is some kind          % or it can be input-ed from file
+%  of an abstract.                % e.g., \input{abstract}
+% 
+%  As always, you can divide your text over several paragraphs simply by leaving
+%  a blanc line.
+%  You can {\em emphasize\/} or {\bf embolden} some words if you feel like doing
+%  so, or even put them in {\sc small Capitals},
+%  just don't {\em ex\/}{\sc ag}ger{\bf ate}.
+%  Accents are equally simple, e.g., ``{\'e}{\"\i}{\c{c}}{\`a}{\^o}''.
+%  (Note the use of {\"\i} rather than {\"i} which is quite ugly.)
+%  % Be careful with TeX's special symbols #$%&^_~{}\ !!
+% 
+%  {\bf Use of this style, unmodified, is mandatory !!}
+% 
+%  Students experiencing problems must contact the \TeX\ support team,
+%  preferably through their counsellor or supervisor.
+% 
+%  The simplest is to copy the file THcover.tex   
+%  and adapt for your own needs;
+%  naming it something ending in .tex (i.e., drop the .skel).
+%  
+%  Formatting and printing is done most easily with the local script ``tt~(1L)''
+%  which will establish a \TeX\ environment if you do not already have one.
+%  You only need the commands ``f{\em ormat\/}'' and ``p{\em rint\/}'', and
+%  possibly ``s{\em how\/}'', if you wish to preview under X.
+% \end{abstract}
+
+\begin{abstract}
+Constraint Handling Rules (CHR) is een hoog-niveau regelgebaseerde taaluitreiding die oorspronkelijk bedoeld was voor het schrijven van applicatie-specifieke constraint solvers, maar wordt tegenwoordig vaker als algemene programmeertaal en voor onderzoek naar algoritmes gebruikt. In deze thesis wordt een effici\"ent CHR systeem voor de programmeertaal C voorgesteld. Effici\"entie wordt bereikt door CHR programma's conform aan de verfijnde operationele semantiek van CHR te vertalen naar ge\"optimaliseerde laag-niveau C code. Op deze manier wordt een snelheid bereikt die in de buurt komt van die van implementaties in C zelf. De integratie met C wordt bereikt door het mogelijk te maken CHR code in C code in te bedden, waarbij gebruik gemaakt kan worden van C datatypes en C functies aangeroepen kunnen worden. 
+\end{abstract}
+
+\end{coverpage}		% Leave these two lines in !!
+\end{document}

@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#include "logical.h"
+#include "fib_topdown_cchr.h"
+
+#define log_int_cb_created(val)
+#define log_int_cb_merged(val1,val2)
+#define log_int_cb_destrval(val)
+#define log_int_cb_destrtag(tag)
+#define log_int_cb_changed(val)
+
+/* define a log_int_t to be a logical int64_t, with no destructor */
+logical_header(int,int,log_int_t)
+
+/* the cchr block */
+cchr {
+  constraint fib(int,log_int_t)
+          option(destr,{log_int_t_destruct($2);})
+	  option(init,{log_int_t_copy($2);});
+
+  dup @ fib(N,M1) \ fib(N,M2) <=> { log_int_t_seteq(M1,M2); };
+  f01 @ fib(N,M) ==> N<2 | { log_int_t_setval(M,1); };
+  fn  @ fib(N,M) ==> N>1 | 
+    log_int_t M1=log_int_t_create(), log_int_t M2=log_int_t_create(),
+    fib(N-2,M1), fib(N-1,M2),
+    { log_int_t_setval(M,log_int_t_getval(M1)+log_int_t_getval(M2)); },
+    { log_int_t_destruct(M1); log_int_t_destruct(M2); };
+}
+
+logical_code(int,int,log_int_t,log_int_cb)
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int a=(argc>1 ? (int)strtol(argv[1],NULL,0) : 92);
+  log_int_t answer=log_int_t_create();
+  cchr_add_fib_2(a,answer);
+  printf("answer=%li\n",log_int_t_hasval(answer) ? (long)log_int_t_getval(answer) : -1);
+  cchr_runtime_free();
+  log_int_t_destruct(answer); 
+  return 0;
+}

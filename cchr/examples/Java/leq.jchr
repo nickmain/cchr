@@ -1,0 +1,15 @@
+import runtime.*;
+import runtime.primitive.*;
+
+public handler leq {
+solver IntEqualitySolver;
+
+public constraint leq(LogicalInt, LogicalInt) infix =<;
+
+rules {
+reflexivity  @ X =< X <=> true.
+antisymmetry @ X =< Y, Y =< X <=> X = Y.
+idempotence  @ X =< Y \ X =< Y <=> true.
+transitivity @ X =< Y, Y =< Z ==> X =< Z.
+}
+}

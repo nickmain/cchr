@@ -1,0 +1,78 @@
+import static util.arithmetics.primitives.intUtil.*;
+
+/**
+ * Simulates a Random Access Machine as defined in:
+ * <pre>
+ *  John E. Savage. Models of Computation: Exploring the Power of Computing.
+ *  Addisson-Wesley, ISBN 0-201-89539-0, 1998.
+ * </pre>
+ * <br/>
+ * Usage: 
+ * <ol>
+ *	<li>specify program as prog/4 constraints</li>
+ *	<li>initialize the necessary memory cells to zero (you can use initmem/1)</li>
+ *	<li>execution starts when the location(<firstlabel>) constraint is added</li>
+ * </ol>
+ */
+public handler ram {
+	public constraint mem(int, int), 
+		prog(int Label, int NextLabel, Instruction, int, int Operand), 
+		prog_counter(int);
+		
+	public constraint initmem(int);
+	
+	rules {
+		// mem(A,_) \ mem(A,_) <=> true.
+
+		// add value of register B to register A
+		prog(L,L1,Instruction.ADD,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=>
+			mem(A,add(X,Y)), prog_counter(L1).
+		// subtract value of register B from register A
+		prog(L,L1,Instruction.SUB,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> 
+			mem(A,sub(X,Y)), prog_counter(L1).
+		// multiply register A with value of register B
+		prog(L,L1,Instruction.MULT,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> 
+			mem(A,mult(X,Y)), prog_counter(L1).
+		// divide register A by value of register B
+		prog(L,L1,Instruction.DIV,B,A), mem(B,Y) \ mem(A,X), prog_counter(L) <=> 
+		    mem(A,div(X,Y)), prog_counter(L1).
+
+
+		// put the value in register B in register A
+		prog(L,L1,Instruction.MOVE,B,A), mem(B,X) \ mem(A,_), prog_counter(L) <=> 
+		    mem(A,X), prog_counter(L1).
+		// put the value in register <value in register B> in register A
+		prog(L,L1,Instruction.I_MOVE,B,A), mem(B,C), mem(C,X) \ mem(A,_), prog_counter(L) <=> 
+		    mem(A,X), prog_counter(L1).
+		// put the value in register B in register <value in register A>
+		prog(L,L1,Instruction.MOVE_I,B,A), mem(B,X), mem(A,C) \ mem(C,_), prog_counter(L) <=> 
+		    mem(C,X), prog_counter(L1).
+
+		// put the value B in register A        -> redundant if consts are in init mem
+		prog(L,L1,Instruction.CONST,B,A) \ mem(A,_), prog_counter(L) <=> 
+		    mem(A,B), prog_counter(L1).
+/*		
+		prog(L,L1,Instruction.CLR,A) \ mem(A,X), prog_counter(L) <=>   // same as const(0)
+	    	mem(A,0), prog_counter(L1).
+*/
+
+		// unconditional jump to label A
+		prog(L,L1,Instr,_,A) \ prog_counter(L) <=> Instr == Instruction.JUMP | 
+			prog_counter(A).
+		// jump to label A if register R is zero, otherwise continue
+		prog(L,L1,Instruction.CJUMP,R,A), mem(R,X) \ prog_counter(L) <=> X == 0 |
+		    prog_counter(A).
+		prog(L,L1,Instruction.CJUMP,R,A), mem(R,X) \ prog_counter(L) <=> X != 0 |
+		    prog_counter(L1).
+
+		// halt
+		prog(L,L1,Instr,_,_) \ prog_counter(L) <=> Instr == Instruction.HALT | true.
+
+		// invalid instruction
+		prog_counter(L) <=> fail.
+		
+		
+		initmem(N) <=> N < 0  | true.
+		initmem(N) <=> N >= 0 | mem(N,0), initmem(dec(N)).
+	}
+}

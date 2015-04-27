@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "merge_cchr.h"
+
+typedef int ent_t;
+#define LESS(A,B) ((A)<(B))
+
+cchr {
+  constraint arrow(ent_t,ent_t) option(fmt,"[%i << %i]",$1,$2),merge(int,ent_t) option(fmt,"merge(%i,%i)",$1,$1);
+  extern LESS;
+  
+  arrow(X,A) \ arrow(X,B) <=> LESS(A,B) | arrow(A,B);
+  merge(N,A), merge(N,B) <=> LESS(A,B) | merge(N+1,A), arrow(A,B);
+}
+
+static const int dinges[]={27,74,17,33,94,18,46,83,65,2,32,53,28,85,99,47,28,82, 6,11,55,29,39,81,90,37,10,0,66,51,7,21};
+
+int main(void) {
+  for (int i=0; i<500; i++) {
+    cchr_runtime_init();
+    for (int k=0; k<sizeof(dinges)/sizeof(dinges[0]); k++) {
+      cchr_add_merge_2(0,dinges[k]);
+    }
+    cchr_runtime_free();
+  }
+  return 0;
+}
+

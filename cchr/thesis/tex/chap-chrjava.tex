@@ -1,0 +1,95 @@
+\chapter{CHR in Java} \label{chap:chr-java}
+
+In dit hoofdstuk wordt ingegaan op de bestaande implementaties van CHR in de programmeertaal Java. 
+
+\section{JaCK --- The Java Constraint Kit}
+
+JaCK is een project met als doel Constraint Solving mogelijkheden aan Java toevoegen. Het bestaat uit drie delen, JCHR, VisualCHR en JASE. JCHR maakt het mogelijk om CHR regels in een Java-achtige syntax te gebruiken in Java. JASE, ofwel Java Abstract Search Engine, breidt de mogelijkheden uit met zoekstrategie\"en. JaCK kan daardoor gebruikt worden voor problemen waar Constraint Propagation geen volledige oplossing geeft. Het maakt zogenaamde parti\"ele solvers mogelijk. JaCK wordt beschreven in \cite{jack}.
+\begin{exCode}[bhp]
+\begin{Verbatim}[frame=single]
+handler leq {
+  class java.lang.Integer;
+  
+  constraint leq(java.lang.Integer, java.lang.Integer);
+  
+  rules {
+    variable java.lang.Integer X, Y, Z;
+    
+    if (X = Y) { leq(X,Y) } <=> { true } reflexivity;
+    { leq(X, Y) && leq(Y, X) } <=> { X = Y } antisymmetry;
+    { leq(X, Y) &\& leq(X, Y) } <=> { true } idempotence;
+    { leq(X, Y) && leq(Y, Z) } ==> { leq(X, Z) } transitivity;
+  }
+}
+\end{Verbatim}
+\caption{Kleiner-dan-of-gelijk-aan in JaCK --- leq.jchr}
+\label{code:leq-jack}
+\end{exCode}
+Het opvallendste aan de syntax zoals die te zien is in codefragment~\ref{code:leq-jack}, is het afwijken van de standaard syntax voor CHR regels.
+
+\section{CHORD}
+
+CHORD is een implementatie van CHR in Java, waarbij de CHR$^\vee$ uitbreiding ondersteund is. CHR$^\vee$ laat disjuncties toe binnen de body van CHR rules. Hierdoor ontstaan verschillende keuzemogelijkheden voor de uitvoering, waarbij toch backtracking noodzakelijk kan worden, indien de eerste mogelijkheid niet tot een oplossing leidt. Aldus combineert het de mogelijkheden van CHR met SLD-resolutie. In tegenstelling tot CHR is CHR$^\vee$ niet volledig {\em committed-choice}, aangezien op gemaakte keuzes teruggekomen kan worden. CHR$^\vee$ wordt uitgebreider besproken in \cite{chrv}. CHORD zelf is te vinden bij \cite{chord}.
+
+\begin{exCode}[bhp]
+\begin{Verbatim}[frame=single]
+// Definition rules
+parent(C,P) <=> true | (father(P,C) ; mother(P,C)).
+sibling(C1,C2) <=> true | ne(C1,C2), parent(P,C1), parent(P,C2).
+
+// integrity constraints
+father(F1,C), father(F2,C) ==> true | F1 = F2.
+mother(M1,C), mother(M2,C) ==> true | M1 = M2.
+person(G1,C), person(G2,C) ==> true | G1 = G2.
+father(F,C) ==> true | person(F,"male"), person(C,S).
+mother(M,C) ==> true | person(M,"female"), person(C,G).
+\end{Verbatim}
+\caption{Familierelaties in CHORD --- family2.chr}
+\label{code:familie-chord}
+\end{exCode}
+Codefragment~\ref{code:familie-chord} toont hoe een eenvoudig familierelatie programma ge\"implementeerd kan worden in CHORD. De allereerste regel maakt gebruik van het disjunctiesymbool (\code{;}) om aan te geven dat een ouder ofwel een vader ofwel een moeder is.
+
+\section{Het K.U.Leuven JCHR systeem} \label{sec:kuljchr}
+
+Het K.U.Leuven JCHR systeem werd in 2005 ontwikkeld door Peter van Weert voor zijn eindwerk \cite{jchr_thesis}. De doelstelling was een gebruiksvriendelijk, effici\"ent en flexibel CHR-systeem schrijven voor Java. Vanaf nu zal in deze tekst ``JCHR'' gebruikt worden om naar het K.U.Leuven JCHR systeem te verwijzen en ``JaCK'' om naar de JCHR uit JaCK te verwijzen.
+
+\subsection{Syntax}
+
+De syntax is vaag nog gebaseerd op die van JaCK, maar de regels worden in een vorm geschreven die veel meer lijkt op deze van originele CHR. In codefragment~\ref{code:leq-jchr} is te zien hoe de structuur van JaCK met de CHR syntax gecombineerd wordt.
+\begin{exCode}
+\begin{Verbatim}[frame=single]
+import runtime.*;
+import runtime.primitive.*;
+
+public handler leq {
+  solver IntEqualitySolver;
+
+  public constraint leq(LogicalInt, LogicalInt);
+
+  rules {
+    reflexivity  @ leq(X,X) <=> true.
+    antisymmetry @ leq(X,Y), leq(Y,X) <=> X = Y.
+    idempotence  @ leq(X,Y) \ leq(X,Y) <=> true.
+    transitivity @ leq(X,Y), leq(Y,Z) ==> leq(X,Z).
+  }
+}
+
+\end{Verbatim}
+\caption{Kleiner-dan-of-gelijk-aan in JCHR --- leq.jchr}
+\label{code:leq-jchr}
+\end{exCode}
+
+\subsection{Mogelijkheden}
+
+\begin{itemize}
+\item {\bf Arbitraire Java datatypes} Het is mogelijk om constraints te defini\"eren met gelijk welk Java datatype als argument.
+\item {\bf Arbitraire built-in solvers} Het is mogelijk om willekeurige built-in solvers te gebruiken en is zeker niet beperkt tot enkel logische variabelen. Deze built-in solvers zijn ook eenvoudig zelf te schrijven.
+\item {\bf Volledig conform aan $\omega_r$} De gegenereerde solvers volgen de verfijnde operationele semantiek.
+\item {\bf Effici\"entie} Er wordt een heel aantal statische analyses uitgevoerd op de JCHR code, waardoor geoptimaliseerde compilatie mogelijk is. Het resultaat is vergelijkbaar met Prolog-CHR oplossingen voor hetzelfde probleem.
+\end{itemize}
+
+\subsection{Implementatie}
+
+Het K.U.Leuven JCHR systeem bestaat zoals gebruikelijk uit een compiler en een runtime. De compiler maakt gebruik van een ANTLR parser voor het inlezen van de JCHR broncode en bouwt daarmee een tussenvorm die CIF gedoopt is (CHR Intermediate Form). Hierop worden analyses uitgevoerd en uiteindelijk met behulp van de FreeMarker template engine Java klasses gegenereerd. Deze klasses kunnen dan vanuit gewone Java code gebruikt worden om constraintproblemen op te lossen.
+
+De runtime bevat definities voor verschillende logische datatypes, built-in solvers en gelinkte lijst en hastable implementaties. Deze worden door de gegenereerde code gebruikt.

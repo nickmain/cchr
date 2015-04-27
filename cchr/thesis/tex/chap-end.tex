@@ -1,0 +1,33 @@
+\chapter{Conclusie en toekomstig werk} \label{chap:concl}
+
+\section{Conclusie} \label{sec:concl}
+
+Het doel van deze thesis was een effici\"ent CHR systeem ontwerpen dat nauwe interactie met C mogelijk maakt.
+
+We zijn van mening dat we hierin geslaagd zijn, door een compiler te schrijven die CHR ingebed in C code vertaalt naar een ge\"optimaliseerd C programma.
+
+{\bf Effici\"entie} Door te vertalen naar pure C code, die sterk geoptimaliseerd kan worden door bestaande compilers, kunnen algoritmes heel snel uitgevoerd worden in het uiteindelijk programma. Door het doorvoeren van enkele van de belangrijkste bekende optimalisaties voor CHR is vaak dezelfde tijdscomplexiteit te halen als bestaande CHR implementaties, zoals het K.U.Leuven CHR systeem voor Prolog. De code wordt echter niet onder een vertolker (interpreter) uitgevoerd, maar direct tot machinetaal vertaald. De laag-niveau mogelijkheden van C maakten een goede keuze van datastructuren mogelijk. Dit alles leidt tot een versnelling met een constante factor van ongeveer 25 tot 6000 in de gecontroleerde voorbeelden, met zowel SWI-Prolog als het K.U.Leuven JCHR systeem. In sectie~\ref{sec:bench-end} werden de resultaten gegeven.
+
+{\bf C} Vrijwel alles van code is ofwel C, ofwel iets dat ernaar omgezet wordt. De compiler zelf is in C geschreven, de broncode is CHR ingebed in C en de uitvoer is C. De CHR regels kunnen willekeurige C statements en expressies bevatten als guard en body en bijna alle C datatypes kunnen als constraint argumenten gebruikt worden. Er is tevens een duidelijk gespecifieerde interface waarmee C programma's kunnen interageren met de CHR constraint store.
+
+{\bf CHR} Het is een volwaardig CHR systeem, met ondersteuning voor alle types van regels en ondersteuning voor logische variabelen om als basis built-in constraint solver te gebruiken. Indien de gebruiker zich houdt aan enkele conventies, zoals verantwoordelijkheid nemen dat reactivatie gebeurt (volledig zelf, gebruik makende van aangeboden indexen of door simpelweg --- ineffici\"ent --- steeds \code{cchr\_reactivate\_all()} aan te roepen), voldoet het systeem aan de verfijnde operationele semantiek $\omega_r$.
+
+\section{Toekomstig werk}
+
+{\bf Logische variabelen} De ondersteuning voor logische variabelen zou vervolledigd moeten worden. De code voor het onderhouden van reactivatie- en waarde-indexen voor logische variabelen zou automatisch gegenereerd moeten worden door de compiler.
+
+{\bf Iteratoren} Momenteel wordt voor sommige universele iteratoren nog gebruikgemaakt van een kopie van de echte tabel waarover ge\"itereerd wordt of wordt het itereren herstart wanneer blijkt dat het huidige element verdwenen is tijdens de iteratie. Dit kan vermeden worden door een gecombineerde hashtable en gelinkte-lijst structuur, met reference counts om te beletten dat elementen waar mee bezig is ge\"itereerd over te worden verwijderd worden. 
+
+{\bf Variatie in datastructuren} Er zouden meer verschillende datastructuren ge\"implementeerd kunnen worden, bijvoorbeeld een constraint store als een simpele array met $O(N)$ opzoek-complexiteit, die voor zeer kleine aantallen elementen toch sneller is dan hashtables. De gebruiker van CCHR zou dan kunnen specificeren dat een bepaalde constraint slechts zeer weinig verwacht wordt voor te komen of een statische analyse zou dit kunnen uitwijzen. Er zouden ook variaties kunnen gemaakt worden in zaken als propagation geschiedenis: algemeen in plaats van in de constraint suspensions bijhouden en zien of het \'e\'en in sommige gevallen verkiesbaar is boven het andere. Het is ook mogelijk om effici\"entere hashtables te gebruiken voor bijvoorbeeld de propagation geschiedenis waar verwijderen van elementen uit de hashtable geen vereiste operatie is.
+
+{\bf Statische analyse} Er zijn heel wat analyses bekend die eigenschappen van het CHR programma kunnen ontdekken, met betere compilatiemogelijkheden tot gevolg. Ontdekken dat een constraint nooit opgeslagen kan worden in de constraint store of nooit als actieve constraint een bepaalde regel kan ondergaan zijn er twee van.
+
+{\bf Variabeletypes} Op dit moment worden de gebruikte C datatypes (constraint-argumenten, types lokale variabelen, \ldots) voornamelijk als ondoorzichtig beschouwd en letterlijk gekopieerd naar de uitvoer. C heeft echter een eigenaardig gedrag als het aankomt op array-datatypes doorgeven als argumenten aan een functie. Hiervoor zou de CCHR compiler meer ``kennis'' van C moeten krijgen om deze types te herkennen. Als de parser dan uitgebreid wordt om bv. C expressions volledig te herkennen (nu is dat enkel met functies het geval), kan de datatype-herkenning (nodig bij CHR macro's) uitgebreid worden naar willekeurige expressies in plaats van enkel variabelen. Een grondige herwerking van de parser is hiervoor vereist.
+
+{\bf Parti\"ele solvers} Als het mogelijk is om de toestand van de constraint store te dupliceren en een stapel te bouwen van aanpassingen die aan de constraint store gebeuren, wordt het mogelijk om aan backtracking te doen. Dit is vereist om parti\"ele solvers te kunnen schrijven die niet heel het probleem met constraint handling kunnen oplossen, maar ook nog mogelijkheden moeten kunnen aflopen.
+
+{\bf Het ``fail'' sleutelwoord} Er zou ondersteuning kunnen komen om de constraint store in een ``failed'' toestand te brengen, die dus op een afwezigheid van oplossingen duidt. Hierbij kan een foutmelding teruggegeven worden of eventueel backtracking (zie vorig puntje) in het werk schieten om een andere mogelijkheid te proberen.
+
+{\bf Meer indexen} Momenteel worden enkel indexen gegenereerd voor arithmetische (\code{==}) en binaire equivalenties (\code{eq()}, zie sectie~\ref{sec:rules}) op C variabelen en equivalenties op logische variabelen, met overeenkomstige matching om gepaste CSM ervoor te genereren. Zulke indexen kunnen echter voor meer expressies gebruikt worden. Bijvoorbeeld zouden C strings met de standaard vergelijkingroutine \code{strcmp()} in een hashtable bijgehouden kunnen worden (voor $O(1)$ opzoekingstijd) of in een boomstructuur (indien niet enkel equivalentie maar ook ordening gebruikt wordt). Gelijkaardig zou voor de arithmetische vergelijkingsoperatoren in C (\code{>}, \code{<}, \code{>=}, \code{<=}) ook een boomstructuur gebruikt kunnen worden.
+
+{\bf Heuristieken join ordering} De gebruikte heuristieken voor het bepalen van de gewichten van lussen en controles bij de join ordering moeten getoetst worden aan de hand van benchmarks.

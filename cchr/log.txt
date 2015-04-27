@@ -1,0 +1,9 @@
+20061114: - afwerking parser/lexer errorline reporting
+          - bezoek begeleider, tegen volgende week proberen output te hebben
+
+20061118: - afwerking init/destruct voor semtree
+					- afwerking abs2sem (body-constraints ook single-var)
+
+20061119: - body-contraints correct werkend
+					- head-normal-form implemented
+

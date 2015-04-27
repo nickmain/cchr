@@ -1,0 +1,85 @@
+\chapter{Constraint Handling Rules} \label{chap:chr}
+
+In dit hoofdstuk wordt een overzicht gegeven van de taal CHR.
+
+\section{Inleiding}
+
+De eerste constraint solvers volgden het zogenaamde {\em black box} principe: men kon constraints opgeven en de constraint solver, die specifiek voor de gebruikte constraints over een vastgesteld domein gemaakt was, loste ze op. Hierbij was het nauwelijks mogelijk om inzicht te krijgen in de werking van de constraint solvers zelf en zeker moeilijk of onmogelijk om er aanpassingen aan te maken. Men had echter nood aan constraint solvers die specifiek voor een bepaalde applicaties problemen konden oplossen. In een volgende generatie solvers werd dit probleem opgelost door meer controle over de solver in handen van de programmeur te leggen. De gebruikte zogenaamde  {\em glass box} technieken en evolutie wordt uitgelegd in \cite{chr}. Hierin haalt men ook de {\em no box} strategie aan: de werking van de constraint solver kan volledig gecontroleerd worden door de programmeur.
+
+CHR is zulk een no-box techniek. Het is een hoog-niveau, declaratieve regelgebaseerde taaluitbreiding voor C(L)P. Het geeft de mogelijkheid om in een gegeven hosttaal die reeds enkele {\em built-in constraints} ondersteunt, nieuwe door de gebruiker gedefini\"eerde constraints ({\em CHR constraints} genaamd) te gaan toevoegen. CHR geeft dan een mogelijkheid te specifi\"eren hoe deze CHR constraints omgezet worden in verschillende stappen tot nieuwe CHR constraints en built-in constraints. In wezen bestaat de uitvoering van een CHR programma uit een herhaaldelijke toepassing van transformatieregels die op de gegeven constraints uitgevoerd worden tot ze opgelost zijn.
+
+CHR staat voor Constraint Handling Rules en een CHR programma bestaat uit een opsomming van regels die beschrijven hoe en wanneer CHR constraints herschreven mogen worden tot andere constraints. Het is een {\em committed-choice} systeem. Dit wil zeggen dat eens een keuze gemaakt is een regel toe te passen, hier niet meer op teruggekomen wordt. Dit in tegenstelling tot zuivere Prolog, waar een oplossing gevonden wordt door iets te proberen en als het niet lukt, terug te komen op die keuze (backtracking). In de voorbeelden die hier gegeven worden zal Prolog als hosttaal gebruikt worden. Op die manier kan de CHR syntax en semantiek het gemakkelijkst beschreven worden. Bij het inbedden van CHR in een imperatieve taal zijn vaak enkele omwegen nodig om de hosttaal als C(L)P taal te kunnen gebruiken. De built-in constraints die pure Prolog aanbiedt zijn \code{=} (unificatie), \code{==} (term-gelijkheid), door de gebruiker gedefinieerde predikaten en een reeks built-in predikaten.
+
+\section{Syntax} \label{sec:chr-syntax}
+
+Een CHR programma zal normaal beginnen met een declaratie die aangeeft welke namen overeenkomen met CHR constraints en eventueel parameters erover instellen. Dit is afhankelijk van taal tot taal en wordt hier niet behandeld.
+
+Vervolgens moeten de CHR regels gegeven worden. Deze beschrijven hoe door de CHR constraints omgezet moeten worden naar built-in constraints en andere CHR constraints. Een constraint is hierbij een enkelvoudige constraint of een conjunctie van verschillende constraints gescheiden door komma's. Een lege conjunctie van constraints wordt voorgesteld door het sleutelwoord {\em true}. 
+
+Er zijn drie types van CHR regels: \begin{itemize}
+\item Simplification: \code{$naam$ @ $r$ <=> $g$ | $b$ .}
+\item Propagation: \code{$naam$ @ $k$ ==> $g$ | $b$ .}
+\item Simpagation: \code{$naam$ @ $k$ $\backslash$ $r$ <=> $g$ | $b$ .}
+\end{itemize}
+Elke regel begint met een $ naam @ $ prefix, om de naam van de regel aan te duiden. Dit is optioneel. Vervolgens worden enkele constraints met variabelen als argumenten vermeld. Deze $r$ en $k$, de {\em removed} en {\em kept} constraints, worden samen de {\em head} van de CHR regel genoemd. Dit zijn de constraints die aanwezig moeten zijn vooraleer de regel toegepast kan worden. De head kan enkel CHR constraints bevatten en geen built-in constraints. Daarna volgt een scheidingsteken (\code{<=>} of \code{==>}) om het einde van de head aan te duiden. Vervolgens is er een optionele \code{$g$ |}, de guard genaamd. De guard dient om een voorwaarde op te geven waaraan de argumenten van de head constraints moeten voldoen. De guard mag enkel built-in constraints bevatten. Indien deze weggelaten wordt, wordt true verondersteld. Het laatste deel van een CHR regel is de {\em body} $b$, afgesloten met een punt. Dit beschrijft de constraints die toegevoegd moeten worden wanneer de regel uitgevoerd wordt. Dit mag zowel built-in als CHR constraints bevatten.
+
+Een simpagation regel met $k$ leeg is equivalent met een simplification regel, een simpagation regel met $r$ leeg is equivalent met een propagation regel. Daarom kunnen simplification en propagation regels gezien worden als speciale gevallen van simpagation regels. In wat volgt zullen alle regels dan ook beschouwd worden als simpagation regels, met eventueel $r$ of $k$ leeg. De logische betekenis van een dergelijke CHR regel is dat voor elke combinatie van de CHR constraints vermeld in $k$ en $r$, geldt dat $r$ equivalent is aan $b$ wanneer $g$ geldt.
+
+Een voorbeeldje is te vinden in codefragment~\ref{code:primes-prolog}.
+\begin{exCode}[bp]
+\begin{Verbatim}[frame=single]
+  simplification @ upto(X) <=> X<2 | true.
+  propagation @ upto(X) ==> X>1 | Y is X-1, upto(Y), prime(X).
+  simpagation @ prime(X) \ prime(Y) <=> Z is Y mod X, Z==0 | true.
+\end{Verbatim}
+\caption{Priemgetallen in Prolog-CHR}
+\label{code:primes-prolog}
+\end{exCode}
+De eerste regel stelt dat wanneer een \code{upto/1} constraint aanwezig is en het argument daarvan kleiner is dan $2$, deze constraint verwijderd mag worden. De tweede regel stelt dat een \code{upto/1} vervangen moet worden door een \code{prime/1} constraint met hetzelfde argument en een \code{upto/1} constraint met zijn argument verlaagd met $1$. De laatste regel stelt dat een \code{prime/1} verwijderd mag worden als zijn argument een veelvoud is van het argument van een andere \code{prime/1} constraint.
+
+Het resultaat van dit programma zal zijn dat zodra men bijvoorbeeld \code{upto(100)} toevoegt, er \code{prime(X)}'en zullen ontstaan voor alle natuurlijke X van 2 tot en met 100. Ondertussen zullen de \code{prime(X)}'en met X een veelvoud van de Y van een andere \code{prime(Y)} verwijderd worden, waardoor de uitvoering stopt wanneer enkel nog priemgetallen overblijven.
+
+\section{Operationele semantiek}
+
+In deze sectie wordt de operationele semantiek van CHR besproken. Er zijn meerdere verschillende semantieken gedefinieerd: we zullen hier eerst de $\omega_t$ of theoretische operationele semantiek aanhalen en vervolgens de $\omega_r$ of verfijnde operationele semantiek. Beiden zijn rigoureus beschreven in \cite{refined}.
+
+\subsection{De theoretische operationele semantiek $\omega_t$} \label{sec:omegat}
+
+De theoretische operationele semantiek beschrijft het uitvoeren van CHR als een aantal mogelijke toestandsovergangen. De toestand bestaat uit: \begin{itemize}
+\item Een doel of {\em goal} $G$: een multiset CHR constraints die nog toegevoegd moeten worden aan de constraint store. Het bevat initieel de CHR constraints van het probleem dat men wenst op te lossen.
+\item Een CHR constraint store $S$: een multiset met ge\"identificeerde CHR constraints. Een ge\"identificeerde CHR constraint is een constraint die een uniek volgnummer toegewezen heeft gekregen. Dit is noodzakelijk om constraints die meermaals in de constraint store voorkomen te kunnen onderscheiden. Het is initieel de lege verzameling.
+\item Een built-in constraint store $B$. De hosttaal beheert deze constraint store dus ze wordt hier beschouwd als een ondoorzichtig object, waar tell constraints aan opgelegd kunnen worden en ask constraints aan opgevraagd. Dit is initieel {\em true}.
+\item Een propagation geschiedenis $T$. Deze dient om bij te houden welke regels reeds toegepast zijn op de CHR constraint store, zodat deze geen tweede maal toegepast worden. Dit begint leeg. 
+\item Een constraintteller $n$. Dit start op 1.
+\end{itemize}
+
+Nu worden er 3 overgangen gedefinieerd: \begin{itemize}
+\item {\bf Solve} Bij deze overgang wordt een (built-in) constraint die in de goal $G$ aanwezig is daaruit verwijderd en aan de built-in constraint store $B$ toegevoegd. 
+\item {\bf Introduce} Bij deze overgang wordt een CHR constraint uit de goal $G$ verwijderd en als \\ ge\"identificeerde CHR constraint aan de CHR constraint store $S$ toegevoegd. Deze krijgt hierbij als volgnummer de waarde van de constraintteller $n$ en $n$ wordt vervolgens met \'e\'en verhoogd.
+\item {\bf Apply} Wanneer alle constraints die vermeld zijn in de head van een CHR regel aanwezig zijn en de argumenten ervan aan de bijhorende guard voldoen, kunnen de removed constraints daarvan verwijderd worden uit de store $S$ en de body constraints toegevoegd worden aan de goal $G$. Hierbij worden ook de volgnummers van de betrokken ge\"identificeerde constraints toegevoegd als item aan de propagation geschiedenis $T$ en wordt ge\"eist dat deze combinatie nog niet bestond in de propagation geschiedenis.
+\end{itemize}
+
+Deze overgangen worden toegepast in arbitraire volgorde, zolang er minstens \'e\'en toepasbaar is. De uitvoering stopt zodra er geen overgangen meer kunnen plaatsvinden, wat optreedt nadat de goal $G$ leeg is en er geen CHR regels meer toegepast kunnen worden op $S$. Wanneer de CHR constraint store leeg is en alle constraints in de originele goal dus herleid zijn tot built-in constraints, zijn er sowieso geen regels meer toepasbaar. De uitvoering stopt ook wanneer de built-in constraint store een inconsistentie opmerkt. In dat geval eindigt de CHR uitvoering als ``gefaald''.
+
+Over deze semantiek $\omega_t$ zijn verschillende theoretische eigenschappen bekend, zoals wanneer de volgorde waarin de overgangen toegepast worden irrelevant is (confluentie) en tijdscomplexiteit. Hier wordt uitgebreid op in gegaan in \cite{tomsphdthesis}.
+
+\subsection{De verfijnde operationele semantiek $\omega_r$} \label{sec:omegar}
+
+Het probleem met de theoretische operationele semantiek $\omega_t$ is dat ze vrij veel ongedefinieerd laat. Ze is wat men noemt {\em indeterministisch}. Er ligt helemaal niet vast in welke volgorde overgangen toegepast moeten worden, of welke regels eerst geprobeerd worden. De $\omega_r$ verfijnde operationele semantiek lost dit probleem op door meer vast te leggen. Elke uitvoering volgens $\omega_r$ blijft wel te beschouwen als een $\omega_t$ uitvoering. Dit betekent dat $\omega_r$ een instantie is van $\omega_t$. 
+
+Het uitvoeringsmechanisme is gelijkaardig aan dat van de $\omega_t$ semantiek, maar er wordt gebruik gemaakt van een stapel te verwerken constraints in plaats van een verzameling. Deze wordt de activatiestapel $A$ genoemd. Het algoritme begint met een lege CHR constraint store $S$, lege built-in constraint store $B$ en lege geschiedenis $T$. Als initi\"ele stapel worden de verschillende constraints van het probleem genomen. Merk op dat in een stapel de volgorde van belang is. De constraint die bovenop de stapel staat, wordt de actieve constraint genoemd. De formele definitie van de overgangen en hoe ze toegepast worden is te vinden in \cite{tomsphdthesis}. Hier wordt enkel een informeel overzicht van het uitvoeringsmechanisme gegeven, waarbij de toestandsovergangen in het vet vermeld zijn.
+
+Bij de uitvoering wordt telkens in eerste plaats de actieve constraint beschouwd. Er zijn nu twee mogelijkheden: \begin{itemize}
+\item Als de actieve constraint een built-in constraint is, wordt deze verwijderd en aan de built-in constraint store toegevoegd ({\bf Solve}). Hierbij worden eveneens CHR constraints die zich reeds in de CHR constraint store $S$ bevinden en eventueel betrokken kunnen worden in een CHR regel nu de toestand van de built-in constraint store gewijzigd is, terug bovenop de activatiestapel gezet.
+\item Als de actieve constraint een CHR constraint is, krijgt deze een volgnummer zoals in de theoretische semantiek $\omega_t$ en wordt ze in de CHR constraint store geplaatst ({\bf Activate}), tenzij ze zich daar reeds bevond ({\bf Reactivate}). Ze wordt nog niet van de activatiestapel verwijderd. Eerst wordt voor de actieve constraint gezocht naar partnerconstraints, in de volgorde dat de betrokken constraint voorkomt in regels in het CHR programma. Deze voorkomens in de regels worden occurrences genoemd. In de $\omega_r$ semantiek is de volgorde van regels dus van belang. Zolang er partnerconstraints gevonden worden in de constraint store $S$, voor een specifieke CHR regel waarvan de guard voldaan is en de betrokken combinatie van ge\"identificeerde constraints zich nog niet in de propagation geschiedenis bevindt, wordt deze toegepast ({\bf Simplify} of {\bf Propagate}). Dit wil zeggen: de removed constraints worden uit de CHR constraint store $S$ verwijderd en indien de actieve constraint een removed constraint was, wordt deze eveneens van de activatiestapel verwijderd. Vervolgens wordt de body van de regel vooraan de activatiestapel toegevoegd. De combinatie van volgnummers van de betrokken ge\"identificeerde constraints wordt ook toegevoegd aan de propagation geschiedenis. Wanneer de body van de betrokken regel niet leeg was, komen bij het toevoegen nieuwe constraints op de activatiestapel te staan en zullen deze eerst afgewerkt worden vooraleer de verwerking van de origineel betrokken constraint voortgaat. Wanneer deze verwerking van door de body toegevoegde constraints afgelopen is, wordt overgegaan naar zoeken van partner constraints voor de volgende occurrence ({\bf Default}). Wanneer alle occurrences geprobeerd zijn, wordt de constraint van de activatiestapel verwijderd ({\bf Drop}).
+\end{itemize}
+De uitvoering eindigt wanneer ofwel de built-in constraint store $B$ in een inconsistentie toestand terechtkomt of wanneer de activatiestapel leeg is. Dit uitvoeringsmechanisme werd gekozen als verfijning voor $\omega_t$ omdat het zo goed overeenkomt met de stapel-gebaseerde uitvoering van de programmeertalen waarnaar CHR vertaald wordt. De activatiestapel wordt bij zulke talen dan de oproep-stapel van aangeroepen routines, waarbij deze routines zoeken naar partnerconstraints gegeven een actieve constraint. Zodra een nieuwe constraint toegevoegd wordt, wordt deze geactiveerd en dus alle regels die erop van toepassing zijn toegepast, vooraleer verder gegaan wordt met de oorspronkelijk actieve constraint.
+
+Deze semantiek is nog steeds indeterministisch. Zo wordt er niet vastgelegd in welke volgorde constraints terug aan de activatiestapel toegevoegd worden of in welke volgorde partnerconstraints gezocht worden indien er meerdere mogelijkheden zijn voor \'e\'en bepaalde occurrence. Deze zaken worden echter aan de implementatie overgelaten. Door de volgorde waarin over de constraint store ge\"itereerd wordt niet vast te leggen, zijn implementaties vrij eigen ge\"optimaliseerde routines te gebruiken om partnerconstraints te vinden.
+
+\section{Uitbreidingen}
+
+{\bf Niet pure constraints} In principe kunnen als built-in constraints enkel pure constraints gebruikt worden. Dit wil zeggen constraints die de onderliggende constraint solver kent en eens eraan toegevoegd geldig blijven. Prologs unificatie en controle of gelijkheid zijn zulke constraints. In het kader van CHR als algemene programmeertaal, is het echter nuttig om meer acties als body toe te laten. De hiermee bekomen CHR programma's kunnen niet meer echt als constraint solvers beschouwd worden, maar eerder als algemene regelgebaseerde systemen die CHR constraints gebruiken als gegevens die herschreven worden. Deze programma's zijn vaak ook niet meer te begrijpen zonder kennis van de operationele semantiek.
+
+{\bf Head Normal Form} Tot hiertoe was gesteld dat de argumenten van constraint occurrences in de head van een CHR regel variabelen moesten zijn. Het is echter ook mogelijk hier expressies toe te laten. Zolang deze enkel in functie staan van variabelen die elders in de head apart als argument voor een constraint voorkomen, kunnen deze beschouwd worden alsof in de plaats van de expressie een nieuwe aparte variabele stond en een extra guard aanwezig was die gelijkheid eist tussen de variabele en de expressie. Dit is mogelijk op voorwaarde dat gelijkheid een built-in constraint is van de hosttaal.
+

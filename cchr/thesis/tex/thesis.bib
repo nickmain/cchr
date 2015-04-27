@@ -1,0 +1,1750 @@
+@string{jan = "January"}
+@string{feb = "February"}
+@string{mar = "March"}
+@string{apr = "April"}
+@string{may = "May"}
+@string{jun = "June"}
+@string{jul = "July"}
+@string{aug = "August"}
+@string{sep = "September"}
+@string{oct = "October"}
+@string{nov = "November"}
+@string{dec = "December"}
+@string{springer = "Springer-Verlag"}
+@string{lncs = "Lecture Notes in Computer Science"}
+@string{iclp02 = "18th International Conference on Logic Programming (ICLP'02)"}
+@string{iclp04 = "20th International Conference on Logic Programming (ICLP'04)"}
+@string{iclp06 = "22nd International Conference on Logic Programming (ICLP'06)"}
+@string{chr05 = "2nd Workshop on Constraint Handling Rules (CHR'05)"}
+@string{chr06 = "3rd Workshop on Constraint Handling Rules (CHR'06)"}
+@string{kulcs = "K.U.Leuven, Department of Computer Science"}
+@string{kul = "K.U.Leuven"}
+
+%= Belangrijkste CHR referenties =====================================================
+
+@article{chr,
+  author 	= {Thom Fr{\"u}hwirth},
+  title 	= {Theory and practice of {Constraint Handling Rules}},
+  journal 	= {Journal of {Logic} {Programming}},
+  volume 	= {37}, 
+  number	= {1--3},
+  pages 	= {95--138},
+  year 		= {1998}, 
+  month		= oct
+}
+@inproceedings{refined,
+  author    	= {Gregory J. Duck and Peter J. Stuckey and Mar\'{\i}a {Garc\'{\i}a de la Banda} and Christian Holzbaur},
+  title     	= {The Refined Operational Semantics of {Constraint Handling Rules}},
+  booktitle 	= iclp04,
+  address	= {Saint-Malo, France},
+  year      	= {2004},
+  pages     	= {90--104},
+  month		= sep,
+  publisher 	= springer,
+  series    	= lncs,
+  volume    	= {3132},
+  editor	= {Bart Demoen and Vladimir Lifschitz}
+}
+@phdthesis{tomsphdthesis,
+  author 	= "Tom Schrijvers",
+  title 	= {Analyses, Optimizations and Extensions of {Constraint Handling Rules}},
+  school 	= kul,
+  year 		= 2005,
+  address 	= {Leuven, Belgium},
+  month 	= jun,
+}
+@phdthesis{duckphdthesis,
+  author 	= "Gregory J. Duck",
+  title 	= {Compilation of {Constraint Handling Rules}},
+  school 	= {University of Melbourne},
+  year 		= 2005,
+  address 	= {Victoria, Australia},
+  month 	= dec,
+}
+
+%= Eigen Werk ================== toms ================================================
+
+@inproceedings{tom:xsb:iclp2004,
+  author 	= "Schrijvers, Tom and Warren, David S.",
+  title 	= {{C}onstraint handling rules and tabled execution},
+  booktitle 	= iclp04,
+  address	= {St-Malo, France},
+  month		= sep,
+  year 		= {2004},
+  editor 	= {Demoen, Bart and Lifschitz, Vladimir},
+  volume 	= {3132},
+  series 	= lncs,
+  pages 	= {120--136},
+  publisher 	= springer,
+}
+
+@inproceedings{tom:refactoring:iclp2004,
+  author 	= "Schrijvers, Tom and Serebrenik, Alexander",
+  booktitle 	= iclp04,
+  address	= {St-Malo, France},
+  pages 	= {58--72},
+  publisher 	= springer,
+  editor 	= {Demoen, Bart and Lifschitz, Vladimir},
+  series 	= lncs,
+  title 	= {{I}mproving {P}rolog programs: refactoring for {P}rolog},
+  volume 	= {3132},
+  year 		= {2004},
+  month		= sep,
+}
+
+@inproceedings{tom:kulchr,
+  author 	= "Schrijvers, Tom and Demoen, Bart",
+  TITLE 	= {{T}he {K}.{U}.{L}euven {CHR} system: {I}mplementation and application},
+  BOOKTITLE 	= {{First Workshop on Constraint Handling Rules: Selected Contributions}},
+  address	= {Ulm, Germany},
+  YEAR 		= {2004},
+  editor 	= {Fr{\"{u}}hwirth, Thom and Meister, Marc},
+  PAGES 	= {1--5},
+  month		= may
+}
+
+@INPROCEEDINGS{41102,
+  author 	= "Schrijvers, Tom and Serebrenik, Alexander and Demoen, Bart",
+  TITLE 	= {{R}efactoring {P}rolog code},
+  BOOKTITLE 	= {{INAP}/{WLP} 2004: Proceedings of the 13th {I}nternational conference on applications of declarative programming and knowledge management and the 18th workshop on logic programming},
+  address	= {Potsdam, Germany},
+  YEAR 		= {2004},
+  month		= feb,
+  editor 	= {Seipel, Dietmar and Hanus, Michael and Geske, Ulrich and Bartenstein, Oskar},
+  PAGES 	= {115--126},
+}
+
+@INPROCEEDINGS{tom:xsb:ciclops2003,
+  author 	= "Schrijvers, Tom and Warren, David S. and Demoen, Bart",
+  TITLE 	= {{CHR} for {XSB}},
+  BOOKTITLE 	= {{CICLOPS} 2003: {P}roceedings of the {C}olloquium on {I}mplementation of {C}onstraint and {LO}gic {P}rogramming {S}ystems},
+  address	= {Mumbai, India},
+  month		= dec,
+  YEAR 		= {2003},
+  editor 	= {Lopes, R. and Ferreira, M.},
+  PAGES 	= {7--20},
+  PUBLISHER 	= {University of Porto},
+}
+
+@INPROCEEDINGS{38684,
+  author 	= "Schrijvers, Tom",
+  TITLE 	= {{C}ombining an improvement to {PARMA} trailing with analysis in {HAL}},
+  BOOKTITLE 	= {{CICLOPS}'02: {P}roceedings of the {C}olloquium of {C}onstraint and {LO}gic {P}rogramming {S}ystems},
+  address	= {Copenhagen, Denmark},
+  month		= aug,
+  YEAR 		= {2002},
+  editor 	= {Demoen, Bart},
+  PAGES 	= {1--12},
+}
+
+@INPROCEEDINGS{38831,
+  author 	= "Schrijvers, Tom and Demoen, Bart",
+  TITLE 	= {{C}ombining an improvement to {PARMA} trailing with trailing analysis},
+  BOOKTITLE 	= {PPDP'02: {P}roceedings of the 4th {ACM} {SIGPLAN} {C}onference on {P}rinciples and {P}ractice of {D}eclarative {P}rogramming},
+  address	= {Pittsburgh, USA},
+  YEAR 		= {2002},
+  editor 	= {Kirchner, Claude},
+  PAGES 	= {88--98},
+  ORGANIZATION 	= {SIGPLAN},
+  PUBLISHER 	= {ACM Press},
+}
+
+@INPROCEEDINGS{SchrijversICLP2002trail,
+  author 	= "Schrijvers, Tom and {Garc\'{\i}a de la Banda}, Maria and Demoen, Bart",
+  TITLE 	= {{T}railing {A}nalysis for {HAL}},
+  BOOKTITLE 	= iclp02,
+  address	= {Copenhagen, Denmark},
+  month		= jul,
+  YEAR 		= {2002},
+  editor 	= {Stuckey, Peter J.},
+  VOLUME 	= {2401},
+  SERIES 	= lncs,
+  PAGES 	= {38--53},
+  ORGANIZATION 	= {ALP},
+  PUBLISHER 	= springer,
+}
+
+@UNPUBLISHED{41502,
+  author 	= "Schrijvers, Tom and Wielemaker, Jan and Demoen, Bart",
+  TITLE 	= {{C}onstraint handling rules for {SWI}-{P}rolog},
+  YEAR 		= {2005},
+  NOTE 		= {19th Workshop on (Constraint) Logic Programming, W(C)LP 2005, Ulm, Germany, February 21-23, 2005}}
+
+@inproceedings{tom:jmm,
+  author 	= "Schrijvers, Tom",
+  title 	= {{J}mm{S}olve: a generative {J}ava memory model implemented in {P}rolog and {CHR}},
+  booktitle 	= iclp04,
+  address	= {St-Malo, France},
+  publisher 	= springer,
+  editor 	= {Demoen, Bart and Lifschitz, Vladimir},
+  series 	= lncs,
+  volume 	= {3132},
+  year 		= {2004},
+  month		= sep,
+  note 		= {Poster presentation}
+}
+@TECHREPORT{tom:delay,
+  author 	= "Schrijvers, Tom and Demoen, Bart",
+  TITLE 	= {{A}ntimonotony-based delay avoidance for {CHR}},
+  INSTITUTION 	= kulcs,
+  YEAR 		= {2004},
+  TYPE 		= {Report CW},
+  NUMBER 	= {385},
+  MONTH 	= jul,
+}
+
+@TECHREPORT{41144,
+  author 	= "Schrijvers, Tom and Demoen, Bart",
+  TITLE 	= {{J}mm{S}olve: a generative reference implementation of {CCM} machines},
+  INSTITUTION 	= kulcs,
+  YEAR 		= {2004},
+  TYPE 		= {Report CW},
+  NUMBER 	= {379},
+  ADDRESS 	= {Leuven, Belgium},
+  MONTH 	= jan,
+}
+
+@TECHREPORT{41056,
+  author 	= "Schrijvers, Tom and Serebrenik, Alexander and Demoen, Bart",
+  TITLE 	= {{R}efactoring {P}rolog programs},
+  INSTITUTION 	= kulcs,
+  YEAR 		= {2003},
+  TYPE 		= {Report CW},
+  NUMBER 	= {373},
+  ADDRESS 	= {Leuven, Belgium},
+  MONTH 	= nov,
+}
+
+@TECHREPORT{38357,
+  author 	= "Schrijvers, Tom and Demoen, Bart",
+  TITLE 	= {{C}ombining an {I}mprovement to {PARMA} {T}railing with {A}nalysis in {HAL}},
+  INSTITUTION 	= kulcs,
+  YEAR 		= {2002},
+  TYPE 		= {Report CW},
+  NUMBER 	= {338},
+  ADDRESS 	= {Leuven, Belgium},
+  MONTH 	= apr,
+}
+
+@TECHREPORT{36779,
+  author 	= "Schrijvers, Tom and Demoen, Bart",
+  TITLE 	= {{A}n improvement to {PARMA} variable trailing},
+  INSTITUTION 	= kulcs,
+  YEAR 		= {2001},
+  TYPE 		= {Report CW},
+  NUMBER 	= {326},
+  ADDRESS 	= {Leuven, Belgium},
+  MONTH 	= dec,
+}
+
+@ARTICLE{refactoring:journal,
+  author  	= {Serebrenik, Alexander and Schrijvers, Tom and Demoen, Bart},
+  TITLE   	= {{Improving Prolog Programs: Refactoring for Prolog}},
+  JOURNAL 	= {Theory and Practice of Logic Programming},
+  YEAR    	= 2005,
+  note		= {Submitted},
+}
+
+@ARTICLE{trailing:journal,
+  author  	= {Schrijvers, Tom and {Garc{\'\i}a de la Banda}, Mar{\'\i}a and Demoen, Bart and Stuckey, Peter J.},
+  TITLE   	= {{Improving PARMA Trailing}},
+  JOURNAL 	= {Theory and Practice of Logic Programming},
+  YEAR    	= 2005,
+  note		= {Accepted},
+}
+
+@misc{tom:benchmarks,
+  author	= {Tom Schrijvers},
+  title		= {{A Collection of Assorted CHR Benchmarks}},
+  year		= 2005,
+  note		= {\url{http://www.cs.kuleuven.be/~toms/Research/CHR/}}
+}
+
+@misc{peter:benchmarks,
+  author	= {Peter {Van Weert}},
+  title		= {{JCHR Benchmarks}},
+  note		= {\url{http://www.cs.kuleuven.be/~petervw/JCHR/Benchmarks.htm}}
+}
+
+@inproceedings{tom:unionfind:wclp2005,
+  author 	= "Schrijvers, Tom and Fr{\"{u}}hwirth, Thom",
+  title 	= {{A}nalysing the {CHR} implementation of union-find},
+  booktitle 	= {{W(C)LP}'05: {P}roceedings of 19th {W}orkshop on ({C}onstraint) {L}ogic {P}rogramming},
+  pages		= {135--146},
+  address	= {Ulm, Germany},
+  year 		= {2005},
+  month		= feb,
+  editor  	= {Wolf, Armin and Fr{\"{u}}hwirth, Thom and Meister, Marc},
+}
+
+@techreport{tom:unionfind:techreport,
+  author 	= "Schrijvers, Tom and Fr{\"{u}}hwirth, Thom",
+  title 	= {{I}mplementing and {A}nalysing {U}nion-{F}ind in {CHR}},
+  institution 	= kulcs,
+  year 		= {2004},
+  type 		= {Report CW},
+  number 	= {389},
+  month 	= jul,
+}
+
+@article{tom:unionfind:pearl,
+  author	= {Tom Schrijvers and Thom Fr{\"u}hwirth}, 
+  title		= {{Optimal Union-Find in Constraint Handling Rules}},
+  type		= {Programming Pearl},
+  journal 	= {Theory and Practice of Logic Programming},
+  publisher	= {Cambridge University Press},
+  year		= {2006},
+  volume        = {6},
+  number        = {1\&2},  
+}
+
+@techreport{tom:implication:techreport,
+  author 	= "Schrijvers, Tom and Demoen, Bart and Duck, Gregory and Stuckey, Peter and Fr{\"{u}}hwirth, Thom",
+  title 	= {{Automatic Implication Checking for {CHR} Constraint Solvers}},
+  institution 	= kulcs,
+  address	= {Leuven, Belgium},
+  year 		= 2005,
+  type 		= {Report CW},
+  number 	= {402},
+  month 	= jan
+}
+
+@inproceedings{tom:implication:rule2005,
+  author 	= "Schrijvers, Tom and Demoen, Bart and Duck, Gregory and Stuckey, Peter and Fr{\"{u}}hwirth, Thom",
+  title 	= {{Automatic Implication Checking for {CHR} Constraints}},
+  booktitle	= {RULE'05: Proceedings of the 6th International Workshop on Rule-Based Programming},
+  editor	= {Horatiu Cirstea and Narciso Mart{\'\i}-Oliet},
+  address	= {Nara, Japan},
+  year 		= 2005,
+  month 	= apr
+}
+
+@inproceedings{tom:swi:wclp2005,
+  author 	= "Schrijvers, Tom and Wielemaker, Jan and Demoen, Bart",
+  TITLE 	= {{P}oster: {C}onstraint {H}andling {R}ules for {SWI}-{P}rolog},
+  booktitle 	= {W(C)LP'05: {P}roceedings of 19th {W}orkshop on ({C}onstraint) {L}ogic {P}rogramming},
+  address	= {Ulm, Germany},
+  month		= feb,
+  year 		= 2005,
+  editor 	= {Wolf, Armin},
+}
+
+@techreport{tom:abstract:techreport,
+  author 	= "Gregory Duck and Tom Schrijvers and Peter Stuckey",
+  title 	= {{Abstract Interpretation for Constraint Handling Rules}},
+  institution 	= kulcs,
+  address	= {Leuven, Belgium},
+  year 		= 2004,
+  type 		= {Report CW},
+  number 	= {391},
+  month 	= sep,
+}
+
+@inproceedings{tom:abstract:ppdp2005,
+  author 	= "Schrijvers, Tom and Stuckey, Peter and Duck, Gregory",
+  title 	= {{Abstract Interpretation for Constraint Handling Rules}},
+  booktitle	= {PPDP'05: Proceedings of the 7th International Symposium on Principles and Practice of Declarative Programming},
+  address	= {Lisbon, Portugal},
+  year 		= 2005,
+  month 	= jul,
+  publisher	= {ACM Press}
+}
+
+@inproceedings{tom:funcdep,
+  author = {Gregory J. Duck and Tom Schrijvers},
+  title = {Accurate Functional Dependency Analysis for {C}onstraint {H}andling {R}ules},
+  booktitle = chr05,
+  year = {2005},
+  editor = {T. Schrijvers and T. Fr\"uhwirth},
+  pages = {109-124},
+  month = {October},
+  address = {Sitges, Spain}
+}
+
+
+%= Eigen Werk ================== jon ================================================
+
+@inproceedings{jon:guard,
+  author 	= "Sneyers, Jon and Schrijvers, Tom and Demoen, Bart",
+  title 	= {{G}uard simplification in {CHR} programs},
+  booktitle 	= {W(C)LP'05: {P}roceedings of 19th {W}orkshop on ({C}onstraint) {L}ogic {P}rogramming},
+  pages		= {123--134},
+  address	= {Ulm, Germany},
+  month		= feb,
+  year 		= 2005,
+  editor 	= {Wolf, Armin},
+}
+@techreport{jon:guard:techreport,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Guard Simplification in {CHR} programs},
+  institution = kulcs,
+  year = {2004},
+  month = {November},
+  number = {CW 396}
+}
+@techreport{jon:guard:techreport2,
+  author 	= "Sneyers, Jon and Schrijvers, Tom and Demoen, Bart",
+  title		= {{Guard Reasoning for CHR Optimization}},
+  INSTITUTION 	= kulcs,
+  address	= {Leuven, Belgium},
+  YEAR 		= 2005,
+  TYPE 		= {Report CW},
+  NUMBER 	= {411},
+}
+@inproceedings{jon:guard2,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Guard and Continuation Optimization for Occurrence Representations of {CHR}},
+  booktitle = {Proceedings of the 21st International Conference on Logic Programming (ICLP'05)},
+  pages = {83-97},
+  editor = {M. Gabbrielli and G. Gupta},
+  year = {2005},
+  month = {October},
+  address = {Sitges, Spain}
+}
+@techreport{jon:guard2:techreport,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Guard and Continuation Optimization for Occurrence Representations of {CHR}},
+  institution = kulcs,
+  year = {2005},
+  month = {July},
+  number = {CW 420}
+}
+
+@inproceedings{jon:dijkstra,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Dijkstra's Algorithm with {F}ibonacci Heaps: An Executable Description in {CHR}},
+  booktitle = {20th Workshop on Logic Programming (WLP'06)},
+  year = {2006},
+  month = {February},
+  address = {Vienna, Austria}
+}
+@inproceedings{jon:memory_reuse,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Memory reuse for {CHR}},
+  booktitle = iclp06,
+  editor = {S. Etalle and M. Truszczynski},
+  year = {2006},
+  month = {August},
+  address = {Seattle, WA, USA},
+  pages = {72-86},
+  publisher = springer,
+  series    = lncs,
+  volume    = {4079},
+}
+@inproceedings{jon:complexity:chr05,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {The Computational Power and Complexity of {C}onstraint {H}andling {R}ules},
+  booktitle = chr05,
+  year = {2005},
+  editor = {T. Schrijvers and T. Fr\"uhwirth},
+  pages = {3-17},
+  month = {October},
+  address = {Sitges, Spain}
+}
+@techreport{jon:memory_reuse:techreport,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Suspension Optimization and In-place Updates for Optimizing {CHR} Compilation},
+  institution = kulcs,
+  year = {2005},
+  month = {December},
+  number = {CW 433}
+}
+@techreport{jon:dijkstra:techreport,
+  author = {Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Dijkstra's Algorithm with {F}ibonacci Heaps: An Executable Description in {CHR}},
+  institution = kulcs,
+  year = {2005},
+  month = {November},
+  number = {CW 429}
+}
+
+
+%= Eigen Werk ================== petervw ================================================
+@inproceedings{peter:jchr,
+  author = {Peter {Van Weert} and Tom Schrijvers and Bart Demoen},
+  title = {{K.U.Leuven JCHR: a user-friendly, flexible and efficient CHR system for Java}},
+  booktitle = chr05,
+  year = {2005},
+  pages = {47-62},
+  month = {October},
+  address = {Sitges, Spain},
+  editor = {T. Schrijvers and T. Fr\"uhwirth},
+}
+@inproceedings{peter:chr_not,
+  author = {Peter Van Weert and Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {Extending CHR with Negation as Absence},
+  booktitle = chr06,
+  editor = {T. Schrijvers and Th. Fr\"uhwirth},
+  year = {2006},
+  month = {July},
+  address = {Venice, Italy}
+}
+@techreport{peter:chr_not:techreport,
+  author = {Peter Van Weert and Jon Sneyers and Tom Schrijvers and Bart Demoen},
+  title = {To $\mathrm{CHR}^{\mbox{\large$\!\!\lnot$}}$ or not to $\mathrm{CHR}^{\mbox{\large$\!\!\lnot$}}$: Extending {CHR} with Negation as Absence},
+  institution = kulcs,
+  year = {2006},
+  month = {May},
+  number = {CW 446}
+}
+
+@MASTERSTHESIS{jchr_thesis,
+  author = {Van Weert, Peter},
+  title = {Constraint Programming in {J}ava: een gebruiksvriendelijk, flexibel
+	en efficient {CHR}-Systeem voor {J}ava},
+  school = {Department of Computer Science, {K}.{U}.{L}euven},
+  month = {May},
+  year = {2005},
+  address = {Leuven, Belgium},  
+  abstract = {Constraint Handling Rules is een zeer hoog-niveau, regelgebaseerde
+	taaluitbreiding, oorspronkelijk ontworpen om constraint solvers te
+	declareren in een gegeven host-taal. Vandaag wordt CHR bovendien
+	gebruikt voor een ruime waaier van andere toepassingen en de implementatie
+	van allerhande klassieke algoritmes. In deze thesis bespreken we
+	de uitwerking vaneen gebruiksvriendelijk, efficient en flexibel CHR-systeem
+	voor Java. Een implementatie die voldoet aan deze drie eisen bestond
+	nog niet voor Java. Met features als een vertrouwde hoog-niveau syntax,
+	coercion, generische handlers, willekeurige built-in constraints
+	en indexering voor de constraint store, hopen we dat het K.U.Leuven
+	JCHR Systeem hierin wel geslaagd is.},
+  note = {\url{http://www.cs.kuleuven.be/~petervw/JCHR/}},
+}
+
+%= Prolog Systemen =============================================================
+@manual{sicstus,
+  author        = {{Intelligent Systems Laboratory}},
+  title         = {{SICStus Prolog User's Manual}},
+  organisation  = {{Swedish Institute of Computer Science}},
+  address       = {{PO Box 1263, SE-164 29 Kista, Sweden}},
+  month         = oct,
+  year          = {2003},
+}
+
+@manual{yap,
+  author        = {{Santos Costa}, V{\'{\i}}tor and Luis Damas and Rogerio Reis and Ruben Azevedo},
+  title         = {{YAP User's Manual}},
+  note          = {\url{http://www.ncc.up.pt/~vsc/Yap/}},
+  year		= 2004
+}
+
+@book{isoprolog,
+  key		= {ISO Prolog},
+  note    	= "{{ISO/IEC}} 13211-1:1995",
+  title     	= "Information technology---Programming languages---{P}rolog---Part 1: General core",
+  year      	= 1995,
+  author	= "{ISO/IEC}"
+}
+
+@misc{swiprolog,
+  author 	= {Jan Wielemaker},
+  title  	= {{SWI-Prolog release 5.6.0}},
+  note   	= {\url{http://www.swi-prolog.org/}},
+  year		= 2006	
+}
+
+@misc{xsb,
+  author	= {David S. Warren and others},
+  title		= {{The XSB Programmer's Manual: version 2.7, vols. 1 and 2}},
+  year		= {2005},
+  month		= jan,
+  note		= {\url{http://xsb.sf.net}}
+}
+
+@misc{flex,
+  author	= {Vern Paxson},
+  title		= {Flex 2.5 manual},
+  year		= {1995},
+  note		= {\url{http://www.gnu.org/software/flex/manual/html_mono/flex.html}}
+}
+
+@misc{libgc,
+  author	= {Mukesh Kapoor},
+  title         = {Using the C/C++ Garbage Collection Library, libgc},
+  year		= {2007},
+  note		= {\url{http://developers.sun.com/sunstudio/articles/libgc.html}}
+}
+
+@misc{bison,
+  author	= {The Free Software Foundation},
+  title		= {Bison 2.3 manual},
+  year		= {2006},
+  note		= {\url{http://www.gnu.org/software/bison/manual/html_mono/bison.html}}
+}
+
+@inproceedings{xsb:wfs,
+  author 	= "Prasad Rao and Konstantinos F. Sagonas and Terrance Swift and David Scott Warren and Juliana Freire",
+  title 	= "{XSB}: A System for Effciently Computing {WFS}",
+  booktitle 	= "Logic Programming and Non-monotonic Reasoning",
+  pages 	= {431--441},
+  year 		= 1997,
+}
+
+@article{jaffar:clp,
+  author 	= "Joxan Jaffar and Michael J. Maher",
+  title 	= "{Constraint Logic Programming: A Survey}",
+  journal 	= "Journal of Logic Programming",
+  volume 	= "19/20",
+  pages 	= "503--581",
+  year 		= 1994,
+}
+
+@book{stuckey:clp,
+  author	= {Kim Marriott and Peter J. Stuckey},
+  title		= {{Programming with Constraints: an Introduction}},
+  publisher	= {{MIT Press}},
+  year		= 1998
+}
+
+@article{toman:memo,
+  author	= {David Toman},
+  title		= {{Memoing Evaluation for Constraint Extensions of Datalog}},
+  journal	= {{Constraints: An International Journal, Special Issue on Constraints and Databases}}, 
+  volume	= 2,
+  number	= {3/4}, 
+  month		= dec,
+  year		= 1997, 
+  pages		= {337--359},
+}
+
+@inproceedings{toman:wfs,
+  author	= {David Toman},
+  title		= {{Computing the Well-founded Semantics for Constraint Extensions of Datalog}},
+  booktitle	= {Proceedings of CP'96 Workshop on Constraint Databases},
+  address	= {Cambridge, MA, USA},
+  series	= lncs,
+  number	= 1191,
+  pages		= {64--79}, 
+  year		= 1996
+}
+
+@misc{eclipse,
+  author	= {IC-Parc},
+  key = 	 {ECLiPSe},
+  title =        {{ECL$^{i}$PS$^{e}$}},
+  note = 	 {\url{http://www.icparc.ic.ac.uk/eclipse/}}
+}
+
+@misc{sepia,
+  author	= {Micha Meier},
+  key 		= {Sepia*},
+  title		= {Sepia*: The Constraint Logic Programming System},
+  note		= {\url{http://www.clps.de/}}  
+}
+
+@misc{chord,
+  author	= {Jairson Vitorino and Marcos Aurelio Almeida da Silva},
+  key		= {CHORD},
+  title		= {CHORD},
+  year 		= 2005,
+  note		= {\url{http://sourceforge.net/projects/chord}}
+}
+
+@misc{hprolog,
+  author	= {Bart Demoen},
+  title		= {{hProlog}},
+  note  	= {\url{http://www.cs.kuleuven.be/~bmd/hProlog/}},
+}
+
+@inproceedings{bart:wamvariations,
+  author	= "Demoen, Bart and Nguyen, Phuong-Lan",
+  editor	= "Lloyd, John and  Dahl, Veronica and  Furbach, Ulrich and  Kerber, Manfred and Lau, Kung-Kiu  and  Palamidessi, Catuscia and Pereira, Luis Moniz  and Sagiv, Yehoshua  and Stuckey, Peter J. ",
+  title		= {{S}o many {WAM} variations, so little time},
+  organization	= {ALP},
+  booktitle	= {CL2000: Proceedings of the 1st International Conference on Computational Logic},
+  address	= {Londong, UK},
+  month		= jul,
+  year		= 2000,
+  volume	= {1861},
+  series	= {LNAI},
+  pages		= {1240--1254},
+  publisher	= springer,
+}
+
+@inproceedings{hal,
+  author 	= "Bart Demoen and Maria {Garc{\'\i}a de la Banda} and Warwick Harvey and Kim Marriott and Peter J. Stuckey",
+  title 	= "An {O}verview of {HAL}",
+  pages 	= "174--188",
+  year 		= 1999,
+  editor    	= {Joxan Jaffar},
+  title     	= {CP'99: Proceedings of the 5th International Conference on Principles and Practice of Constraint Programming},
+  address	= {Alexandria, Virginia, USA},
+  publisher 	= springer,
+  series    	= lncs,
+  volume    	= {1713},
+}
+
+@techreport{warren:wam,
+  author	= {David H.D. Warren},
+  title		= {{An Abstract Prolog Instruction Set}},
+  institution   = {Artificial Intelligence Center, SRI International},
+  year		= 1983,
+  type		= {Technical note}
+}
+
+@book{wam:hassan,
+    author	= "Hassan A{\"\i}t-Kaci",
+    title	= "{Warren's Abstract Machine: A Tutorial Reconstruction}",
+    publisher	= "{MIT} {P}ress",
+    year	= "1991",
+}
+
+@techreport{bart:attvars,
+  author 	= "Demoen, Bart",
+  title 	= {{D}ynamic attributes, their h{P}rolog implementation, and a first evaluation},
+  institution 	= kulcs,
+  year 		= 2002,
+  type 		= {Report CW},
+  number 	= 350,
+  address 	= {Leuven, Belgium},
+  month 	= oct,
+}
+
+@inproceedings{rete,
+  author 	= {Charles L. Forgy},
+  title  	= {{Rete: A Fast Algorithm for the Many Pattern/Many Object Pattern Match Problem}},
+  booktitle 	= {Artificial Intelligence},
+  address	= {North Holland Conference},
+  year 		= 1982,
+  volume 	= 19, 
+  pages 	= {17-37}
+} 
+
+%= Christian Holzbaur ==========================================================
+@inproceedings{christian:compiling,
+  author 	= {Christian Holzbaur and Thom Fr{\"u}hwirth},
+  title 	= {Compiling Constraint Handling Rules into {Prolog} with Attributed Variables},
+  booktitle 	= {Proceedings of the International Conference on 
+                   Principles and Practice of Declarative Programming},
+  pages 	= {117--133},
+  year 		= {1999},
+  editor 	= {Gopalan Nadathur},
+  number 	= {1702},
+  series 	= lncs,
+  publisher 	= springer,
+}
+
+@article{christian:system,
+  author	= {Christian Holzbaur and Thom Fr{\"u}hwirth}, 
+  title		= {{A Prolog Constraint Handling Rules Compiler and Runtime System}},
+  journal 	= {Special Issue Journal of Applied Artificial Intelligence on Constraint Handling Rules},
+  editor	= {Christian Holzbaur and Thom Fr�hwirth}, 
+  volume	= {14},
+  number	= {4},
+  month		= apr,
+  year		= {2000},
+}
+
+@techreport{christian:attvars,
+  author	= {Holzbaur, Christian},
+  title		= {{Metastructures vs. Attributed Variables in the Context of Extensible Unification}}, 
+  institution	= {Austrian Research Institute for Artificial Intelligence},
+  address	= {Vienna, Austria}, 
+  number	= {TR-92-23},
+  year		= 1992
+}
+
+%= Gregory Duck et al. =========================================================
+@article{duck:optimizing,
+  author	= {Holzbaur, Christian and {Garc{\'\i}a de la Banda}, Mar{\'\i}a and Stuckey, Peter J. and Duck, Gregory J.},
+  title		= {{Optimizing Compilation of Constraint Handling Rules in HAL}},
+  journal	= {Theory and Practice of Logic Programming: Special Issue on Constraint Handling Rules},
+  publisher	= {Cambridge University Press},
+  volume	= 5,
+  number	= {Issue 4 \& 5},
+  pages		= {503--531},
+  year		= 2005 
+}
+
+@inproceedings{duck:extending,
+  author 	= {Gregory J. Duck and Peter J. Stuckey and Mar{\'\i}a {Garc{\'\i}a de la Banda} and Christian Holzbaur},
+  title 	= {Extending arbitrary solvers with constraint handling rules},
+  booktitle 	= {PPDP'03: Proceedings of the 5th ACM SIGPLAN international conference on Principles and practice of declaritive programming},
+  year 		= {2003},
+  isbn 		= {1-58113-705-2},
+  pages 	= {79--90},
+  address	= {Uppsala, Sweden},
+  publisher 	= {ACM Press},
+}
+
+@inproceedings{duck:ask,
+  author    	= {Gregory J. Duck and Mar\'{\i}a {Garc\'{\i}a de la Banda} and Peter J. Stuckey},
+  title     	= {{Compiling Ask Constraints}},
+  booktitle 	= iclp04,
+  month		= sep,
+  year      	= {2004},
+  address	= {St-Malo, France},
+  pages     	= {105--119},
+  publisher 	= springer,
+  series    	= lncs,
+  volume    	= {3132},
+  year      	= {2004},
+}
+@inproceedings{observable_confluence,
+  author = {Gregory J. Duck and Peter J. Stuckey and Martin Sulzmann},
+  title = {Observable Confluence for {C}onstraint {H}andling {R}ules},
+  booktitle = chr06,
+  year = {2006},
+  editor = {T. Schrijvers and T. Fr\"uhwirth},
+  pages = {61-76},
+  month = {July},
+  address = {Venice, Italy}
+}
+
+%= Chameleon ===================================================================
+
+@article{chameleon:theory,
+  author	= {Peter J. Stuckey and Martin Sulzmann},
+  title		= {{A Theory of Overloading}},
+  journal	= {ACM Transations on Programming Languages and Systems},
+  year		= {2005},
+  note		= {To appear},
+  publisher	= {ACM Press}
+}
+
+%= Thom Fruehwirth =============================================================
+
+@inproceedings{thom:complexity1,
+  author 	= {Thom Fr{\"u}hwirth},
+  title 	= {{As Time Goes By: Automatic Complexity Analysis of Concurrent Rule Programs}},
+  booktitle 	= {KR2002: Proceedings of the 8th International Conference on Principles of Knowledge Representation and Reasoning},
+  year 		= {2002},
+  month		= apr,
+  address	= {Toulouse, France}
+}
+
+@inproceedings{thom:complexity2,
+  author 	= {Thom Fr{\"u}hwirth},
+  title 	= {{As Time Goes By {II}: More Automatic Complexity Analysis of Concurrent Rule Programs}},
+  booktitle 	= {Electronic Notes in Theoretical Computer Science},
+  volume 	= {59},
+  issue 	= {3},
+  publisher 	= {Elsevier},
+  editor 	= {Alessandra Di Pierro and Herbert Wiklicky},
+  year 		= 2002
+}
+
+@book{thom:book,
+  title		= {{Essentials of Constraint Programming}},
+  series	= {Cognitive Technologies},
+  author	= {Fr{\"u}hwirth, Thom and Abdennadher, Slim},
+  year		= 2003,
+  publisher	= springer
+}
+
+@inproceedings{thom:marseille,
+  author	= {Thom Fr{\"u}hwirth},
+  title		= {{Entailment Simplification and Constraint Constructors for User-Defined Constraints}},
+  booktitle	= {WCLP'93: Proceedings of the 3rd Workshop on Constraint Logic Programming},
+  address	= {Marseille, France},
+  month		= {March},
+  year		= {1993}  
+}
+
+@inproceedings{thom:sts,
+  author    	= {Thom Fr{\"u}hwirth and Christian Holzbaur},
+  title     	= {{Source-to-Source Transformation for a Class of Expressive Rules}},
+  booktitle    	= {AGP 2003: Joint Conference on Declarative Programming},
+  editor    	= {Francesco Buccafurri},
+  address	= {Reggio Calabria, Italy},
+  year      	= {2003},
+  month		= sep,
+  pages     	= {386--397},
+}
+
+@inproceedings{thom:termination,
+  author    = {Thom W. Fr{\"u}hwirth},
+  title     = {{Proving Termination of Constraint Solver Programs}},
+  booktitle = {New Trends in Constraints},
+  booktitle = {Selected Papers of New Trends in Contraints, Joint ERCIM/Compulog Net Workshop},
+  address   = {Paphos, Cyprus}, 
+  editor    = {Krzysztof R. Apt and
+               Antonis C. Kakas and
+               Eric Monfroy and
+               Francesca Rossi},
+  year      = {2000},
+  pages     = {298--317},
+  publisher = springer,
+  series    = lncs,
+  volume    = {1865},
+}
+@inproceedings{thom:pchr,
+        author = {Thom Fr\"uhwirth and Alessandra Di Pierro and Herbert Wiklicky},
+        title = {Probabilistic {C}onstraint {H}andling {R}ules },
+        editor = {Marco Comini and Moreno Falaschi},
+        booktitle = {11th International Workshop on Functional and (Constraint) Logic Programming, Selected Papers},
+        volume = {76},
+        series = {Electronic Notes in Theoretical Computer Science},
+        month = nov,
+        year = 2002,
+        publisher = {Elsevier}
+}
+
+
+
+%= Slim Abdennadher ============================================================
+
+@inproceedings{slim:semantics,
+  author 	= {Slim Abdennadher},
+  title 	= {{Operational Semantics and Confluence of Constraint Propagation Rules}},
+  booktitle 	= {CP'97: Proceedings of the 3rd {International} {Conference} on 
+                  {Principles} and {Practice} of {Constraint} {Programming} },
+  pages 	= {252--266},
+  year 		= {1997},
+  editor 	= {Gert Smolka},
+  address	= {Schloss Hagenberg, Austria},
+  publisher	= springer
+}
+
+@inproceedings{slim:confluence:simple,
+  author	= {Slim Abdennadher and Thom Fr{\"u}hwirth and Holger Meuss},
+  title		= {On Confluence of Constraint Handling Rules}, 
+  booktitle	= {{Proceedings of the Second International Conference on Principles and Practice of Constraint Programming}},
+  address 	= {Cambridge, USA},
+  publisher	= springer, 
+  series	= lncs,
+  month		= aug,
+  year		= {1996},
+}
+
+@inproceedings{slim:completion,
+  author	= {Slim Abdennadher and Thom Fr{\"u}hwirth}, 
+  title		= {{On Completion of Constraint Handling Rules}}, 
+  booktitle	= {CP'98: Proceedings of the Fourth International Conference on Principles and Practice of Constraint Programming}, 
+  address 	= {Pisa, Italy}, 
+  month		= oct,
+  year		= {1998},
+  publisher	= springer
+}
+
+@inproceedings{slim:jack,
+  author 	= {Slim Abdennadher and Ekkerhard Kr{\"a}mer and Matthias Saft and Matthias Schmauss},
+  title 	= {{JACK: A Java Constraint Kit}},
+  booktitle 	= {Proceedings of the International Workshop on Functional and (Constraint) Logic Programming, Kiel},
+  address	= {Kiel, Germany},
+  month 	= sep,
+  year 		= {2001},
+}
+
+%= Armin Wolf ==================================================================
+
+@inproceedings{armin:cp2001,
+  author 	= {Armin Wolf},
+  title 	= {{Adaptive Constraint Handling with CHR in Java}},
+  booktitle	= {CP'01: Proceedings of the 7th International Conference on Principles and Practice of Constraint Programming},
+  month		= jan,
+  year 		= {2001},
+  series 	= lncs,
+  volume        = {2239},
+  pages		= {256},
+  publisher 	= springer,
+}
+
+@article{armin:tplp,
+  author 	= {Armin Wolf},
+  title 	= {{Intelligent Search Strategies Based on Apdative Constraint Handling Rules}},
+  pages		= {567--594},
+  journal	= {Theory and Practice of Logic Programming: Special Issue on Constraint Handling Rules},
+  publisher	= {Cambridge University Press},
+  volume	= 5,
+  number	= {Issue 4 \& 5},
+  year		= 2005 
+}
+
+%= Union-Find ==================================================================
+
+@inproceedings{McAllester,
+  author	= {Harald Ganzinger and David McAllester},
+  title		= {A new meta-complexity theorem for bottom-up logic programs},
+  booktitle 	= {International Joint Conference on Automated Reasoning},
+  year 		= {2001},
+  series 	= lncs,
+  volume        = {2083},
+  pages 	= {514--528},
+  publisher 	= springer,
+}
+
+@book{Cormen,
+  author 	= "Thomas H. Cormen and Charles E. Leiserson and Ronald L. Rivest",
+  title 	= "{Introduction to Algorithms}",
+  publisher 	= "MIT Press",
+  year 		= "1990"
+}
+
+@article{Galil,
+  author 	= {Zvi Galil and Giuseppe F. Italiano},
+  title 	= {Data structures and algorithms for disjoint set union problems},
+  journal 	= {ACM Computing Surveys},
+  volume 	= {23},
+  number 	= {3},
+  year 		= {1991},
+  issn 		= {0360-0300},
+  pages 	= {319--344},
+  publisher 	= {ACM Press},
+}
+
+
+@article{Tarjan,
+  author 	= {Robert E. Tarjan and Jan {van Leeuwen}},
+  title 	= {{Worst-case Analysis of Set Union Algorithms}},
+  journal 	= {Journal of the ACM},
+  volume 	= {31},
+  number 	= {2},
+  year 		= {1984},
+  issn 		= {0004-5411},
+  pages 	= {245--281},
+  doi 		= {\url{http://doi.acm.org/10.1145/62.2160}},
+  publisher 	= {ACM Press},
+}
+
+@techreport{VariableShunting,
+  author 	= "Dan Sahlin and Mats Carlsson",
+  title  	= "{{Variable Shunting for the WAM}}",
+  institution 	= "{SICS}",
+  number	= "{SICS/R-91/9107}",
+  year		= "1991"
+}
+
+%= JmmSolve ====================================================================
+
+@book{gosling:java,
+  author	= {James Gosling and Bill Joy and Guy L. Steele},
+  title 	= {The {Java} Language Specification},
+  publisher 	= {Addison-Wesley Longman Publishing Co., Inc.},
+  year 		= {1996},
+}
+
+@techreport{saraswat:ccmm,
+  author = 	{Vijay Saraswat}, 
+  title =	{{Concurrent Constraint-based Memory Machines: A framework for Java Memory Models (Preliminary Report)}}, 
+  institution = {{IBM}}, 
+  month =	mar,
+  year =	{2004}
+}
+
+@misc{jsr133,
+  author =	{William Pugh},
+  title = 	{Proposal for Java Memory Model and Thread Specification Revision},
+  note =	{{JSR-133}, \url{http://www.jcp.org/en/jsr/detail?id=133}}
+}
+
+@misc{pugh:final,
+  author	= {William Pugh and others},
+  title		= {{JSR-133: Java$^{\text{TM}}$ Memory Model and Thread Specification}},
+  note		= {Sent to Final Approval Ballot, \url{http://www.cs.umd.edu/~pugh/java/memoryModel/jsr133.pdf}},
+  year		= 2004,
+  month		= aug,
+}
+
+%= Timed Automata ==============================================================
+
+@article{ alur:theory,
+    author = "Rajeev Alur and David L. Dill",
+    title = "A theory of timed automata",
+    journal = "Theoretical Computer Science",
+    volume = "126",
+    number = "2",
+    pages = "183--235",
+    year = "1994",
+}
+
+%= Well-Founded Semantics ======================================================
+
+@article{vangelder:wellfounded,
+  author 	= {Van Gelder, Allen and Kenneth Ross and John S. Schlipf},
+  title 	= {{The Well-Founded Semantics for General Logic Programs}},
+  journal 	= {Journal of the ACM},
+  volume 	= {38},
+  number 	= {3},
+  pages 	= {619--649},
+  year 		= {1991},
+  issn 		= {0004-5411},
+  publisher 	= {ACM Press},
+}
+
+@inproceedings{vangelder:fixpoint,
+  author 	= {Allen Van Gelder},
+  title 	= {The alternating fixpoint of logic programs with negation},
+  booktitle 	= {PODS '89: Proceedings of the eighth ACM SIGACT-SIGMOD-SIGART symposium on Principles of database systems},
+  year 		= {1989},
+  isbn 		= {0-89791-308-6},
+  pages 	= {1--10},
+  address 	= {Philadelphia, Pennsylvania, United States},
+  doi 		= {\url{http://doi.acm.org/10.1145/73721.73722}},
+  publisher 	= {ACM Press},
+}
+
+@inproceedings{berman:computing,
+  author 	= {Kenneth A. Berman and John S. Schlipf and John V. Franco},
+  title 	= {Computing Well-founded Semantics Faster},
+  booktitle 	= {Logic Programming and Non-monotonic Reasoning},
+  pages 	= {113-126},
+  year 		= {1995},
+  url 		= {citeseer.ist.psu.edu/berman95computing.html} 
+}
+
+@phdthesis{simons:smodels,
+  author 	= "Patrik Simons",
+  title 	= {Extending and Implementing the Stable Model Semantics},
+  school 	= {Helsinki University of Technology},
+  year 		= 2000,
+  address 	= {Helsinki, Finland},
+  month 	= apr,
+  note		= "Research Report 58"
+}
+
+@techreport{brass:transformation,
+  author = {Stefan Brass and J{\"u}rgen Dix and Burkhard Freitag and Ulrich Zukowski},
+  title = {{Transformation-Based Bottom-Up Computation of the Well-Founded Model}},
+  number = {15--98},
+  address = {Universit{\"a}t Koblenz-Landau, Institut f{\"u}r Informatik, Rheinau 1, D-56075 Koblenz},
+  year = {1998},
+  url = {citeseer.ist.psu.edu/brass97transformationbased.html}
+}
+
+%= Abstract Interpretation =====================================================
+
+@inproceedings{cousot,
+  author 	= {Patrick Cousot and Radhia Cousot},
+  title 	= "{Abstract Interpretation: A Unifed Lattice Model for Static Analysis of Programs
+                   by Construction or Approximation of Fixpoints}",
+  pages 	= "238--252",
+  booktitle 	= {POPL '77: Proceedings of the 4th ACM SIGACT-SIGPLAN symposium on Principles of programming languages},
+  publisher 	= {ACM Press},  
+  year 		= "1977",
+  address 	= {Los Angeles, California},
+}
+
+
+@Article{kim:ai,
+  author 	= {Kim Marriott and Harald S\o{}ndergaard and Neil D. Jones},
+  title 	= {{Denotational Abstract Interpretation of Logic Programs}},
+  journal 	= {ACM Transactions on Programming Languages and Systems},
+  year 		= {1994},
+  volume 	= {16},
+  number 	= {3},
+  pages 	= {607--648},
+  issn 		= {0164-0925},
+  publisher 	= {ACM Press},
+}
+
+%= Implication Checking ========================================================
+
+@inproceedings{schulte:combinators,
+  author	= {Christian Schulte},
+  title		= {{Programming Deep Concurrent Constraint Combinators}},
+  booktitle	= {PADL'00: 2nd International Workhop of Practical Aspects of Declarative Languages}, 
+  pages		= {215--229},
+  month		= jan,
+  year		= 2000,
+  publisher	= springer,
+  editor    	= {Pontelli, Enrico and {Santos Costa}, V\'{\i}tor},
+  address	= {Boston, MA, USA},
+  series    	= lncs,
+  volume    	= {1753},
+}
+
+@inproceedings{carlsson:clpfd,
+  author	= {Carlsson, Mats and Ottosson, Greger and Carlson, Bj{\"o}rn},
+  title		= {{An Open-Ended Finite Domain Constraint Solver}},
+  booktitle	= {PLILP'97: Proceedings of the 9th International Symposium on Programming Languages: Implementations, Logics, and Programs},
+  publisher 	= springer,
+  series    	= lncs,
+  volume    	= {1292},
+  editor	= {Hugh Glaser and Pieter H. Hartel and Herbert Kuchen},
+  pages 	= {191--206},
+  address	= {Southhampton, UK},
+  month		= sep,
+  year		= 1997,
+}
+
+%= Varia =======================================================================
+@book{okeefe,
+  author    	= "O'Keefe, Richard A.",
+  title     	= "The {C}raft of {P}rolog",
+  publisher 	= "{MIT} {P}ress",
+  address   	= "Cambridge, {MA}, {USA}",
+  year      	= 1994,
+  isbn 		= {0-262-15039-5},
+}
+
+@inproceedings{knuth:completion,
+  author	= {Knuth, Donald E. and Bendix, P. B.},
+  title		= {{Simple Word Problems in Universal Algebra}},
+  booktitle	= {Computational Problems in Abstract Algebra},
+  publisher	= {Pergamon Press},
+  pages		= {263--297},
+  year		= 1970
+}
+@book{Prolog,
+ author = {William F. Clocksin and Christopher S. Mellish},
+ title = {Programming in Prolog},
+ year = {1984},
+ isbn = {0-387-15011-0},
+ publisher = {Springer-Verlag},
+ address = {New York, NY, USA},
+}
+
+%= XSB =========================================================================
+@article{david:slg,
+  author 	= {Weidong Chen and David S. Warren},
+  title 	= {{Tabled Evaluation with Delaying for General Logic Programs}},
+  journal 	= {Journal of the ACM},
+  volume 	= 43,
+  number 	= 1,
+  pages 	= {20--74},
+  year 		= 1996,
+}
+
+@inproceedings{mcrtpre,
+	author = {Madhavan Mukund and  C. R. Ramakrishnan and  I. V. Ramakrishnan and  Rakesh Verma},
+	title = {{Symbolic Bisimulation using Tabled Constraint Logic Programming}},
+	booktitle = {International Workshop on Tabulation in Parsing and Deduction},
+	address = {Vigo, Spain},
+	month = sep,
+	year = {2000}
+}
+
+@inproceedings{mcrt,
+  author 	= {Xiaoqun Du and  C. R. Ramakrishnan and  Scott A. Smolka},
+  title 	= {{Tabled Resolution + Constraints:  A Recipe for Model Checking Real-Time Systems}},
+  booktitle 	= {IEEE Real Time Systems Symposium},
+  address 	= {Orlando, Florida},
+  month 	= {November},
+  year 	= {2000}
+}
+
+@inproceedings{ giri,
+  author 	= {Giridhar Pemmasani and   C. R. Ramakrishnan and   I. V. Ramakrishnan},
+  title 	= {{Efficient Model Checking of Real Time Systems Using Tabled Logic Programming and Constraints}},
+  booktitle 	= {International Conference on Logic Programming},
+  address 	= {Copenhagen, Denmark},
+  month 	= jul,
+  series 	= lncs,
+  publisher 	= springer,
+  year 		= {2002}
+}
+
+@inproceedings{bao:tclp,
+  author	= {Baoqiu Cui and David S. Warren},
+  title		= {{A System for Tabled Constraint Logic Programming}},
+  pages		= {478-492},
+  year		= 2000,
+  booktitle	= {CL 2000: Proceedings of the 1st International Conference on Computational Logic},
+  address	= {London, UK}, 
+  month		= jul,
+  editor    	= {John W. Lloyd and
+               	Ver{\'o}nica Dahl and
+               	Ulrich Furbach and
+               	Manfred Kerber and
+               	Kung-Kiu Lau and
+               	Catuscia Palamidessi and
+               	Lu\'{\i}s Moniz Pereira and
+               	Yehoshua Sagiv and
+               	Peter J. Stuckey},
+  publisher 	= springer,
+  series    	= lncs,
+  volume    	= {1861},
+}
+
+@inproceedings{bao:attvars,
+  author 	= {Baoqui Cui and David S. Warren},
+  title 	= {{Attributed Variables in XSB}},
+  booktitle 	= {Electronic Notes in Theoretical Computer Science},
+  volume 	= 30,
+  issue 	= 3,
+  publisher 	= {Elsevier},
+  editor 	= {In�s Dutra and others},
+  year 		= 2000
+}
+
+@inproceedings{gupta:dynamic_programming,
+  author	= {Hai-Feng Guo and Gopal Gupta},
+  title		= {{Simplifying Dynamic Programming via Tabling}},
+  editor	= {Ricardo Lopes and Michel Ferreira},
+  booktitle	= {Proceedings of CICLOPS 2003. Technical Report DCC-2003-05, DCC - FC \& LIACC, University of Porto},
+  pages		= {21--32},
+  month		= {December},
+  year		= {2003}
+}
+
+@ARTICLE{bart:abstract_interpretation,
+  AUTHOR 	= {Codish, Michael and Demoen, Bart and Sagonas, Konstantinos},
+  TITLE 	= {{Semantic-based Program Analysis for Logic-based Languages Using XSB}},
+  JOURNAL 	= {International Journal of Software Tools for Technology Transfer},
+  YEAR 		= 1998,
+  VOLUME 	= 2,
+  NUMBER 	= 1,
+  PAGES 	= {29--45},
+  MONTH 	= jan
+}
+
+@inproceedings{peter:propagators,
+  author	= {Christian Schulte and Peter J. Stuckey},
+  title		= {{Speeding up constraint propagation}},
+  editor	= {Marc Wallace},
+  booktitle	= {PPCP 2004: Proceedings of the 9th International Conference on Principles and Practices of Constraint Programming},
+  series	= lncs,
+  volume	= 3258, 
+  pages		= {619--633},
+  publisher	= springer, 
+  year		= 2004
+}
+
+@book{lloyd:lp,
+  author 	= {John W. Lloyd},
+  title 	= {Foundations of logic programming; (2nd extended ed.)},
+  year 		= {1987},
+  isbn 		= {3-540-18199-7},
+  publisher 	= springer,
+ }
+
+
+
+%= Applications =======================================================================
+
+@article{app:chrg,
+  author 	= {Henning Christiansen},
+  title 	= {{CHR Grammars}},
+  pages		= {467--501},
+  journal	= {Theory and Practice of Logic Programming: Special Issue on Constraint Handling Rules},
+  publisher	= {Cambridge University Press},
+  volume	= 5,
+  number	= {Issue 4 \& 5},
+  year		= 2005 
+}
+  
+
+
+@INPROCEEDINGS{app:tclp,
+  AUTHOR 	= {Emmanuel Coquery},
+  TITLE 	= {{TCLP}: A type checker for {CLP($\mathcal{X}$)}},
+  BOOKTITLE 	= {Proceedings of the 13th Workshop on Logic Programming Environments},
+  PAGES 	= {17--30},
+  YEAR 		= 2003,
+  EDITOR 	= {Fred Mesnard and Alexander Serebrenik},
+  PUBLISHER 	= {Katholieke Universiteit Leuven},
+}
+
+@inproceedings{app:hypotheses,
+  author    = {Marco Alberti and
+               Federico Chesani and
+               Alessio Guerri and
+               Marco Gavanelli and
+               Evelina Lamma and
+               Paola Mello and
+               Michela Milano and
+               Paolo Torroni},
+  title     = {Expressing Interaction in Combinatorial Auction through
+               Social Integrity Constraints},
+  booktitle 	= {{W(C)LP}'05: {P}roceedings of 19th {W}orkshop on ({C}onstraint) {L}ogic {P}rogramming},
+  address	= {Ulm, Germany},
+  editor  	= {Wolf, Armin and Fr{\"{u}}hwirth, Thom and Meister, Marc},
+  year      = {2005},
+  pages     = {53--64},
+}
+
+@inproceedings{app:agents,
+  author	= {Alberti, Marco and 
+	           Ciampolini, Anna and 
+		   Gavanelli, Marco and 
+		   Lamma, Evelina and 
+		   Mello, Paola and 
+		   Torroni, Paolo},
+  year		= 2003,
+  title		= {{Logic Based Semantics for an Agent Communication Language}},
+  booktitle	= {FAMAS 2003: In Proceedings of the International Workshop on Formal Approaches to Multi-Agent Systems},
+  address	= {Warsaw, Poland}, 
+  pages		= {21--36}
+}
+
+@article{app:flux,
+  author    	= {Michael Thielscher},
+  title     	= {{FLUX: A Logic Programming Method for Reasoning Agents}},
+  pages		= {533--565},
+  journal	= {Theory and Practice of Logic Programming: Special Issue on Constraint Handling Rules},
+  publisher	= {Cambridge University Press},
+  volume	= 5,
+  number	= {Issue 4 \& 5},
+  year		= 2005 
+}
+
+@inproceedings{app:transmitter,
+  author    = {Thom Fr{\"u}hwirth and
+               Pascal Brisset},
+  title     = {{Optimal Placement of Base Stations in Wireless Indoor Telecommunication}},
+  booktitle     = {CP'98: Proceedings of the 4th International Conference on Principles and Practice of Constraint Programming},
+  address   = {Pisa, Italy}, 
+  month	    =  oct,
+  year      = {1998},
+  pages     = {476--480},
+  publisher = springer,
+  editor    = {Michael J. Maher and
+               Jean-Francois Puget},
+  series    = lncs,
+  volume    = {1520},
+}
+@article{app:timetable,
+  author    = {Slim Abdennadher and
+               Michael Marte},
+  title     = {University Course Timetabling Using Constraint Handling
+               Rules},
+  journal   = {Applied Artificial Intelligence},
+  volume    = {14},
+  number    = {4},
+  year      = {2000},
+  pages     = {311--325},
+}
+
+
+%= CLP, TRS, etc ============================================================
+
+@article{jaffar:clpr,
+  author    = {Joxan Jaffar and
+               Spiro Michaylov and
+               Peter J. Stuckey and
+               Roland H. C. Yap},
+  title     = {{The CLP($\Re$) Language and System.}},
+  journal   = {ACM Trans. Program. Lang. Syst.},
+  volume    = {14},
+  number    = {3},
+  year      = 1992,
+  pages     = {339--395},
+}
+
+@inproceedings{diaz:clpfd,
+  author 	= {Daniel Diaz and Philippe Codognet},
+  title 	= {A minimal extension of the WAM for clp(FD)},
+  booktitle 	= {ICLP'93: Proceedings of the 10th International Conference on Logic Programming},
+  year 		= {1993},
+  pages 	= {774--790},
+  address 	= {Budapest, Hungary},
+  publisher 	= {MIT Press},
+}
+
+@article{zoltan:mercury,
+  author    = {Zoltan Somogyi and
+               Fergus Henderson and
+               Thomas Conway},
+  title     = {The Execution Algorithm of Mercury, an Efficient Purely
+               Declarative Logic Programming Language},
+  journal   = {Journal of Logic Programming},
+  volume    = {29},
+  number    = {1-3},
+  year      = {1996},
+  pages     = {17--64},
+}
+
+@incollection{smolka:oz,
+  author	= {Gert Smolka},
+  title		= {{The Oz Programming Model}},
+  booktitle	= {Computer Science Today: Recent Trends and Developments},
+  publisher	= springer,
+  year		= 1995,
+  address	= {Berlin, Germany},
+  editor	= {Jan van Leeuwen},
+  pages		= {324--343},
+  series	= lncs,
+  volume	= {1000},
+}
+
+@book{lisp,
+  author	= {Guy Steele},
+  title		= {{Common LISP: The Language}},
+  publisher	= {Digital Press},
+  year		= 1984
+}
+
+@book{nielson:semantics,
+  author	= {Hanne Riis Nielson and Flemming Nielson},
+  title		= {{Semantics with Applications: A Formal Introduction}},
+  publisher	= {Wiley Professional Computing}, 
+  year		= 1992
+}
+@incollection{dershowitz:rewriting,
+  author	= "Nachum Dershowitz",
+  title		= "{A Taste of Rewriting}",
+  editor	= "P.E. Lauer",
+  booktitle	= "{Functional Programming, Concurrency, Simulation and Automated Reasoning}",
+  series	= {International Lecture Series 1991--92},
+  year		= 1993,
+  pages		= "199--228",
+  Publisher	= springer
+}
+
+@book{obj3:book,
+  author 	= {Joseph A. Goguen and Grant Malcolm},
+  title 	= {{Algebraic Semantics of Imperative Programs}},
+  year 		= 1996,
+  publisher 	= {MIT Press},
+  address 	= {Cambridge, MA, USA},
+}
+
+@incollection{obj3:introduction,
+  author 	= "Joseph Goguen and Timothy Winkler and Jos\'e Meseguer and Kokichi Futatsugi and Jean-Pierre Jouannaud",
+  title 	= "Introducing {OBJ}",
+  booktitle 	= "Applications of Algebraic Specification using {OBJ}",
+  publisher 	= "Cambridge",
+  editor 	= "Joseph Goguen",
+  year 		= "1993",
+}
+
+@inproceedings{maude2,
+  author =	 {Manuel Clavel and Francisco Dur\'{a}n and
+		  Steven Eker and Patrick Lincoln and
+                  Narciso Mart\'{\i}-Oliet and Jos\'{e} Meseguer and
+                  Carolyn Talcott},
+  title =	 {{The Maude 2.0 System}},
+  booktitle =	 {RTA 2003: Rewriting Techniques and Applications},
+  series =	 lncs,
+  editor =	 {Robert Nieuwenhuis},
+  number =	 {2706},
+  pages =	 {76-87},
+  year =	 {2003},
+  month =	 jun,
+  publisher =	 springer
+}
+
+@incollection{rbs,
+  AUTHOR 	= {R. Davis and B. G. Buchanan and E. H. Shortliffe},
+  TITLE 	= {{Production Rules as a Representation for a Knowledge-Based Consultation Program}},
+  YEAR 		= 1984,
+  BOOKTITLE 	= {Readings in Medical Artificial Intelligence: The First Decade},
+  EDITOR 	= {W. J. Clancey and E. H. Shortliffe},
+  PUBLISHER 	= {Addison-Wesley},
+  ADDRESS 	= {Reading, MA, USA},
+  PAGES 	= {98--130},
+}
+
+@inproceedings{gorn:trs,
+  author	= {S. Gorn},
+  title		= {{Explicit Definitions and Linguistic Dominoes}},
+  booktitle	= {Systems and Compter Science},
+  address	= {London, Ontario, USA},
+  month		= sep,
+  year		= 1965,
+  pages 	= {77--115}
+}
+
+@techreport{brand:ctrs,
+  author	= {D. Brand and J.A. Darringer and W.J.Jr. Joyner},
+  title		= {{Completeness of Conditional Reductions}},
+  institution	= {IBM Research Center},
+  address	= {Yorktown Heigghts, New York, USA},
+  month		= dec,
+  year		= 1978,
+  number	= {RC7404}
+} 
+
+@inproceedings{ehrig:gtrs,
+  author 	= {Hartmut Ehrig},
+  title 	= {{Introduction to the Algebraic Theory of Graph Grammars (A Survey)}},
+  booktitle 	= {Proceedings of the International Workshop on Graph-Grammars and Their Application to Computer Science and Biology},
+  year 		= 1979,
+  pages 	= {1--69},
+  publisher 	= springer,
+  address 	= {London, UK},
+}
+
+@inproceedings{visser:stratego,
+  author      = {Eelco Visser},
+  title       = {{Stratego: {A} Language for Program Transformation based on Rewriting Strategies. {S}ystem Description of {Stratego} 0.5}},
+  booktitle   = {Rewriting Techniques and Applications (RTA'01)},
+  pages       = {357--361},
+  year        = 2001,
+  editor      = {A. Middeldorp},
+  volume      = 2051,
+  series      = lncs,
+  month       = may,
+  publisher   = springer,
+}
+
+@manual{clips,
+  author        = {Robert Savely and others},
+  title         = {{CLIPS Reference Manual}},
+  version	= {6.23},
+  month         = jan,
+  year          = {2005},
+}
+
+@manual{jrules,
+  author        = {ILOG},
+  title         = {{JRules 4.6 Technical White Paper}},
+  month         = apr,
+  year          = {2004},
+}
+
+@book{jess,
+  author	= {Ernest Friendman-Hill},
+  title		= {{Jess in Action}},
+  year		= {2003},
+  publisher	= {Manning Publications}
+}  
+
+@inproceedings{ccl:ai,
+  author	= {C. Codognet and P. Codognet and M. Corsini},
+  title		= {{Abstract Interpretation for Concurrent Logic Languages}},
+  editor	= {S. Debray and M. Hermenegildo},
+  booktitle	= {NACLP'90: Proceedings of the North American Conference on Logic Programming},
+  year		= 1990,
+  pages		= {215--232},
+  publisher	= {MIT Press},
+  address	= {Cambridge, MA, USA},
+}
+
+@inproceedings{ccl:codish,
+  author 	= {Michael Codish and Moreno Falaschi and Kim Marriott and William H. Winsborough},
+  title 	= {{Efficient Analysis of Concurrent Constraint Logic Programs}},
+  booktitle 	= {ICALP'93: Proceedings of the 20th International Colloquium on Automata, Languages and Programming},
+  year 		= 1993,
+  pages 	= {633--644},
+  publisher 	= springer,
+  address 	= {London, UK},
+}
+
+
+@article{RETE,
+	author = {Charles L. Forgy},
+	title = {Rete: A fast algorithm for the many pattern / many object pattern match problem},
+	journal = {Artificial Intelligence},
+	volume = {19},
+	number = {1},
+	pages = {17-37},
+	year = 1982,
+	publisher = {Elsevier}
+}
+@inproceedings{LEAPS,
+  author =	 {Daniel P. Miranker and David A. Brant and Bernie Lofaso and David Gadbois},
+  title =	 {On the Performance of Lazy Matching in Production Systems},
+  booktitle =	 {8th National Conference on Artificial Intelligence (AAAI)},
+  address =      {Boston, MA, USA},
+  editor =	 {Thomas Dietterich and William Swartout},
+  pages =	 {685--692},
+  year =	 {1990},
+  publisher =	 {MIT Press}
+}
+		
+@book{Jess,
+        author = {Ernest Friedman-Hill},
+        title = {Jess in Action: Java Rule-Based Systems},
+        year = 2003,
+        publisher = {Manning Publications}
+}
+@book{CLIPS,
+ author = {Joseph C. Giarratano and Gary Riley},
+ title = {Expert Systems: Principles and Programming},
+ year = {1994},
+ isbn = {0534937446},
+ publisher = {PWS Publishing Co.},
+ address = {Boston, MA, USA},
+}
+
+@inproceedings{cuckoo,
+ author = {Rasmus Pagh and Flemming Friche Rodler},
+ title = {Cuckoo Hashing},
+ booktitle = {ESA '01: Proceedings of the 9th Annual European Symposium on Algorithms},
+ year = {2001},
+ isbn = {3-540-42493-8},
+ pages = {121--133},
+ publisher = {Springer-Verlag},
+ address = {London, UK},
+ }
+
+@misc{hashing,
+ author = {Robert R. Jenkins},
+ title = {Hash Functions for Hash Table Lookup},
+ year = {1997},
+ note = {\url{http://burtleburtle.net/bob/hash/evahash.html}}
+ }
+
+@article{kowalski,
+ author = {Robert Kowalski},
+ title = {Algorithm = logic + control},
+ journal = {Commun. ACM},
+ volume = {22},
+ number = {7},
+ year = {1979},
+ issn = {0001-0782},
+ pages = {424--436},
+ doi = {\url{http://doi.acm.org/10.1145/359131.359136}},
+ publisher = {ACM Press},
+ address = {New York, NY, USA},
+ }
+
+@UNPUBLISHED{Bar:guide98,
+	TITLE = {On-line Guide to Constraint Programming},
+	AUTHOR = "Roman Barták",
+	YEAR = 1998,
+	NOTE = {\url{http://kti. mff.cuni.cz/~abartak/constraints}},
+}
+
+@misc{bartak99constraint,
+  author = "R. Bartak",
+  title = "Constraint programming: In pursuit of the holy grail",
+  text = "R. Bartak. Constraint programming: In pursuit of the holy grail. In Proceedings
+    of the Week of Doctoral Students (WDS), Prague, Czech Republic, June 1999.",
+  year = "1999",
+}
+
+@inproceedings{bartak01,
+  author = "R. Bartak",
+  title = "Theory and practice of constraint propagation",
+  booktitle = "Proceedings of the 3rd workshop on Constraint Programming for Decision and Control",
+  year = "2001",
+}
+
+@inproceedings{jack,
+	author = {Slim Abdennadher and Ekkerhard Kr\"amer and Matthias Saft and Matthias Schmauss},
+	title = {JACK: A Java Constraint Kit},
+	booktitle = {Proceedings of International Workshop on Functional and (Constraint) Logic Programming, Kiel, Germany (13th--15th September 2001)},
+	year = {2001},
+	note = {\url{http://www.pms.ifi.lmu.de/publikationen/#PMS-FB-2001-10}}
+}
+
+@inproceedings{chrv,
+  author    = {Slim Abdennadher and
+               Heribert Sch{\"u}tz},
+  title     = {CHRv: A Flexible Query Language.},
+  booktitle = {FQAS},
+  year      = {1998},
+  pages     = {1-14},
+  ee        = {\url{http://link.springer.de/link/service/series/0558/bibs/1495/14950001.htm}},
+  crossref  = {DBLP:conf/fqas/1998},
+  bibsource = {DBLP, \url{http://dblp.uni-trier.de}}
+}
+
+@proceedings{DBLP:conf/fqas/1998,
+  editor    = {Troels Andreasen and
+               Henning Christiansen and
+               Henrik Legind Larsen},
+  title     = {Flexible Query Answering Systems, Third International Conference,
+               FQAS'98, Roskilde, Denmark, May 13-15, 1998, Proceedings},
+  booktitle = {FQAS},
+  publisher = {Springer},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1495},
+  year      = {1998},
+  isbn      = {3-540-65082-2},
+  bibsource = {DBLP, \url{http://dblp.uni-trier.de}}
+}
+
+@inproceedings{boehmgc,
+ author = {Hans-J. Boehm},
+ title = {Bounding space usage of conservative garbage collectors},
+ booktitle = {POPL '02: Proceedings of the 29th ACM SIGPLAN-SIGACT symposium on Principles of programming languages},
+ year = {2002},
+ isbn = {1-58113-450-9},
+ pages = {93--100},
+ location = {Portland, Oregon},
+ doi = {\url{http://doi.acm.org/10.1145/503272.503282}},
+ publisher = {ACM Press},
+ address = {New York, NY, USA},
+ }
+
+@book{introlp,
+ author = {Michael Spivey},
+ title = {An introduction to logic programming through Prolog},
+ year = {1996},
+ isbn = {0-13-536047-1},
+ publisher = {Prentice-Hall, Inc.},
+ address = {Upper Saddle River, NJ, USA},
+ }

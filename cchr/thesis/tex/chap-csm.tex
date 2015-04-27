@@ -1,0 +1,69 @@
+\chapter{CSM - De Constraint Solver Macros} \label{chap:csm}
+
+In dit hoofdstuk wordt een overzicht gegeven van alle macro's die gedefinieerd zijn in CSM. 
+
+\begin{table}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+{\bf Macro} & {\bf argumenten} & {\bf Betekenis} \\
+\hline
+\code{CSM\_DIFF} & {\em var1}, {\em var2} & Controleer of {\em var1} en {\em var2} verschillende constraint suspensions zijn. \\
+\code{CSM\_DIFFSELF} & {\em var} & Controleer of {\em var} een andere constraint suspension is dan de actieve constraint. \\
+\code{CSM\_HISTCHECK} & {\em regel}, {\em code}, {\em susps\ldots} & Voer {\em code} enkel uit wanneer {\em regel} nog niet uitgevoerd is met {\em susps\ldots}. \\
+\code{CSM\_IF} & {\em expr}, {\em code} & Voer {\em code} enkel uit wanneer aan {\em expr} voldaan is. \\
+\code{CSM\_LOOP} & {\em constr}, {\em var}, {\em code} & Voer {\em code} uit voor alle constraint suspensions van type {\em constr} waarbij variabele {\em var} zal verwijzen naar de betrokken constraint suspension. \\
+\code{CSM\_LOOPNEXT} & {\em var} & Ga onmiddellijk naar volgende element bij het itereren in {\em var}. \\
+\hline
+\end{tabularx}
+\label{tab:csm-iter}
+\caption{CSM macro's voor iteratie}
+\end{table}
+
+\begin{table}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+{\bf Macro} & {\bf argumenten} & {\bf Betekenis} \\
+\code{CSM\_ADD} & {\em constr}, {\em args\ldots} & Cre\"eer nieuwe constraint van type {\em constr}, met argumenten {\em args\ldots} \\
+\code{CSM\_ADDE} & {\em constr} & Cre\"eer nieuwe constraint van type {\em constr}, zonder argumenten. \\
+\code{CSM\_ARG} & {\em constr}, {\em naam} & Argument {\em naam} van de actieve constraint (type {\em constr}) opvragen \\
+\code{CSM\_DEADSELF} & {\em code} & Voer {\em code} enkel uit als de actieve constraint ``dood'' is (niet in constraint store of reeds gereactiveerd).\\
+\code{CSM\_DEAD} & {\em var}, {\em code} & Voer {\em code} enkel uit als de niet-actieve constraint {\em var} ``dood'' is (niet in constraint store).\\
+\code{CSM\_DECLOCAL} & {\em type}, {\em naam} & Definieer een (wijzigbare) lokale variabele \\
+\code{CSM\_DEFLOCAL} & {\em type}, {\em naam}, {\em waarde} & Definieer en initialiseer een (wijzigbare) lokale variabele \\
+\code{CSM\_DESTRUCT} & {\em constr}, {\em args\ldots} & Roep de destructor aan voor constraint type {\em constr}, met argumenten {\em args\ldots}. \\
+\code{CSM\_END} & & Be\"eindig afhandeling actieve constraint \\
+\code{CSM\_HISTADD} & {\em regel}, {\em susps\ldots} & Voeg {\em susps\ldots} toe aan propagation geschiedenis voor regel {\em regel}, zodat \code{CSM\_HISTCHECK} vanaf nu deze combinatie niet meer toelaat. \\
+\code{CSM\_IMMLOCAL} & {\em type}, {\em naam}, {\em waarde} & Definieer en initialiseer een (onwijzigbare) lokale variabele \\
+\code{CSM\_KILL} & {\em var}, {\em constr} & Verwijder de niet-actieve constraint {\em var} (van type {\em constr}) uit de constraint store. Na deze aanroep mag {\em var} niet meer gebruikt worden, deze zou naar een onbestaande of zelfs andere constraint suspension kunnen verwijzen.\\
+\code{CSM\_KILLSELF} & {\em constr} & Verwijder de actieve constraint (van type {\em constr}) uit constraint store. \\
+\code{CSM\_LARG} & {\em constr}, {\em var}, {\em naam} & Argument {\em naam} van niet-actieve constraint {\em var} (type {\em constr}) opvragen. \\
+\code{CSM\_LOCAL} & {\em var} & Verwijs naar lokale variabele {\em var}. \\
+\code{CSM\_MAKE} & {\em constr} & Maak actieve constraint suspension aan, van type {\em constr} (indien nog niet gebeurd) \\
+\code{CSM\_NATIVE} & {\em code} & Een stuk C code uitvoeren \\
+\code{CSM\_NEEDSELF} & {\em constr} & Zorg ervoor dat de huidige constraint (van type {\em constr}) in de constraint store zit (=erover ge\"itereerd kan worden). \\
+\code{CSM\_START} & & Het genereren van de eigenlijke code \\
+\hline
+\end{tabularx}
+\caption{Overige CSM macro's}
+\label{tab:csm-rest}
+\end{table}
+
+\begin{table}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+{\bf Macro} & {\bf argumenten} & {\bf Betekenis} \\
+\hline
+\code{CSM\_DEFIDXVAR} & {\em constr}, {\em hash}, {\em var} & Geeft aan dat {\em var} gebruikt zal worden als iterator over hash {\em hash}. Wat in hash {\em hash} bewaard wordt, is met een aparte indexmacro aangeduid. \\
+\code{CSM\_SETIDXVAR} & {\em constr}, {\em hash}, {\em var}, {\em arg}, {\em val} & Geeft aan dat voor de index opzoeking in iterator {\em var} met hash {\em hash}, ge\"eist wordt dat argument {\em arg} van constraint {\em constr} gelijk is aan {\em arg}. \\
+\code{CSM\_IDXLOOP} & {\em constr}, {\em hash}, {\em var}, {\em code} & Itereer in {\em var} over de gevraagde elementen, waarbij {\em code} elke keer uitgevoerd wordt. Deze iterator staat niet toe dat er voortge\"itereerd wordt nadat de constraint store aangepast is. \\
+\code{CSM\_IDXUNILOOP} & {\em constr}, {\em hash}, {\em var}, {\em code} & Zelfde als \code{CSM\_IDXLOOP}, maar met ondersteuning voor wijzigen constraint store tijdens itereren. Merk wel op dat constraints die tijdens het itereren toegevoegd werden al dan niet voorkomen. Dit is normaal geen probleem, aangezien deze toch sowieso reeds geactiveerd werden. \\
+\code{CSM\_LOGLOOP} & {\em constr}, {\em var}, {\em ent}, {\em type}, {\em arg}, {\em code} & Macro om over alle elementen van een bepaalde index, bijgehouden in de metadata van een logische variabele te itereren. {\em type} is het type logische variabele, {\em ent} is de te gebruiken index, {\em arg} is de betrokken logische variabele. \\
+\code{CSM\_LOGUNILOOP} & {\em constr}, {\em var}, {\em ent}, {\em type}, {\em arg}, {\em code} & Analoog aan \code{CSM\_LOGLOOP}, maar met ondersteuning voor wijzigen constraint store tijdens itereren. \\
+\code{CSM\_UNIEND} & {\em constr}, {\em var} & Nodig bij het voortijdig be\"eindigen van een ``uni'' lus (juist voor een \code{CSM\_END} of \code{CSM\_LOOPNEXT} van een meer naar buiten gelegen lus.\\
+\hline
+\end{tabularx}
+\caption{CSM macro's voor gebruik van indexen}
+\label{tab:csm-idx}
+\end{table}
+
+\newpage

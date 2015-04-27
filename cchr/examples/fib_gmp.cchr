@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <gmp.h>
+
+#include "fib_gmp_cchr.h"
+
+typedef struct {
+  mpz_t v;
+} bigint_t;
+
+cchr {
+  constraint fib(int,bigint_t) option(destr,{mpz_clear($2.v);}) option(fmt,"fib(%i,%p)",$1,$2.v);
+  constraint init(int) option(fmt,"init(%i)",$1);
+  
+  begin @ init(_) ==> 
+    bigint_t Z=, bigint_t Y=, 
+    { mpz_init_set_si(Z.v,1); mpz_init_set_si(Y.v,1); },
+    fib(0,Z), fib(1,Y);
+
+  calc @ init(Max), fib(N1,M1), fib(N,M2) ==>
+  alt(N1+1==N,N1==N-1), N<Max |
+    bigint_t sum=,
+    { mpz_init(sum.v); mpz_add(sum.v,M1.v,M2.v); },
+    fib(N+1, sum);
+
+}
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int a=(argc>1 ? (int)strtol(argv[1],NULL,0) : 92);
+  cchr_add_init_1(a);
+  cchr_consloop(j,fib_2,{ if (cchr_consarg(j,fib_2,1)==a) gmp_printf("fib(%i,%Zd)\n",(int)cchr_consarg(j,fib_2,1),cchr_consarg(j,fib_2,2).v);});
+  cchr_runtime_free();
+  return 0;
+}

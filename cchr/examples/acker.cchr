@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <gmp.h>
+
+#include "logical.h"
+
+typedef struct {
+  mpz_t v;
+} bigint_t;
+
+#define bigint_destr(b) {mpz_clear(b.v);}
+
+logical_code(bigint_t,log_bigint_t,bigint_destr)
+
+cchr {
+  constraint acker(int,bigint_t,log_bigint_t) destr({mpz_clear($2.v); log_bigint_t_destruct($3);});
+  
+  id @ acker(X,Y1,A1) \ acker(X,Y2,A2) <=> mpz_cmp(Y1.v,Y2.v)==0 | { log_bigint_t_seteq(A1,A2); };
+  
+  next @ acker(0,Y,A) ==>
+    bigint_t V=,
+    { mpz_init(V.v); },
+    { mpz_add_ui(V.v,Y.v,1); },
+    { log_bigint_t_setval(A,V); };
+    
+  prev @ acker(X,Y,A) ==> mpz_cmp_si(Y.v,0)==0 | 
+    bigint_t V=,
+    { mpz_init_set_si(V.v,X-1); },
+    { log_bigint_t_setval(A,V); };
+    
+  cont @ acker(X,Y,A) ==> X>0, Y>0 |
+    log_bigint_t A1=log_bigint_t_create(),
+    bigint_t Y1=,
+    { mpz_init(Y1.v); },
+    { mpz_sub_ui(Y1.v,Y.v,1); }
+    acker(X,Y1,log_bigint_t_copy(A1)),
+    acker(X-1,log_bigint_t_getval(A1),log_bigint_t_copy(A)),
+    { log_bigint_t_destruct(A1); };
+
+}
+
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int x=(argc>1 ? (int)strtol(argv[1],NULL,0) : 3);
+  int y=(argc>1 ? (int)strtol(argv[1],NULL,0) : 12);
+  log_bigint_t answer=log_bigint_t_create();
+  cchr_add_acker_3(x,y,log_bigint_t_copy(answer));
+  gmp_printf("acker(%i,%i) = %Zd\n",x,y,log_bigint_t_getval(answer).v);
+  log_bigint_t_destruct(answer);
+  cchr_runtime_free();
+  return 0;
+}

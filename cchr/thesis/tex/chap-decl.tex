@@ -1,0 +1,103 @@
+\hyphenation{trash-ing}
+\hyphenation{consistentie-technieken}
+
+\chapter{Declaratief Programmeren} \label{chap:decl}
+
+\section{Overzicht} \label{sec:decl-overz}
+
+Traditioneel wordt software geschreven in imperatieve programmeertalen. Deze manier van werken vertrekt van het principe dat men de computer opdrachten geeft en de computer deze \'e\'en voor \'e\'en uitvoert. De programmeur blijft echter verantwoordelijk voor het vinden van een oplossingswijze voor zijn probleem. Dit is wat men in declaratieve talen probeert te vermijden: de programmeur specificeert enkel het probleem en de computer zoekt een (effici\"ente) oplossingsstrategie.
+
+In \cite{kowalski} wordt dan ook gesteld: een algoritme is logica + controle. De logica beschrijft waaraan het resultaat moet voldoen, de controle beschrijft hoe dit resultaat bereikt moet worden. In een declaratieve taal wordt geprobeerd de controle los te koppelen van het programma.
+
+Er zijn verschillende paradigma's die gehanteerd worden om het probleem te beschrijven. Elk geeft aanleiding tot een eigen klasse declaratieve programmeertaal: \begin{itemize}
+\item Logic Programming: het probleem wordt omschreven aan de hand van eerste-orde logica.
+\item Constraint Programming: het probleem wordt omschreven als een reeks beperkingen op een verzameling variabelen over een (eindig) domein.
+\item Constraint Logic Programming: een combinatie van beide bovenstaande principes.
+\end{itemize}
+
+De voordelen van declaratief programmeren zijn duidelijk. Men ontlast de programmeur van hoe een probleem op te lossen. De bekomen programma's zijn voor veel problemen heel eenvoudig, elegant en overzichtelijk. Kennis van hoe de uitvoering van de bekomen programma's verloopt, kan nuttig zijn om de effici\"entie op te drijven, maar is in principe niet essentieel om programma's te kunnen schrijven of begrijpen, wat bij imperatieve talen wel het geval is.
+
+\section{Constraint Programming}
+
+Constraint Programming stelt dat een programma moet bestaan uit een aantal beperkingen die op een aantal variabelen opgelegd worden. Die variabelen zijn dan elementen van een bepaald eindig of oneindig domein en het zoeken naar oplossingen kan op verschillende manieren gebeuren, afhankelijk van de aard van het probleem. Deze inleiding is gebaseerd op \cite{bartak99constraint}.
+
+Een constraint is in feite een veralgemening van een vergelijking: ze legt een voorwaarde op aan \'e\'en of meerdere variabelen en stelt dat niet elke combinatie van waarden ervoor mag voorkomen. Er worden twee grote groepen van problemen onderscheiden, Constraint Satisfaction Problems (CSP) en Constraint Solving. Het belangrijkste verschil tussen beiden is de grootte van het domein waarover het probleem handelt. Bij een CSP is dit een eindige verzameling, waarvan de mogelijke waarden niet noodzakelijk numeriek hoeven te zijn. De oplossingsstrategie bestaat dan ook algemeen gezien uit het overlopen van verschillende mogelijkheden of het beperken van mogelijkheden tot er zo weinig mogelijk overblijven. Bij Constraint Solving zijn de domeinen groter en het overlopen van combinaties is ongeschikt om deze op te lossen. Er wordt dan ook meer beroep gedaan op wiskundige methodes.
+
+Bij het zoeken naar oplossingen voor CSP, kan het zijn dat men ge\"interesseerd is in een arbitraire oplossing, in alle oplossingen of in de beste (of althans zo goed mogelijke) oplossing. Een oplossing bestaat uit een reeks variabele-toewijzingen zodat alle variabelen tegelijk aan alle opgelegde beperkingen voldoen.
+
+\subsection{Systematisch zoeken}
+
+De eenvoudigste manier om een CSP op te lossen is simpelweg mogelijkheden af te lopen en te controleren of aan de beperkingen voldaan is. Deze methode heet ``Generate and Test''. Indien er een conflict gevonden wordt (een constraint waar niet aan voldaan is), wordt een nieuwe waardetoewijzing gezocht.
+Het is een heel simpele methode die zekerheid biedt \'e\'en of zelfs alle oplossingen te vinden, maar is heel ineffici\"ent. Het is mogelijk deze techniek te versnellen, door het genereren intelligenter te maken en zo minder conflicterende mogelijkheden te genereren. Een andere mogelijkheid is de variabelen niet allen tegelijk, maar \'e\'en voor \'e\'en een waardetoewijzing geven en zodra alle variabelen betrokken in een bepaalde constraint een waarde toegewezen hebben, de geldigheid van deze constraint nagaan. Indien dan een conflict optreedt, wordt naar de laatste variabele waar nog niet alle mogelijkheden voor geprobeerd waren teruggekeerd en daarvoor de volgende mogelijkheid gekozen. Deze techniek, die ``backtracking'' genoemd wordt, is duidelijk beter dan pure Generate and Test, want er worden hele deelverzamelingen mogelijkheden reeds op voorhand uitgesloten. Backtracking is echter zelden de meest effici\"ente methode, maar ze is eenvoudig te implementeren.
+
+\subsection{Consistentietechnieken}
+
+Een andere methode om tot een oplossing te komen, is het gebruik van consistentietechnieken. Deze komen neer op bijhouden welke mogelijkheden elke variabele nog heeft en (vereenvoudigde) constraints gebruiken om mogelijkheden hiervan weg te snoeien. Er bestaan verschillende gradaties van consistentietechnieken, die steeds ingewikkeldere vormen van inconsistenties op voorhand kunnen verwijderen uit de mogelijkheden. Ze worden dan ook meestal gebruikt in combinatie met andere technieken om de overgebleven mogelijkheden af te gaan, indien consistentietechnieken niet tot een volledige oplossing kunnen komen.
+
+Afhankelijk van de graad van consistentie worden deze technieken Node Consistency (NC), Arc Consistency (AC) of Path Consistency (PC) genoemd. NC technieken verwijderen enkel mogelijke waardes van variabelen die inconsistent zijn met een constraint op enkel die variabele. AC technieken kunnen mogelijkheden verwijderen die niet in combinatie met andere overblijvende waardes van andere variabelen kunnen voorkomen volgens constraints op twee variabelen. PC technieken gaan nog verder, door combinaties van drie variabelen toe te laten bij controles. Hoe hoger de graad van consistentie die nagestreefd wordt, hoe computationeel zwaarder het algoritme wordt echter. Er kan aangetoond worden dat de meeste van deze technieken niet compleet zijn, met andere woorden niet gegarandeerd de oplossing kunnen vinden. Een verdergaande uitleg kan gevonden worden in \cite{bartak01}. 
+
+\subsection{Constraintpropagatie}
+
+Systematisch zoeken is in staat altijd een oplossing te vinden, maar kan daar zeer lang over doen. Er zijn enkele bekende redenen waarom deze strategie overbodig veel werk vraagt. Zo is er trashing, het herhaaldelijk conflicten vinden om telkens dezelfde reden. Er is ook veel redundant werk, namelijk conflicterende waardes die niet onthouden worden en ten laatste het laattijdig ontdekken van conflicten.
+
+Consistentietechnieken daarentegen beperken de zoekruimte snel, maar komen zeker niet altijd tot de oplossing. Daarom worden ze zoals gezegd meestal samen gebruikt. Er zijn hierbij 2 basistechnieken, Look Back en Look Ahead schema's.
+
+Bij Look Back worden consistentietechnieken gebruikt tijdens het itereren om zo conflicten tussen de variabelen die reeds een waarde toegewezen kregen te ontdekken. Backtracking is de eenvoudigste techniek hiervoor, die gewoon probeert inconsistenties te ontdekken en zo ja, voortgaat met de volgende waarde voor de laatste variabele. Backjumping verbetert deze techniek nog, door te analyseren welke variabele het conflict veroorzaakt en wanneer geen mogelijkheden overblijven, terug te springen naar de conflicterende variabele in plaats van de laatste variabele. Er zijn nog enkele andere verbeteringen, zoals backchecking en backmarking, die gebaseerd zijn op het onthouden van conflicterende waardes, zodat ze niet opnieuw gecontroleerd moeten worden.
+
+Alle methodes ontdekken echter nog steeds pas een conflict nadat het optreedt. Daarom gaat men in Look Ahead schemas consistentietechnieken gaan toepassen op combinaties van variabelen die reeds wel en variabelen die nog geen waarde toegekend kregen, om zo toekomstige mogelijkheden te gaan uitsluiten, nog voor ze optreden. Hier zijn verschillende varianten van, die meestal AC technieken gebruiken. Meer informatie kan gevonden worden in de literatuur, zie \cite{bartak01} en \cite{bartak99constraint}.
+
+\section{Logic Programming}
+
+De volgende vorm van declaratief programmeren waar even op ingegaan wordt heet Logic Programming of logisch programmeren. Deze techniek is gebaseerd op de wiskundige theorie van eerste-orde predikatenlogica. Een uitgebreide uitleg kan gevonden worden in \cite{introlp}.
+
+\subsection{Predikatenlogica}
+
+Predikatenlogica is een tak van de wiskunde die zich bezighoudt met het al dan niet waar zijn van logische formules. Het is een uitbreiding van de propositielogica. Propositielogica gebruikt formules waarin naar beweringen verwezen wordt en verbanden over het al dan niet waar zijn ervan. Deze beweringen worden proposities genoemd en de verbanden ertussen maken gebruik van operatoren als conjunctie (en; $\land$), disjunctie (of; $\lor$), negatie (niet; $\lnot$), implicatie (als \ldots, dan \ldots; $\Rightarrow$) en equivalentie (\ldots als en slechts als \ldots; $\Leftrightarrow$). Een typische uitspraak uit de propositielogica zou zijn ``als de zon schijnt dan regent het niet'' of meer formeel ``(de zon schijnt) $\Rightarrow$ $\lnot$ (het regent)''.
+
+Predikatenlogica breidt deze theorie uit door proposities afhankelijk te maken van objecten. Een predikaat wordt dan een bewering over nul of meer objecten. De geldige symbolen zijn dan deze van de propositielogica, met daarbij de kwantoren ``voor elke'' ($\forall$) en ``er bestaat'' ($\exists$).
+
+\subsection{Syntax}
+
+In een logisch programma kunnen {\em variabelen}, {\em functie}- en {\em predikaat}symbolen voorkomen. Een variabele is een symbool dat conventioneel met een hoofdletter begint. functie- en predikaatsymbolen zullen conventioneel beginnen met een kleine letter of volledig uit speciale tekens bestaan. Functies en predikaten kunnen een vast aantal argumenten krijgen. Indien naar de functie of het predikaat zelf verwezen wordt, noemen we dat een {\em functor} met een bepaalde {\em ariteit} (het aantal argumenten). Dit wordt als \code{\argu{functor}/\argu{ariteit}} genoteerd. Een {\em term} is een variabele of een functie met argumenten, waarbij elk argument opnieuw een term is. Een {\em atom} is een predikaat met termen als argumenten. Een functie (of atoom) zonder argumenten wordt een constante genoemd.
+
+Logical Programming is gebaseerd op eerste-orde predikatenlogica. Er wordt wel uitgegaan van een vereenvoudigde vorm. Zo zal een programma bestaan uit ``sentences''. Een sentence kan een head en een body hebben, die beiden eventueel leeg kunnen zijn. 
+Een sentence met een niet-lege head wordt een clause genoemd en definieert wanneer een bepaald predikaat waar is. Een clause zonder body stelt dat zijn head zonder meer waar is. Bijvoorbeeld: \begin{Verbatim}
+  vader(jan,piet).
+  vader(piet,an).
+\end{Verbatim}
+Deze clause stelt dat jan de vader is van piet en piet de vader van an. ``jan'', ``piet'' en ``an'' zijn hierbij constantes, die verwijzen naar objecten. In pure LP-talen zijn deze objecten niet getypeerd en zijn hun enige eigenschappen de eventuele predikaten over hen die al dan niet waar zijn. Wanneer een clause wel een body heeft, stelt deze een voorwaarde waaronder het predikaat in de head waar is. Dit komt dan overeen met een logische implicatie. Bijvoorbeeld: \begin{Verbatim}
+  grootvader(X,Y) :- vader(X,Z), vader(Z,Y).
+\end{Verbatim}
+Deze clause stelt dat X de grootvader is van Y, op voorwaarde dat er een Z bestaat waarvoor geldt dat X de vader is van Z en Z de vader van Y. Merk op dat X, Y en Z in dit voorbeeld geen objecten meer zijn maar variabelen, die steeds een naam dragen die met een hoofdletter begint. De komma (\code{,}) wordt gebruikt voor conjunctie. Disjunctie is mogelijk door een tweede clause te geven: \begin{Verbatim}
+  grootvader(X,Y) :- vader(X,Z), moeder(Z,Y).
+\end{Verbatim}
+Beide vorige clauses samen stellen dan dat X de grootvader is van Y, indien X de vader is van een Z die ofwel vader ofwel moeder is van Y. Belangrijk is dat uitgegaan wordt van de ``closed world assumption'', met andere woorden dat er geen objecten bestaan buiten degene waar in het programma naar verwezen wordt. Zonder deze aanname zou het waar zijn van \code{grootvader(X,Y)} onbeslisbaar kunnen zijn. Er zou namelijk een niet-vernoemde Z kunnen bestaan die zoon is van X en vader van Y.
+
+Een LP programma bestaat nu uit een opsomming van dergelijke clauses en men kan dan interactief vragen (of ``queries'') stellen aan het programma. Dat zijn sentences waarbij enkel een head en geen body is, ook {\em goal}s genaamd. Die dienen dan gelezen te worden als ``zoek of \ldots waar is''. Zo zou men kunnen vragen: \begin{Verbatim}
+  ?- grootvader(X,an).
+\end{Verbatim}
+waarop het programma zou antwoorden met ``X = jan.''. De gebruikte clauses worden ook {\em Horn clauses} genoemd en de logica die gebruikt wordt aldus {\em Horn clause logica}.
+
+\subsection{Unificatie}
+Bij het zoeken naar clauses die van toepassing zijn op een bepaalde uitdrukking, wordt gebruik gemaakt van zogenaamde unificatie. Een unifier van twee uitdrukkingen A en B is een substitutie die variabelen die in A en B voorkomen afbeeldt op andere termen, zodanig dat na substitutie beide uitdrukkingen aan elkaar gelijk zijn. Een unifier van \code{test(X,1)} en \code{test(2,Y)} zou bijvoorbeeld \code{X=1, Y=2.} kunnen zijn. Er kan aangetoond dat indien er een unifier bestaat voor twee uitdrukkingen, er ook een {\em most general unifier} (mgu) bestaat. Dit is een unifier waarvoor geldt dat elke andere unifier gezien kan worden als een combinatie van de mgu met een andere substitutie. Er bestaat een effici\"ent algoritme dat kan zoeken of twee uitdrukkingen ge\"unificeerd kunnen worden en zo ja de mgu ervoor teruggeeft. Nu wordt een atoom ``waar'' indien het ge\"unificeerd (door middel van een mgu $\tau$) kan worden met de head van een clause, zodanig dat elk van de atoms in de body na toepassing van $\tau$ waar is.
+
+Dit krachtig principe van unificatie kan voor meer gebruikt worden dan enkel het zoeken van clauses die van toepassing zijn. Een logische variabele mag ongebonden zijn. Dit wil zeggen, niet geassocieerd met een waarde. We kunnen dan in de body van een clause een expliciete unificatie stellen van 2 termen, met behulp van het gelijkheidsteken (\code{=}). Bijvoorbeeld: \begin{Verbatim}
+  foo(X,Y) :- X=bar(Y).
+\end{Verbatim}
+Een query \code{foo(A,B).} zou dan als resultaat ``A = bar(B)'' opleveren. Er is dus een unificatie gebeurd die A op bar(B) afbeeldt, zonder dat A of B een echte waarde kregen.
+
+\subsection{Prolog}
+De programmeertaal Prolog is een logische programmeertaal die de voorgaande syntax gebruikt en nog enkele andere dingen eraan toevoegt. Zo wordt de operationele semantiek ook vastgelegd en niet enkel de betekenis van het programma (de logische semantiek). Voor de uitvoering wordt gebruik gemaakt SLD resolutie (Selected-literal Linear resolution for Definite Clauses). Definite Clauses zijn een andere naam voor Horn clauses. Als gezocht wordt welke unifier een gevraagde query waar maakt, worden alle atoms in de body \'e\'en voor \'e\'en geprobeerd. Hierbij worden alle clauses die het betrokken predikaat als head hebben in de volgorde van het programma afgelopen en geprobeerd te unificeren met het gevraagde atoom. Wanneer een unificatie faalt, wordt voortgegaan met de volgende clause die het betrokken predikaat als head heeft. Indien er geen clauses meer overblijven, wordt het eerder beschreven principe van backtracking gebruikt om de toestand van het zoeken te herstellen naar waar de vorige clause gekozen werd, enzovoort.
+
+Prolog breidt SLD nog verder uit met {\em Negation as Failure}, wat de mogelijkheid biedt om een negatie in het logisch programma te gebruiken. Hierbij kan een normaal atom in een clause voorafgegaan worden door het sleutelwoord {\em not}. Dit geeft aan dat het atom dat volgt als nieuwe subgoal geprobeerd moet worden en faalt wanneer deze subgoal tenminste \'e\'en oplossing heeft.
+
+Ten slotte bevat Prolog nog een hele hoop extra ingebouwde predikaten, onder andere predikaten die toelaten om lijsten te defini\"eren en te werken met getallen. Hierbij bestaat onder andere de \code{is} operator, die het linkerlid unificeert met de evaluatie van de term in het rechterlid, die een arithmetische uitdrukking en op dat moment volledig {\em ground} moet zijn, wat wilt zeggen dat alle variabelen reeds een waarde gekregen hebben. Er worden ook nog een expliciete disjunctie (zonder nood aan een aparte regel) toegelaten met het \code{;} symbool en met behulp van \code{->} kan voorwaardelijke code aangeduid worden. Om nog meer controle over de uitvoering mogelijk te maken, is het mogelijk een {\em cut} te doen. Dit gebeurt met \code{!}, wat extra oplossingen op dat punt in de zoekboom ``wegsnijdt'', zodat enkel de eerste overblijft. Het resultaat van dit predikaat is niet met logica te defini\"eren, wat programma's die het gebruiken moeilijk leesbaar maakt.
+
+\section{Constraint Logic Programming}
+
+Constraint Logic Programming (CLP) is een combinatie van Constraint Programming en Logic Programming. Aangezien beiden instanties zijn van hetzelfde probleem: ``geef me een oplossing die voldoet aan de eisen die gesteld worden'', is deze combinatie heel natuurlijk. In CLP breidt men de mogelijkheden van de logische taal uit, door toe te laten dat constraints gebruikt worden in de bodies van een clause. 
+
+Hierbij wordt een ``constraint store'' toegevoegd aan de toestand van de taal, die mee hersteld wordt bij het backtracken. Aan deze constraint store kunnen dan constraints toegevoegd worden door zogenaamde ``tell constraints'' en opgevraagd worden met ``ask constraints''. De oorspronkelijke toestand van de constraint store is leeg of ``true''. Een tell constraint past dan de toestand van de store aan zodat aan de opgelegde constraint voldaan wordt en laat het programma voortlopen zolang de constraint store in een consistente staat is, zijnde (voor alle variabelen) minstens \'e\'en mogelijkheid bevat. Een ask constraint daarentegen past de toestand van de store niet aan, maar slaagt alleen indien de gevraagde constraint door de store ge\"impliceerd wordt. Een dergelijke implicatie kan bv. gecontroleerd worden door de negatie van de gevraagde constraint toe te voegen aan de constraint store en na te gaan of er geen inconsistentie optreedt. Indien niet, dan is de gevraagde constraint ge\"impliceerd.
+
+Prolog kan in principe zelf ook als CLP taal gezien worden, met (in basis-Prolog) slechts \'e\'en tell constraint (\code{=} of unificatie) en \'e\'en ask constraint (\code{==} of controle op gelijkheid).
+

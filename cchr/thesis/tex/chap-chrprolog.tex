@@ -1,0 +1,132 @@
+\chapter{CHR in Prolog} \label{chap:chrprolog}
+
+In dit hoofdstuk wordt een kort overzicht gegeven van de bestaande CHR implementaties in Prolog.
+
+\section{Geschiedenis}
+
+De eerste volledige CHR implementatie, zoals beschreven in \cite{christian:system}, werd gemaakt voor SICStus Prolog (meer informatie in \cite{sicstus}). Deze werd geschreven door Christian Holzbaur en Thom Fr\"uhwirth en wordt algemeen als de referentie-implementatie beschouwd. Een compatibel systeem werd later geschreven voor Yap (zie \cite{yap}). Een oudere, onvolledige versie bestaat ook voor ECL$^i$PS$^e$ \cite{eclipse}.
+
+\section{Het K.U.Leuven CHR systeem}
+
+Een nieuwere implementatie was het K.U.Leuven CHR systeem \cite{tom:kulchr}. Het werd oorspronkelijk voor hProlog gemaakt, maar bestaat ondertussen ook voor XSB Prolog \cite{xsb} en SWI-Prolog \cite{swiprolog}, zoals beschreven in \cite{tom:swi:wclp2005}. De nieuwe release van SICStus Prolog (4.0), maakt ook gebruik van K.U.Leuven CHR.
+
+Dit systeem maakt gebruik van een vertaling van CHR regels naar Prolog zelf, die dan binnen de respectievelijke Prolog runtime uitgevoerd kan worden. Deze vertaling gebeurt bij het inladen van de Prolog broncode zelf, wat een vertraging teweegbrengt bij het opstarten van een CHR programma in Prolog.
+
+Constraints nemen de vorm aan van predikaten, met een naam en een ariteit. Ze moeten gedeclareerd worden als constraint, in plaats van normaal predikaat. Dat gebeurt met: \begin{Verbatim}
+  :- chr_constraint upto(+int),prime(+int).
+\end{Verbatim}
+Hiermee wordt duidelijk gemaakt dat \code{upto/1} en \code{prime/1} geen predikaten maar constraints zijn. In dit specifiek voorbeeld wordt daarbij gesteld dat het argument ervan een \code{int} moet zijn en dat dit altijd {\em ground} is, wat wilt zeggen: altijd reeds een waarde heeft op het moment dat de constraint aangeroepen wordt.
+
+Voor het specificeren van de CHR regels wordt volledig de syntax gevolgd die in sectie~\ref{sec:chr-syntax} gegeven werd. In de heads mogen alle vooraf gedeclareerde CHR constraints gebruikt worden met als argumenten variabelen. Zoals gebruikelijk in Prolog zijn deze vereist te beginnen met een hoofdletter. Het is ook mogelijk een anonieme variabele te gebruiken, door de naam ervan met een underscore (\code{\_}) te laten beginnen. Een anonieme variabele wordt verondersteld slechts \'e\'enmalig per regel voor te komen, terwijl een normale variabele slechts \'e\'enmalig vermelden een waarschuwing zal veroorzaken. Dit duidt meestal op een fout van de programmeur.
+
+Als body wordt alles toegestaan wat in een Prolog goal kan. Dat houdt ook CHR constraints in, die ook gelden als gebruiker-gedefinieerde predikaten. In de guard worden dezelfde dingen toegelaten, behalve CHR constraints.
+
+In het K.U.Leuven CHR systeem wordt een grote hoeveelheid analyses en optimalisaties uitgevoerd. In \cite{tomsphdthesis} wordt het compilatieschema uitgelegd, waar ook dat van CCHR op gebaseerd is (zie sectie~\ref{sec:gencode}). Daarna worden stap voor stap optimalisaties toegevoegd en verantwoord. 
+
+\subsection{Basis Compilatieschema} \label{sec:schema}
+
+Omwille van het belang van het vereenvoudigd compilatie-schema waarvan vertrokken wordt, wordt het hier kort toegelicht, aan de hand van dit voorbeeld dat Tom ook gebruikt: \begin{Verbatim}[frame=single]
+triv @ gcd(0) <=> true.
+red @ gcd(J) \ gcd(I) <=> J >= I | K is J - I, gcd(K).
+\end{Verbatim}
+
+Dit voorbeeld kent drie constraint occurrences voor \code{gcd/1}, namelijk eerst de \code{gcd(0)}, vervolgens \code{gcd(I)} en tenslotte \code{gcd(J)}. Voor een gegeven regel worden de removed constraints eerst beschouwd. Deze als actieve constraint gebruiken bij het toepassen van de regel komt immers overeen met een Simplify overgang en een simpagation rule komt overeen met eerst een simplify en dan een propagate.
+
+In sectie~\ref{sec:omegar} is gezien hoe de verfijnde operationele semantiek $\omega_r$ de uitvoering van een CHR programma definieert in termen van een activatiestapel, een CHR en een built-in constraint store en een propagation geschiedenis. Deze uitvoeringstoestand wordt geconcretiseerd in de gegenereerde Prolog-clauses. De activatiestapel wordt vertegenwoordigd door de impliciete uitvoeringsstapel van Prolog die er dankzij de SLD-resolutie is. De built-in constraint store wordt voorgesteld door Prologs kennis over ge\"unificeerde variabelen. De CHR constraint store wordt bijgehouden in een Prolog datastructuur die beheerd wordt door de CHR runtime. Constraints die zich in de constraint store bevinden worden constraint suspensions genoemd. De propagation geschiedenis wordt verspreid over de betrokken constraint suspensions bijgehouden, op een manier die in CCHR ook gebruikt wordt (zie sectie~\ref{sec:prophist}).
+
+Elke constraint zal vertaald worden in een Prolog predikaat met dezelfde naam en ariteit en dezelfde argumenten aannemen. Er zal een clause gedefinieerd worden voor dit predikaat, dat voor de gegeven argumenten eerst een constraint suspension aanmaakt en toevoegt aan de constraint store. Hierbij krijgt de actieve constraint een uniek ID. Vervolgens wordt een predikaat aangeroepen om de occurrences na te gaan. Het aanroepen van het Prolog predikaat met de naam van de constraint komt overeen met een Activate overgang, waarbij de betrokken constraint geactiveerd wordt. De verschillende occurrences die afgegaan worden komen overeen met de Default overgangen en uiteindelijk de Drop overgang, wanneer geen toepasbare regels gevonden worden. De code in het geval van bovenstaand voorbeeld is:
+
+{\scriptsize \begin{Verbatim}[frame=single]
+gcd(I) :-
+        insert_in_store_gcd(I,ID),
+        gcd_occurrences(I,ID).
+
+gcd_occurrences(I,ID) :-
+        gcd_occurrence1(I,ID),   % gcd(0)
+        gcd_occurrence2(I,ID),   % gcd(I)
+        gcd_occurrence3(I,ID).   % gcd(J)
+\end{Verbatim}
+}
+
+Dan volgen clauses die defini\"eren hoe het zoeken van partnerconstraints en het toepassen van de CHR regels moet gebeuren.
+
+De eerste occurrence is eenvoudig: er moeten geen partnerconstraint gezocht worden. De code voor het toepassen van de regel kan onmiddellijk geschreven worden:
+
+{\scriptsize \begin{Verbatim}[frame=single]
+gcd_occurrence1(I,ID) :-
+        ( alive(ID),        % controleer of ID zich nog in constraint store bevindt
+          I == 0,           % controleer of I==0 (impliciete guard)
+          T = [1,ID],       % maak tupel aan om in geschiedenis na te gaan
+                            % 1 verwijst naar regel 1 'triv'
+          not_in_history(T) % controleer of reeds toegepast op ID
+        ->
+                add_to_history(T),
+                kill(ID),   % actieve constraint wordt uit store verwijderd
+                true        % body
+        ;
+                true
+        ).
+\end{Verbatim}
+}
+
+Wanneer wel gezocht moet worden naar partnerconstraints, wordt het ingewikkelder: er wordt een iterator aangemaakt om over de constraints van een bepaald type te itereren en vervolgens wordt een predikaat aangeroepen dat door zichzelf recursief aan te roepen itereert over de verschillende constraint suspensions horende bij \code{gcd/1}.
+
+{\scriptsize \begin{Verbatim}[frame=single]
+gcd_occurrence2(I,ID) :-
+        universal_lookup_gcd(Iter),  % unificeer Iter met iterator over gcd's
+        gcd_occurrence2_2(Iter,I,ID).
+
+gcd_occurrence2_2(Iter,I,ID) :-
+        empty(Iter), !.   % stop met zoeken indien de iterator leeg is
+gcd_occurrence2_2(Iter,I,ID) :-
+        next_gcd(Iter,J,ID2,Rest), % haal gcd(J) met id ID2 op; plaats rest van iterator in Rest
+        ( alive(ID),
+          alive(ID2),              % constroleer of ID en ID2 nog bestaan
+          ID2 \== ID,              % controleer of ID en ID2 verschillend zijn
+          J >= I,                  % controleer guard
+          T = [2,ID2,ID],          % tupel voor geschiedenis, 2 staat voor 'red'
+          not_in_history(T)
+        ->
+                add_to_history(T),
+                kill(ID),         % verwijder actieve constraint uit constraint store
+                K is J - I,       % body
+                gcd(K)
+        ;
+                true
+        ),
+        gcd_occurrence2_2(Rest,I,ID). % recursief voortgaan naar volgend element
+\end{Verbatim}
+}
+
+De code voor de kept occurrence in dezelfde regel is heel gelijkaardig:
+
+{\scriptsize \begin{Verbatim}[frame=single]
+gcd_occurrence3(J,ID) :-
+        universal_lookup_gcd(Iter),  % unificeer Iter met iterator over gcd's
+        gcd_occurrence3_2(Iter,J,ID).
+
+gcd_occurrence3_2(Iter,J,ID) :-
+        empty(Iter), !.   % stop met zoeken indien de iterator leeg is
+gcd_occurrence3_2(Iter,J,ID) :-
+        next_gcd(Iter,I,ID2,Rest), % haal gcd(I) met id ID2 op; plaats rest van iterator in Rest
+        ( alive(ID),
+          alive(ID2),              % constroleer of ID en ID2 nog bestaan
+          ID2 \== ID,              % controleer of ID en ID2 verschillend zijn
+          J >= I,                  % controleer guard
+          T = [2,ID,ID2],          % tupel voor geschiedenis, 2 staat voor 'red'
+          not_in_history(T)
+        ->
+                add_to_history(T),
+                kill(ID2),        % verwijder partner constraint uit constraint store
+                K is J - I,       % body
+                gcd(K)
+        ;
+                true
+        ),
+        gcd_occurrence3_2(Rest,J,ID). % recursief voortgaan naar volgend element
+\end{Verbatim}
+}
+
+\subsection{Implementatie}
+
+Dit is niet het effectieve compilatieschema dat gebruikt wordt, maar helpt wel een basisinzicht te krijgen in hoe CHR regels omgezet kunnen worden in een algoritme. In praktijk is vertrokken van een eenvoudig compilatieschema en een uitgebreide runtime bibliotheek die veel van het werk deed. In het voorgaand basisschema zou de runtime definities bevatten voor het bijhouden van de constraint store en de propagation geschiedenis, het aanmaken en gebruiken van iteratoren, \ldots. Na het doorvoeren van optimalisaties aan het compilatieschema bleek het echter nodig meer en meer routines niet langer in de runtime aan te bieden, maar specifieke versies ervan zelf te genereren. Dit is een verschuiving die optreedt, waarbij meer en meer complexiteit van de runtime naar de compiler verschoven wordt.

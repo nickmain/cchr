@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include "ram_cchr.h"
+
+typedef enum { ADD,SUB,MULT,DIV,MOVE,I_MOVE,MOVE_I,CONST,JUMP,CJUMP,HALT } instr_t;
+
+cchr {
+	constraint mem(int, int) option(fmt,"mem(%i,%i)",$1,$2), 
+	prog(int,int,instr_t,int,int) option(fmt,"prog(%i,%i,%i,%i,%i)",$1,$2,$3,$4,$5),
+	prog_counter(int) option(fmt,"prog_counter(%i)",$1);
+	
+	extern ADD,SUB,MULT,DIV,MOVE,I_MOVE,MOVE_I,CONST,JUMP,CJUMP,HALT;
+		
+	constraint initmem(int) option(fmt,"initmem(%i)",$1);
+	
+	// add value of register B to register A
+	iAdd @ prog(L,L1,ADD,B,A)#passive, mem(B,Y)#passive \ mem(A,X)#passive, prog_counter(L) <=> mem(A,X+Y), prog_counter(L1);
+	// subtract value of register B from register A
+	iSub @ prog(L,L1,SUB,B,A)#passive, mem(B,Y)#passive \ mem(A,X)#passive, prog_counter(L) <=> mem(A,X-Y), prog_counter(L1);
+	// multiply register A with value of register B
+	iMul @ prog(L,L1,MULT,B,A)#passive, mem(B,Y)#passive \ mem(A,X)#passive, prog_counter(L) <=> mem(A,X*Y), prog_counter(L1);
+	// divide register A by value of register B
+	iDiv @ prog(L,L1,DIV,B,A)#passive, mem(B,Y)#passive \ mem(A,X)#passive, prog_counter(L) <=> mem(A,X/Y), prog_counter(L1);
+
+	// put the value in register B in register A
+	iMove @ prog(L,L1,MOVE,B,A)#passive, mem(B,X)#passive \ mem(A,_)#passive, prog_counter(L) <=> mem(A,X), prog_counter(L1);
+	// put the value in register <value in register B> in register A
+	iIMove @ prog(L,L1,I_MOVE,B,A)#passive, mem(B,C)#passive, mem(C,X)#passive \ mem(A,_)#passive, prog_counter(L) <=> mem(A,X), prog_counter(L1);
+	// put the value in register B in register <value in register A>
+	iMoveI @ prog(L,L1,MOVE_I,B,A)#passive, mem(B,X)#passive, mem(A,C)#passive \ mem(C,_)#passive, prog_counter(L) <=> mem(C,X), prog_counter(L1);
+
+	// put the value B in register A        -> redundant if consts are in init mem
+	iConst @ prog(L,L1,CONST,B,A)#passive \ mem(A,_)#passive, prog_counter(L) <=> mem(A,B), prog_counter(L1);
+
+	// unconditional jump to label A
+	iJump @ prog(L,_L1,JUMP,_,A)#passive \ prog_counter(L) <=> prog_counter(A);
+	// jump to label A if register R is zero, otherwise continue
+	iCjump1 @ prog(L,_L1,CJUMP,R,A)#passive, mem(R,X)#passive \ prog_counter(L) <=> X == 0 | prog_counter(A);
+	iCjump2 @ prog(L,L1,CJUMP,R,_A)#passive, mem(R,X)#passive \ prog_counter(L) <=> X != 0 | prog_counter(L1);
+	// halt
+	iHalt @ prog(L,_L1,HALT,_,_)#passive \ prog_counter(L) <=> true;
+
+	// invalid instruction
+	error @ prog_counter(_L) <=> {printf("eeeeik! error!!!\n");};
+		
+	init1 @ initmem(N) <=> N < 0  | true;
+	init2 @ initmem(N) <=> N >= 0 | mem(N,0), initmem(N-1);
+}
+
+int main(int argc, char **argv) {
+  cchr_runtime_init();
+  int N=(argc>1 ? (int)strtol(argv[1],NULL,0) : 100);
+  cchr_add_mem_2(1,1);
+  cchr_add_mem_2(2,N);
+  cchr_add_mem_2(3,0);
+  cchr_add_prog_5(1,2,ADD,1,3);
+  cchr_add_prog_5(2,3,SUB,1,2);
+  cchr_add_prog_5(3,1,CJUMP,2,4);
+  cchr_add_prog_5(4,0,HALT,0,0);
+  cchr_add_prog_counter_1(1);
+  int mem[4];
+  cchr_consloop(j,mem_2,{printf("mem(%i,%i)\n",cchr_consarg(j,mem_2,1),cchr_consarg(j,mem_2,2)); int p=cchr_consarg(j,mem_2,1); if (p<4) mem[p]=cchr_consarg(j,mem_2,2);});
+  if (mem[1]==1 && mem[2]==0 && mem[3]==N) printf("ok!\n");
+  cchr_runtime_free();
+  return 0;
+}

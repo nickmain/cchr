@@ -1,0 +1,110 @@
+% Document class and font size report, article, book,..
+%\documentclass[dutch,12pt,oneside,a4paper]{book}
+\documentclass[a4paper,11pt]{report}
+
+\usepackage{a4wide}
+
+% Make sure you can process texts with accents
+\usepackage[dutch]{babel}
+\usepackage[latin1]{inputenc}
+%\usepackage{THcover}
+
+\usepackage{compat}
+
+\geometry{
+        a4paper,
+        top=2cm,
+        left=2cm,
+        textwidth=17cm,
+        textheight=25cm,
+}
+
+% Use special math symbols
+\usepackage{amsmath}
+
+
+% Define symbols for natural, integer, real,.. numbers
+\DeclareSymbolFont{AMSb}{U}{msb}{m}{n}
+\DeclareMathSymbol{\N}{\mathbin}{AMSb}{"4E}
+\DeclareMathSymbol{\Z}{\mathbin}{AMSb}{"5A}
+\DeclareMathSymbol{\R}{\mathbin}{AMSb}{"52}
+\DeclareMathSymbol{\Q}{\mathbin}{AMSb}{"51}
+\DeclareMathSymbol{\I}{\mathbin}{AMSb}{"49}
+\DeclareMathSymbol{\C}{\mathbin}{AMSb}{"43}
+
+% Unit length for pictures
+\setlength{\unitlength}{1cm}
+\pagestyle{headings}
+\renewcommand{\thepage}{\arabic{page}}
+
+% fancy 'Verbatim' environnement
+\usepackage{fancyvrb}
+
+% multirows in tables
+\usepackage{multirow}
+
+% declare some extra floats
+\usepackage{float}
+\newfloat{exCode}{bph}{lop}[chapter]
+\floatname{exCode}{Codefragment}
+
+\usepackage{tabularx}
+
+% load some common definitions
+\input{defs}
+
+\begin{document}
+
+\pagenumbering{roman}
+\includepdf[pages={1,2},noautoscale=true]{THcover}
+
+%\includegraphics{THcover}
+%\cleardoublepage
+
+\input{bedankt}
+
+\clearpage
+\addcontentsline{toc}{chapter}{Inhoudsopgave}
+\tableofcontents
+
+\addcontentsline{toc}{chapter}{Lijst van figuren}
+\listoffigures \clearpage
+\addcontentsline{toc}{chapter}{Lijst van tabellen}
+
+\listoftables \clearpage
+\addcontentsline{toc}{chapter}{Lijst van codefragmenten}
+\listof{exCode}{Lijst van codefragmenten} \clearpage
+
+\pagenumbering{arabic}
+%\mainmatter
+
+% Set paragraph layout
+\setlength{\parindent}{0mm}
+\setlength{\parskip}{3mm}
+
+\input{chap-begin}
+\input{part-situ}
+\input{part-cchr}
+
+%
+%\begin{figure}
+%\framebox{\resizebox{\textwidth}{!}{\includegraphics{fig/bar}}}
+%\caption{\label{bar:fig}An example of a bar graph.}
+%\end{figure}
+
+
+
+%\cleardoublepage{}\phantomsection{}
+\clearpage
+
+\addcontentsline{toc}{chapter}{Bijlagen}
+\input{part-app}
+
+%\backmatter
+
+\clearpage
+\addcontentsline{toc}{chapter}{Bibliografie}
+\bibliographystyle{alpha}
+\bibliography{thesis}
+
+\end{document}

@@ -1,0 +1,12 @@
+import util.arithmetics.primitives.intUtil;
+
+public handler mergesort {
+    local constraint arrow(int From, int To) infix '->';
+    public constraint merge(int, int);
+
+    rules {
+	X '->' A \ X '->' B <=> A < B | A '->' B.
+
+	merge(N,A), merge(N,B) <=> A < B | merge(intUtil.inc(N), A), A '->' B.
+    }
+}

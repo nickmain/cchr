@@ -1,0 +1,11 @@
+import static util.arithmetics.primitives.intUtil.*;
+
+public handler primes {
+    public constraint candidate(int);
+    local constraint prime(int);
+
+    rules {
+	gen @ candidate(N) <=> N>1 | prime(N), candidate(dec(N)).
+	sift @ prime(Y) \ prime(X) <=> modZero(X, Y) | true.
+    }
+}

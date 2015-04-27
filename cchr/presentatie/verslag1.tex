@@ -1,0 +1,79 @@
+%% vul gewoon in tussen de < > en verwijder de < >
+%% zet dit in een bestand verslag1.tex en doe
+%% latex verslag1.tex
+%% dan maak je van verslag1.dvi een .ps door dvips verslag1.dvi -o verslag1.ps
+%% druk die .ps af
+%% de langere weg is: gebruik word
+
+\documentclass[12pt]{report}
+\usepackage{a4wide}
+
+\setlength{\parindent}{0cm}
+
+\begin{document}
+\pagestyle{myheadings}
+\markright{Tussentijds verslag November 2006 -  Student: Pieter Wuille}
+
+{\bf Titel eindwerk:} {\em CCHR: De snelste CHR implementatie}
+
+\vspace{0.5cm}
+{\bf Promotor:} Bart Demoen
+
+
+\vspace{0.5cm}
+{\bf Begeleider:} Tom Schrijvers
+
+\vspace{1cm}
+{\bf Korte situering en Doelstelling: } 
+De bedoeling is een implementatie van CHR in C te maken, bestaande uit een compiler die CCHR code (CHR ingebed in C) inleest, en als resultaat zuivere C code genereert. Het belangrijkste voordeel tov. de Java implementatie (JCHR) zijn de veel flexibelere datastructuren, en ik zal dan ook proberen die vooral te gebruiken om de performantie hoger te krijgen.
+
+\vspace{1cm}
+{\bf Belangrijkste bestudeerde literatuur:}
+\begin{itemize}
+\item Analyses, Optimizations and Extensions of Constraint Handling Rules - Tom Schrijvers
+\item Essentials of Constraint Porgramming - Thom Fr\"uhwirth, Slim Abdennadher
+\item Constraint Porgramming in Java: een gebruiksvriendelijk, flexibel en effici\"ent CHR-systeem voor Java - Peter van Weert
+\end{itemize}
+
+\vspace{1cm}
+{\bf Geleverd werk:}
+Na wat bestuderen van teksten over CHR, en een aantal voorbeeldjes in CHR en JCHR te bekijken, ben ik wat beginnen nadenken over hoe CCHR er zou uitzien. Ik ben uiteindelijk van plan om iets vergelijkbaar aan JCHR te gebruiken, maar met enkele meer C-achtige structuren, en heb dan ook een voorbeeldje "vertaald" naar CCHR.
+
+Vervolgens was ik begonnen aan een eenvoudige (handgeschreven) parser om een basis te hebben om van te kunnen vertrekken, maar achteraf gezien was dit een beetje verloren tijd.
+Toen ik dan wou beginnen aan de eigenlijke vertaling naar C code van die geparsete CCHR, heb ik eerst dat voorbeeldje (de GCD-routine) zelf met de hand te vertaald naar C. Hierbij heb ik al wat op efficientie gelet, en ben uiteindelijk een datastructuur met enkele double- en single-linked lists gaan gebruiken. 
+
+De code hiervoor was echter wel vrij lang, en het wijzigen van de datastructuur-backend zou veel code-wijzigingen vragen, en dus heb ik dan een systeem bedacht waarbij uiteindelijk de code die door de compiler gegenereerd zal worden eerder uit een aanroep van een aantal macro's zou bestaan dan wel zelf C-code (in C zit standaard een macro-systeem ingebouwd). Vervolgens heb ik dan ook de GCD-routine (nog steeds met de hand) vertaald naar een prototype van die macro-output, en uiteindelijk de noodzakelijke macro's ook nog geschreven hiervoor.
+
+\vspace{1cm}
+{\bf Belangrijkste resultaten:}
+\begin{itemize}
+\item De laatste versie van mijn met-de-hand-naar-C vertaalde GCD CHR routine (niet de macro-versie) draaide aan zo'n 12.5 cpu cycles per iteratie op een P4 processor, terwijl een pure C-implementatie van dezelfde routine zo'n 4.5 cpu cycles per iteratie vroeg. 
+\item Ik heb een GCD-routine als een hoop macro's (die een stuk hoger-niveau zijn dan de uiteindelijke C code, en hopelijk grotendeels onafhankelijk van welke data-structuur gebruikt zordt om de constraint store bij te houden), samen met een set van macro definities die uiteindelijk werkende code oplevert. Omdat niet alle optimalisaties hierin doorgevoerd zijn al die in de pure-C versie zitten, is deze wel iets trager nog, maar het lijkt me nuttiger het echte optimaliseren en experimenteren met andere datastructuren te laten tot ik een werkende compiler heb, zodat andere voorbeelden getest kunnen worden.
+\end{itemize}
+\vspace{1cm}
+{\bf Belangrijkste moeilijkheden:}
+\begin{itemize}
+\item Inzicht krijgen in CHR en het CHR-compilatieschema
+\item Een aantal optimalisaties begrijpen
+\item Uiteindelijk C code (of macro's) genereren
+\end{itemize}
+
+\vspace{1cm}
+{\bf Gepland werk:} 
+\begin{itemize}
+\item Een deftige CCHR parser schrijven mbv. flex en bison
+\item Een compiler schrijven die op basis van geparsete CCHR dan de macro's output
+\item Proberen nog optimalisaties en uitbreidingen toe te voegen (propagation history), zowel datastructuren als aan de kant van de compiler
+\item Desnoods linken aan Prolog om bestaande analyse-tools te kunnen gebruiken
+\item Toevoegen van code/macro's om logische variabelen te kunnen aanspreken (equality builtin contraint ondersteunen)
+\item Performance tests doen, en vergelijken met de JCHR en CHR in Prolog, en ook onderlinge vergelijkingen met/zonder bepaalde optimalisaties/datastructuren.
+\end{itemize}
+
+\vspace{1cm}
+{\bf Als ik verder werk zoals ik tot nu toe deed, dan denk ik 14/20 te
+    verdienen op het einde.}
+
+{\bf Ik plan mijn eindwerk af te geven in mei}
+
+
+\end{document}
